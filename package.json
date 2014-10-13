@@ -1,0 +1,36 @@
+{
+  "name": "paradigm",
+  "version": "0.0.0",
+  "description": "Single Page Apps with ES6",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrisabrams/paradigm"
+  },
+  "keywords": [
+    "single",
+    "page",
+    "apps",
+    "app",
+    "spa",
+    "es6",
+    "ecmascript6"
+  ],
+  "author": "Chris Abrams <mail@chrisabrams.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chrisabrams/paradigm/issues"
+  },
+  "homepage": "https://github.com/chrisabrams/paradigm",
+  "devDependencies": {
+    "6to5": "^1.7.17",
+    "chai": "^1.9.2",
+    "gulp": "^3.8.8",
+    "gulp-mocha": "^1.1.1",
+    "sinon": "^1.10.3",
+    "sinon-chai": "^2.6.0"
+  }
+}
