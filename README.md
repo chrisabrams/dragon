@@ -1,4 +1,4 @@
 paradigm
 ========
 
-Imperative Single Page Apps with ES6
+Single Page Apps with ES6
