@@ -42,10 +42,10 @@ class ParadigmView {
     this.subViewStore = {}
 
     //If the view is set to render on initialization
-    if(this.autoRender) {
+    if(this.renderOnInit) {
 
       //If the view is set to attach on initialization
-      if(!this.attached && this.autoAttach) {
+      if(!this.attached && this.attachOnInit) {
 
         //this.on('rendered', this.attach)
 
@@ -89,6 +89,20 @@ class ParadigmView {
     return new Promise( (resolve, reject) => {
 
     })
+  }
+
+  /*
+  @method detach
+  @type Function
+  @returns Promise
+  @desc Detachs the view from the DOM
+  */
+  detach() {
+
+    return new Promise( (resolve, reject) => {
+
+    })
+
   }
 
   /*
@@ -145,20 +159,20 @@ The following properties & methods are assigned on the prototype to allow for ov
 */
 
 /*
-@property autoAttach
+@property attachOnInit
 @type Boolean
 @default true
 @desc Whether to attach the view on initialization
 */
-ParadigmView.prototype.autoAttach = true
+ParadigmView.prototype.attachOnInit = true
 
 /*
-@property autoRender
+@property renderOnInit
 @type Boolean
 @default true
-@desc Whether to render the view automatically on initialization
+@desc Whether to render the view on initialization
 */
-ParadigmView.prototype.autoRender = true
+ParadigmView.prototype.renderOnInit = true
 
 /*
 @property container
