@@ -18,6 +18,8 @@ class ParadigmView {
     */
     this.disposed = false
 
+    this.el = null
+
     /*
     @property renderedCount
     @type Number
@@ -85,8 +87,11 @@ class ParadigmView {
   */
 
   attach() {
+    var _this = this
 
     return new Promise( (resolve, reject) => {
+
+      _this._container[_this.containerMethod](_this._el)
 
     })
   }
@@ -177,10 +182,48 @@ ParadigmView.prototype.renderOnInit = true
 /*
 @property container
 @type String
-@default null
+@default undefined
 @desc Define the selector upon which the view is attached to.
 */
-ParadigmView.prototype.container = null
+Object.defineProperty(ParadigmView.prototype, 'container', {
+
+  set: (selector) => {
+
+    /*
+    @property _container
+    @type Object
+    @default undefined
+    @desc Reference to container DOM object
+    */
+    this._container = document.querySelector(selector)
+
+    return selector
+  }
+
+})
+
+/*
+@property el
+@type
+@default undefined
+@desc Define the selector which represents the view
+*/
+Object.defineProperty(ParadigmView.prototype, 'el', {
+
+  set: (selector) => {
+
+    /*
+    @property _el
+    @type Object
+    @default undefined
+    @desc Reference to view DOM object
+    */
+    this._el = document.querySelector(el)
+
+    return selector
+  }
+
+})
 
 /*
 @property containerMethod
