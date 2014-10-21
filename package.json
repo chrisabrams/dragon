@@ -27,10 +27,18 @@
   "homepage": "https://github.com/chrisabrams/paradigm",
   "devDependencies": {
     "6to5": "^1.7.17",
+    "6to5-browserify": "0.0.11",
+    "browserify": "^6.1.0",
     "chai": "^1.9.2",
+    "glob": "^4.0.6",
     "gulp": "^3.8.8",
+    "gulp-concat": "^2.4.1",
     "gulp-mocha": "^1.1.1",
+    "gulp-mocha-phantomjs": "^0.5.1",
+    "jquery": "^2.1.1",
+    "jsdom": "^1.0.3",
     "sinon": "^1.10.3",
-    "sinon-chai": "^2.6.0"
+    "sinon-chai": "^2.6.0",
+    "vinyl-source-stream": "^1.0.0"
   }
 }

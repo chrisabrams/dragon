@@ -91,7 +91,7 @@ class ParadigmView {
 
     return new Promise( (resolve, reject) => {
 
-      _this._container[_this.containerMethod](_this._el)
+      _this.$container[_this.containerMethod](_this.$el)
 
     })
   }
@@ -190,12 +190,12 @@ Object.defineProperty(ParadigmView.prototype, 'container', {
   set: (selector) => {
 
     /*
-    @property _container
+    @property $container
     @type Object
     @default undefined
     @desc Reference to container DOM object
     */
-    this._container = document.querySelector(selector)
+    this.$container = $(selector)
 
     return selector
   }
@@ -213,12 +213,12 @@ Object.defineProperty(ParadigmView.prototype, 'el', {
   set: (selector) => {
 
     /*
-    @property _el
+    @property $el
     @type Object
     @default undefined
     @desc Reference to view DOM object
     */
-    this._el = document.querySelector(el)
+    this.$el = $(selector)
 
     return selector
   }
@@ -228,10 +228,10 @@ Object.defineProperty(ParadigmView.prototype, 'el', {
 /*
 @property containerMethod
 @type String
-@default 'appendChild'
-@options 'appendChild', 'prependChild'
-@desc Determines how the view is attached to the DOM. If `$` is defined, then you can define the method as `append` or `prepend`
+@default 'append'
+@options 'append', 'prepend'
+@desc Determines how the view is attached to the DOM.
 */
-ParadigmView.prototype.containerMethod = 'appendChild'
+ParadigmView.prototype.containerMethod = 'append'
 
 module.exports = ParadigmView

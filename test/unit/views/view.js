@@ -1,10 +1,10 @@
-var View = require('../../../src/paradigm/views/view')
+var Paradigm   = require('../../../src/paradigm')
 
 describe('Unit: Views', function() {
 
   it('should initialize', function(done) {
 
-    var view = new View()
+    var view = new Paradigm.View()
 
     expect(view).to.be.an('object')
     expect(view.addSubView).to.be.a('function')
@@ -16,9 +16,10 @@ describe('Unit: Views', function() {
     expect(view.renderOnInit).to.be.a('boolean')
     expect(view.renderOnInit).to.equal(true)
     expect(view.container).to.equal(undefined)
-    expect(typeof view._container).to.equal('undefined')
+    expect(typeof view.$container).to.equal('undefined')
+    expect(typeof view.$el).to.equal('undefined')
     expect(view.containerMethod).to.be.a('string')
-    expect(view.containerMethod).to.equal('appendChild')
+    expect(view.containerMethod).to.equal('append')
     expect(view.detach).to.be.a('function')
     expect(view.disposed).to.be.a('boolean')
     expect(view.disposed).to.equal(false)

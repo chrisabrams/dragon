@@ -1,4 +1,5 @@
 module.exports = {
+  $ : null,
   //Application    : require('./paradigm/application'),
   //Collection     : require('./paradigm/models/collection'),
   //CollectionView : require('./paradigm/views/collectionView'),

@@ -1,6 +1,7 @@
 # Logs
 logs
 *.log
+.DS_Store
 
 # Runtime data
 pids
@@ -26,3 +27,5 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+
+test/helpers/browser/js/spec.js
