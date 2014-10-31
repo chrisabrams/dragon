@@ -1,13 +1,13 @@
-var Paradigm   = require('../../../src/paradigm')
+var FooMixin = require('../../mixins/foo'),
+    Paradigm = require('../../../src/paradigm')
 
-describe('Unit: Views', function() {
+describe('Unit: View', function() {
 
   it('should initialize', function(done) {
 
     var view = new Paradigm.View()
 
     expect(view).to.be.an('object')
-    expect(view.addSubView).to.be.a('function')
     expect(view.attach).to.be.a('function')
     expect(view.attached).to.be.a('boolean')
     expect(view.attached).to.equal(false)
@@ -23,15 +23,42 @@ describe('Unit: Views', function() {
     expect(view.detach).to.be.a('function')
     expect(view.disposed).to.be.a('boolean')
     expect(view.disposed).to.equal(false)
-    expect(view.getSubView).to.be.a('function')
-    expect(view.removeSubView).to.be.a('function')
+    expect(view.mixins).to.be.an('array')
+    expect(view.mixins.length).to.equal(0)
     expect(view.render).to.be.a('function')
-    expect(view.renderedCount).to.be.a('number')
-    expect(view.renderedCount).to.equal(0)
-    expect(view.subViews).to.be.an('array')
-    expect(view.subViews).to.have.length(0)
-    expect(view.subViewStore).to.be.an('object')
-    //expect(view.subViewStore).to.be.empty() <-- not sure why this fails; expect.js docs say this is valid
+
+    done()
+
+  })
+
+  it('should mixin on class', function(done) {
+
+    class View extends Paradigm.View {}
+
+    Object.assign(View.prototype, FooMixin)
+
+    var view = new View()
+
+    expect(view.foo).to.equal('bar')
+
+    done()
+
+  })
+
+  it('should mixin on instance', function(done) {
+
+    class View extends Paradigm.View {
+
+      constructor() {
+        super({mixins: [FooMixin]})
+
+      }
+
+    }
+
+    var view = new View()
+
+    expect(view.foo).to.equal('bar')
 
     done()
 

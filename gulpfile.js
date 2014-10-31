@@ -56,7 +56,11 @@ gulp.task('mocha-browser-run', ['mocha-browser-build'], function() {
 gulp.task('mocha-cli', function() {
 
   return gulp
-    .src(['./test/helpers/cli/runner.js', './test/unit/**/*.js'], {read: false})
+    .src([
+      './test/helpers/cli/runner.js',
+      './lib/polyfills/**/*.js',
+      './test/unit/**/*.js'
+    ], {read: false})
     .pipe(mocha({reporter: 'spec'}))
 
 })

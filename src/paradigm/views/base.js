@@ -1,6 +1,10 @@
-class ParadigmView {
 
-  constructor() {
+/*
+@class ParadigmBaseView
+*/
+class ParadigmBaseView {
+
+  constructor(options = {}) {
 
     /*
     @property attached
@@ -21,27 +25,12 @@ class ParadigmView {
     this.el = null
 
     /*
-    @property renderedCount
-    @type Number
-    @default 0
-    @desc A count of how many times the view has been rendered
-    */
-    this.renderedCount = 0
-
-    /*
-    @property subViews
+    @property mixins
     @type Array
-    @desc Collection of child views to current view (parent)
+    @desc List of mixins
+    @note This adds a mixin to the instance, not the class
     */
-    this.subViews = []
-
-    /*
-    @property subViewStore
-    @type Object
-    @desc A key/value store of all subViews
-    @note This is an object and not an Array to prevent two subViews with the same name
-    */
-    this.subViewStore = {}
+    this.mixins = options.mixins || []
 
     //If the view is set to render on initialization
     if(this.renderOnInit) {
@@ -57,25 +46,11 @@ class ParadigmView {
 
     }
 
-  }
+    this.mixins.forEach( (Mixin) => {
 
-  /*
-  @method addSubView
-  @type Function
-  @args name {String}
-  @args view {Object} This is an instantiated view, not the class itself
-  @desc Adds a subView to the current view
-  */
+      Object.assign(this, Mixin)
 
-  addSubView(name, view) {
-
-    if(name && view) {
-
-      this.removeSubView(name)
-      this.subViews.push(view)
-      this.subViewStore[name] = view
-
-    }
+    }, this)
 
   }
 
@@ -111,36 +86,6 @@ class ParadigmView {
   }
 
   /*
-  @method getSubView
-  @type Function
-  @args name {String}
-  @desc Returns a subView by name
-  */
-  getSubView(name) {
-
-    // Returns subView by name
-    if(typeof name === 'string') {
-      return this.subViewStore[name]
-    }
-
-  }
-
-  /*
-  @method removeSubView
-  @type Function
-  @args name {String}
-  @desc Removes a subView by name
-  @note This will dispose the subView if it hasn't been previously disposed of
-  */
-  removeSubView(name) {
-
-    if(typeof name === 'string') {
-      delete this.subViewStore[name]
-    }
-
-  }
-
-  /*
   @method render
   @type Function
   @returns Promise
@@ -169,7 +114,7 @@ The following properties & methods are assigned on the prototype to allow for ov
 @default true
 @desc Whether to attach the view on initialization
 */
-ParadigmView.prototype.attachOnInit = true
+ParadigmBaseView.prototype.attachOnInit = true
 
 /*
 @property renderOnInit
@@ -177,7 +122,7 @@ ParadigmView.prototype.attachOnInit = true
 @default true
 @desc Whether to render the view on initialization
 */
-ParadigmView.prototype.renderOnInit = true
+ParadigmBaseView.prototype.renderOnInit = true
 
 /*
 @property container
@@ -185,7 +130,7 @@ ParadigmView.prototype.renderOnInit = true
 @default undefined
 @desc Define the selector upon which the view is attached to.
 */
-Object.defineProperty(ParadigmView.prototype, 'container', {
+Object.defineProperty(ParadigmBaseView.prototype, 'container', {
 
   set: (selector) => {
 
@@ -208,7 +153,7 @@ Object.defineProperty(ParadigmView.prototype, 'container', {
 @default undefined
 @desc Define the selector which represents the view
 */
-Object.defineProperty(ParadigmView.prototype, 'el', {
+Object.defineProperty(ParadigmBaseView.prototype, 'el', {
 
   set: (selector) => {
 
@@ -232,6 +177,6 @@ Object.defineProperty(ParadigmView.prototype, 'el', {
 @options 'append', 'prepend'
 @desc Determines how the view is attached to the DOM.
 */
-ParadigmView.prototype.containerMethod = 'append'
+ParadigmBaseView.prototype.containerMethod = 'append'
 
-module.exports = ParadigmView
+module.exports = ParadigmBaseView

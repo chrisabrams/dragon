@@ -1,4 +1,4 @@
-module.exports = {
+var Paradigm = {
   $ : null,
   //Application    : require('./paradigm/application'),
   //Collection     : require('./paradigm/models/collection'),
@@ -15,5 +15,7 @@ module.exports = {
   //Router         : require('./paradigm/router/router'),
   //SyncMachine    : require('./paradigm/models/syncMachine'),
   //utils          : require('./paradigm/lib/utils'),
-  View           : require('./paradigm/views/view')
+  View           : require('./paradigm/views/base')
 }
+
+module.exports = Paradigm
