@@ -85,6 +85,16 @@ class ParadigmBaseView {
 
   }
 
+  getTemplate() {
+
+    return new Promise( (resolve, reject) => {
+
+      reject(new Error('This method should be overwritten.'))
+
+    })
+
+  }
+
   /*
   @method render
   @type Function
@@ -128,7 +138,7 @@ ParadigmBaseView.prototype.renderOnInit = true
 @property container
 @type String
 @default undefined
-@desc Define the selector upon which the view is attached to.
+@desc Define the selector upon which the view is attached to
 */
 Object.defineProperty(ParadigmBaseView.prototype, 'container', {
 
@@ -175,8 +185,16 @@ Object.defineProperty(ParadigmBaseView.prototype, 'el', {
 @type String
 @default 'append'
 @options 'append', 'prepend'
-@desc Determines how the view is attached to the DOM.
+@desc Determines how the view is attached to the DOM
 */
 ParadigmBaseView.prototype.containerMethod = 'append'
+
+/*
+@property template
+@type ????
+@default null
+@desc Template for the view
+*/
+ParadigmBaseView.prototype.template = null
 
 module.exports = ParadigmBaseView

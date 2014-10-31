@@ -1,4 +1,4 @@
-paradigm
+Paradigm
 ========
 
 Single Page Apps with ES6

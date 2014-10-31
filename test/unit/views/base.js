@@ -1,7 +1,7 @@
 var FooMixin = require('../../mixins/foo'),
     Paradigm = require('../../../src/paradigm')
 
-describe('Unit: View', function() {
+describe('Unit: View: Base', function() {
 
   it('should initialize', function(done) {
 
@@ -26,8 +26,23 @@ describe('Unit: View', function() {
     expect(view.mixins).to.be.an('array')
     expect(view.mixins.length).to.equal(0)
     expect(view.render).to.be.a('function')
+    expect(view.template).to.equal(null)
 
     done()
+
+  })
+
+  it('should throw error on getTemplate', function(done) {
+
+    var view = new Paradigm.View()
+
+    view.getTemplate().then(function() {}, function(err) {
+
+      expect(err).to.be.an('object')
+
+      done()
+
+    })
 
   })
 
