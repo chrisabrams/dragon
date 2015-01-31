@@ -8,7 +8,6 @@
  *
  * Copyright (c) 2010-2013 Christian Johansen
  */
-"use strict";
 
 var sinon = (function (formatio) {
     var div = typeof document != "undefined" && document.createElement("div");

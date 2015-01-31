@@ -1,5 +1,4 @@
 (function (sinonChai) {
-    "use strict";
 
     // Module systems magic dance.
 
@@ -17,7 +16,6 @@
         chai.use(sinonChai);
     }
 }(function sinonChai(chai, utils) {
-    "use strict";
 
     var slice = Array.prototype.slice;
 

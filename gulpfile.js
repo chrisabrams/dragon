@@ -7,13 +7,13 @@ var browserify     = require('browserify'),
     mocha          = require('gulp-mocha'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
     source         = require('vinyl-source-stream'),
-    to5Browserify  = require('6to5-browserify')
+    to5ify  = require('6to5-browserify')
 
 gulp.task('mocha-browser-build', function(done) {
 
   var testFiles   = glob.sync('./test/unit/**/*.js')
   var testHelpers = [
-    './test/helpers/browser/js/es6-shim.js',
+    //'./lib/polyfills/Object.assign.js',
     './test/helpers/browser/js/runner.js'
   ]
 
@@ -31,7 +31,9 @@ gulp.task('mocha-browser-build', function(done) {
   })
 
   bundler
-    .transform(to5Browserify)
+    .transform(to5ify.configure({
+      blacklist: ["useStrict"]
+    }))
     .bundle()
     .on('error', function() {
       console.log(arguments)

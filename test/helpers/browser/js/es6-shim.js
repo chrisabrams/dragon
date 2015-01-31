@@ -9,7 +9,6 @@
   */
 
 (function (undefined) {
-  'use strict';
 
   var isCallableWithoutNew = function (func) {
     try { func(); }
@@ -89,18 +88,6 @@
         var method = map[name];
         defineProperty(object, name, method, false);
       });
-    };
-
-    // Simple shim for Object.create on ES3 browsers
-    // (unlike real shim, no attempt to support `prototype === null`)
-    var create = Object.create || function (prototype, properties) {
-      function Type() {}
-      Type.prototype = prototype;
-      var object = new Type();
-      if (typeof properties !== 'undefined') {
-        defineProperties(object, properties);
-      }
-      return object;
     };
 
     // This is a private name in the es6 spec, equal to '[Symbol.iterator]'

@@ -430,7 +430,6 @@ if (typeof module !== 'undefined') {
 }); // module: browser/diff.js
 
 require.register("browser/escape-string-regexp.js", function(module, exports, require){
-'use strict';
 
 var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
 
