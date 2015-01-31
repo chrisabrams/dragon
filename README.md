@@ -1,7 +1,8 @@
 Paradigm
 ========
 
-Single Page Apps with ES6
+## Hypothesis of project
+What if Backbone were to be created today? What would the project look like? With ECMAScript 6, HTML5 pushState, Virtual DOM, new ways of data-binding, etc., front-end development has evolved. This project sets out to see what such an evolution would look like from scratch.
 
 ## Changes from Backbone to Paradigm
 
