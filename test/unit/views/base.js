@@ -1,12 +1,77 @@
-var $        = require('jquery'),
-    FooMixin = require('../../mixins/foo'),
+var FooMixin = require('../../mixins/foo'),
     Paradigm = require('../../../src/paradigm')
 
 describe('Unit: View: Base', function() {
 
-  it('should initialize', function(done) {
+  // TODO: WHY U BE DIFFICULT
+  it.skip('should initialize', function(done) {
 
-    var view = new Paradigm.View()
+    //sinon.stub(Paradigm.View.prototype, 'setProperties').returns(null)
+    //sinon.stub(Paradigm.View.prototype.setMixins)
+    //console.log(Paradigm.View.prototype)
+    //Paradigm.View.prototype.setProperties.returns(null)
+    //Paradigm.View.prototype.setMixins.returns(null)
+
+    var propSpy  = sinon.spy(Paradigm.View.prototype.setProperties)
+    var mixinSpy = sinon.spy(Paradigm.View.prototype.setMixins)
+
+    Paradigm.View.prototype.initialize({})
+
+    expect(propSpy).to.be.calledOnce
+    expect(mixinSpy).to.be.calledOnce
+
+    //Paradigm.View.prototype.setProperties.restore()
+    //Paradigm.View.prototype.setMixins.restore()
+
+    done()
+
+  })
+
+  it('should get tagName from empty div', function(done) {
+
+    var tagName = Paradigm.View.prototype.getTagName('<div></div>')
+
+    expect(tagName).to.equal('div')
+
+    done()
+
+  })
+
+  it('should get tagName from a populated div', function(done) {
+
+    var tagName = Paradigm.View.prototype.getTagName('<div><div><i></i></div></div>')
+
+    expect(tagName).to.equal('div')
+
+    done()
+
+  })
+
+  it('should get tagName from a div with properties', function(done) {
+
+    var tagName = Paradigm.View.prototype.getTagName('<div id="foo"><div><i></i></div></div>')
+
+    expect(tagName).to.equal('div')
+
+    done()
+
+  })
+
+  it('should construct a view', function(done) {
+
+    class View extends Paradigm.View {}
+
+    // This function can do whatever the developer desires. Typically a Mixin, such as Handlebars Mixin, will take care of this.
+    View.prototype.getTemplate = function() {
+
+      return this.template
+
+    }
+
+    var view = new View({
+      // Views must have a template as there is no wrapping tag
+      template: '<div></div>'
+    })
 
     expect(view).to.be.an('object')
     expect(view.assignAttributes).to.be.a('function')
@@ -18,8 +83,8 @@ describe('Unit: View: Base', function() {
     expect(view.renderOnInit).to.be.a('boolean')
     expect(view.renderOnInit).to.equal(true)
     expect(view.container).to.equal(undefined)
-    expect(typeof view.$container).to.equal('undefined')
-    expect(typeof view.$el).to.equal('undefined')
+    expect(view.$container).to.equal(undefined)
+    expect(view.$el).to.equal(undefined)
     expect(view.containerMethod).to.be.a('string')
     expect(view.containerMethod).to.equal('appendChild')
     expect(view.detach).to.be.a('function')
@@ -29,7 +94,7 @@ describe('Unit: View: Base', function() {
     expect(view.mixins).to.be.an('array')
     expect(view.mixins.length).to.equal(0)
     expect(view.render).to.be.a('function')
-    //expect(view.tagName).to.equal(null)
+    expect(view.tagName).to.equal(null)
     expect(view.template).to.equal(null)
 
     done()
@@ -111,7 +176,7 @@ describe('Unit: View: Base', function() {
   /*
   An example of how to construct a view which can get a template and attach it to the DOM.
   */
-  it.only('should render and attach to <body>', function(done) {
+  it('should render and attach to <body>', function(done) {
 
     class View extends Paradigm.View {
 

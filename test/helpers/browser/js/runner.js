@@ -8,6 +8,4 @@ chai.use(sinonChai)
 window.expect = chai.expect
 window.sinon  = sinon
 
-var $         = require('jquery')
 var Paradigm  = require('../../../../src/paradigm')
-window.$      = $

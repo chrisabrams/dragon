@@ -223,6 +223,34 @@ class ParadigmBaseView {
 
   }
 
+  getTagName(template) {
+
+    var tagNameFrag = document.createDocumentFragment()
+    tagNameFrag.textContent = template
+
+    var tagName;
+
+    // TODO: this is a janky way of getting the tagName
+    var tagFrag = tagNameFrag.textContent.split('<')[1]
+    var indexGator = tagNameFrag.textContent.indexOf('>')
+    var indexSpace = tagNameFrag.textContent.indexOf(' ')
+
+    if(indexSpace == -1 || indexGator < indexSpace) {
+
+      tagName = tagFrag.split('>')[0]
+
+    }
+
+    else {
+
+      tagName = tagFrag.split(' ')[0]
+
+    }
+
+    return tagName
+
+  }
+
   /*
   @method getTemplate
   @type Function
@@ -256,11 +284,7 @@ class ParadigmBaseView {
 
     if(!this.tagName) {
 
-      var tagNameFrag = document.createDocumentFragment()
-      tagNameFrag.textContent = template
-
-      // TODO: this is a janky way of getting the tagName
-      var tagName = this.tagName = tagNameFrag.textContent.split('<')[1].split(' ')[0]
+      this.tagName = this.getTagName(template)
 
     }
 

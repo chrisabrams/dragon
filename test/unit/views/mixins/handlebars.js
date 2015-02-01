@@ -1,5 +1,4 @@
-var $               = require('jquery'),
-    FooMixin        = require('../../../mixins/foo'),
+var FooMixin        = require('../../../mixins/foo'),
     HandlebarsMixin = require('../../../../src/paradigm/views/mixins/handlebars'),
     Paradigm        = require('../../../../src/paradigm')
 
