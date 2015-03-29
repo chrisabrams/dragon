@@ -7,5 +7,3 @@ chai.use(sinonChai)
 
 window.expect = chai.expect
 window.sinon  = sinon
-
-var Paradigm  = require('../../../../src/paradigm')

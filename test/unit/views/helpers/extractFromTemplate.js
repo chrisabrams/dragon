@@ -1,4 +1,4 @@
-var extractFromTemplate = require('../../../../src/paradigm/views/helpers/extractFromTemplate')
+var extractFromTemplate = require('../../../../src/dragon/views/helpers/extractFromTemplate')
 
 describe('View: Helpers: ExtractFromTemplate', function() {
 

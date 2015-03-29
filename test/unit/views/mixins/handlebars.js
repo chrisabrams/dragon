@@ -1,12 +1,12 @@
 var FooMixin        = require('../../../mixins/foo'),
-    HandlebarsMixin = require('../../../../src/paradigm/views/mixins/handlebars'),
-    Paradigm        = require('../../../../src/paradigm')
+    HandlebarsMixin = require('../../../../src/dragon/views/mixins/handlebars'),
+    Dragon        = require('../../../../src/dragon')
 
 describe('Unit: View: Mixins: Handlebars', function() {
 
   it.skip('should render and attach to <body>', function(done) {
 
-    class View extends Paradigm.View {
+    class View extends Dragon.View {
 
       constructor() {
         super()
@@ -20,7 +20,7 @@ describe('Unit: View: Mixins: Handlebars', function() {
 
     }
 
-    Object.assign(View.prototype, HandlebarsMixin.bind(View.prototype))
+    Object.assign(View.prototype, HandlebarsMixin)
 
     var renderSpy = sinon.spy(View.prototype, 'render')
     var attachSpy = sinon.spy(View.prototype, 'attach')

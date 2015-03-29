@@ -1,10 +1,10 @@
-Paradigm
+Dragon
 ========
 
 ## Hypothesis of project
 What if Backbone were to be created today? What would the project look like? With ECMAScript 6, HTML5 pushState, Virtual DOM, new ways of data-binding, etc., front-end development has evolved. This project sets out to see what such an evolution would look like from scratch.
 
-## Changes from Backbone to Paradigm
+## Changes from Backbone to Dragon
 
 ### General Changes
 - No more `initialize()`. With ES6 classes, the `constructor()` is used directly.
@@ -16,18 +16,18 @@ What if Backbone were to be created today? What would the project look like? Wit
 Mixins come with the box.
 
 ### Router
-The router in Paradigm is inspired from Chapin.
+The router is inspired from Chapin.
 
 - `match` is introduced; this assigns routes to a controller & action
 - Objects in router can now be disposed.
 
 ### Dispatcher
-The dispatcher in Paradigm is inspired from Chapin.
+The dispatcher is inspired from Chapin.
 
 - Responsible for instantiating controller & action on matching route.
 
 ### Controllers
-The controller in Paradigm is inspired from Chapin.
+The controller is inspired from Chapin.
 
 - Controllers have been added to provide MVC structure with the router.
 

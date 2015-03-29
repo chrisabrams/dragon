@@ -11,9 +11,9 @@ var convertHTML = require('html-to-vdom')({
 })
 
 /*
-@class ParadigmBaseView
+@class DragonBaseView
 */
-class ParadigmBaseView {
+class DragonBaseView {
 
   constructor(options = {}) {
 
@@ -228,10 +228,9 @@ class ParadigmBaseView {
     var tagNameFrag = document.createDocumentFragment()
     tagNameFrag.textContent = template
 
-    var tagName;
-
     // TODO: this is a janky way of getting the tagName
-    var tagFrag = tagNameFrag.textContent.split('<')[1]
+    var tagName;
+    var tagFrag    = tagNameFrag.textContent.split('<')[1]
     var indexGator = tagNameFrag.textContent.indexOf('>')
     var indexSpace = tagNameFrag.textContent.indexOf(' ')
 
@@ -404,7 +403,7 @@ The following properties & methods are assigned on the prototype to allow for ov
 @default true
 @desc Whether to attach the view on initialization
 */
-ParadigmBaseView.prototype.attachOnInit = true
+DragonBaseView.prototype.attachOnInit = true
 
 /*
 @property renderOnInit
@@ -412,7 +411,7 @@ ParadigmBaseView.prototype.attachOnInit = true
 @default true
 @desc Whether to render the view on initialization
 */
-ParadigmBaseView.prototype.renderOnInit = true
+DragonBaseView.prototype.renderOnInit = true
 
 /*
 @property containerMethod
@@ -421,7 +420,7 @@ ParadigmBaseView.prototype.renderOnInit = true
 @options 'append', 'prepend'
 @desc Determines how the view is attached to the DOM
 */
-ParadigmBaseView.prototype.containerMethod = 'appendChild'
+DragonBaseView.prototype.containerMethod = 'appendChild'
 
 /*
 @property tagName
@@ -430,7 +429,7 @@ ParadigmBaseView.prototype.containerMethod = 'appendChild'
 @desc The tag of the view
 @note This value is ignored after a view's initial render
 */
-//ParadigmBaseView.prototype.tagName = null
+//DragonBaseView.prototype.tagName = null
 
 /*
 @property template
@@ -438,6 +437,6 @@ ParadigmBaseView.prototype.containerMethod = 'appendChild'
 @default null
 @desc Template for the view
 */
-ParadigmBaseView.prototype.template = null
+DragonBaseView.prototype.template = null
 
-module.exports = ParadigmBaseView
+module.exports = DragonBaseView

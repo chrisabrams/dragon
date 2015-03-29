@@ -1,27 +1,27 @@
 var FooMixin = require('../../mixins/foo'),
-    Paradigm = require('../../../src/paradigm')
+    Dragon = require('../../../src/dragon')
 
 describe('Unit: View: Base', function() {
 
   // TODO: WHY U BE DIFFICULT
   it.skip('should initialize', function(done) {
 
-    //sinon.stub(Paradigm.View.prototype, 'setProperties').returns(null)
-    //sinon.stub(Paradigm.View.prototype.setMixins)
-    //console.log(Paradigm.View.prototype)
-    //Paradigm.View.prototype.setProperties.returns(null)
-    //Paradigm.View.prototype.setMixins.returns(null)
+    //sinon.stub(Dragon.View.prototype, 'setProperties').returns(null)
+    //sinon.stub(Dragon.View.prototype.setMixins)
+    //console.log(Dragon.View.prototype)
+    //Dragon.View.prototype.setProperties.returns(null)
+    //Dragon.View.prototype.setMixins.returns(null)
 
-    var propSpy  = sinon.spy(Paradigm.View.prototype.setProperties)
-    var mixinSpy = sinon.spy(Paradigm.View.prototype.setMixins)
+    var propSpy  = sinon.spy(Dragon.View.prototype.setProperties)
+    var mixinSpy = sinon.spy(Dragon.View.prototype.setMixins)
 
-    Paradigm.View.prototype.initialize({})
+    Dragon.View.prototype.initialize({})
 
     expect(propSpy).to.be.calledOnce
     expect(mixinSpy).to.be.calledOnce
 
-    //Paradigm.View.prototype.setProperties.restore()
-    //Paradigm.View.prototype.setMixins.restore()
+    //Dragon.View.prototype.setProperties.restore()
+    //Dragon.View.prototype.setMixins.restore()
 
     done()
 
@@ -29,7 +29,7 @@ describe('Unit: View: Base', function() {
 
   it('should get tagName from empty div', function(done) {
 
-    var tagName = Paradigm.View.prototype.getTagName('<div></div>')
+    var tagName = Dragon.View.prototype.getTagName('<div></div>')
 
     expect(tagName).to.equal('div')
 
@@ -39,7 +39,7 @@ describe('Unit: View: Base', function() {
 
   it('should get tagName from a populated div', function(done) {
 
-    var tagName = Paradigm.View.prototype.getTagName('<div><div><i></i></div></div>')
+    var tagName = Dragon.View.prototype.getTagName('<div><div><i></i></div></div>')
 
     expect(tagName).to.equal('div')
 
@@ -49,7 +49,7 @@ describe('Unit: View: Base', function() {
 
   it('should get tagName from a div with properties', function(done) {
 
-    var tagName = Paradigm.View.prototype.getTagName('<div id="foo"><div><i></i></div></div>')
+    var tagName = Dragon.View.prototype.getTagName('<div id="foo"><div><i></i></div></div>')
 
     expect(tagName).to.equal('div')
 
@@ -59,7 +59,7 @@ describe('Unit: View: Base', function() {
 
   it('should construct a view', function(done) {
 
-    class View extends Paradigm.View {}
+    class View extends Dragon.View {}
 
     // This function can do whatever the developer desires. Typically a Mixin, such as Handlebars Mixin, will take care of this.
     View.prototype.getTemplate = function() {
@@ -103,7 +103,7 @@ describe('Unit: View: Base', function() {
 
   it('should set $container when container is set', function(done) {
 
-    class View extends Paradigm.View {
+    class View extends Dragon.View {
 
       constructor() {
         super()
@@ -128,7 +128,7 @@ describe('Unit: View: Base', function() {
 
   it('should throw error on getTemplate', function(done) {
 
-    var view = new Paradigm.View()
+    var view = new Dragon.View()
 
     view.getTemplate().then(function() {}, function(err) {
 
@@ -142,7 +142,7 @@ describe('Unit: View: Base', function() {
 
   it('should mixin on class', function(done) {
 
-    class View extends Paradigm.View {}
+    class View extends Dragon.View {}
 
     Object.assign(View.prototype, FooMixin)
 
@@ -156,7 +156,7 @@ describe('Unit: View: Base', function() {
 
   it('should mixin on instance', function(done) {
 
-    class View extends Paradigm.View {
+    class View extends Dragon.View {
 
       constructor() {
         super({mixins: [FooMixin]})
@@ -178,7 +178,7 @@ describe('Unit: View: Base', function() {
   */
   it('should render and attach to <body>', function(done) {
 
-    class View extends Paradigm.View {
+    class View extends Dragon.View {
 
       constructor() {
 

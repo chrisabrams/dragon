@@ -1,11 +1,11 @@
-var Paradigm       = require('../../../../src/paradigm'),
-    ViewStatsMixin = require('../../../../src/paradigm/views/mixins/stats')
+var Dragon       = require('../../../../src/dragon'),
+    ViewStatsMixin = require('../../../../src/dragon/views/mixins/stats')
 
 describe('Unit: View: Mixin: Stats', function() {
 
   it('should initialize', function(done) {
 
-    class View extends Paradigm.View {}
+    class View extends Dragon.View {}
 
     Object.assign(View.prototype, ViewStatsMixin)
 

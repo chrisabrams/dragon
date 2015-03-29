@@ -11,6 +11,8 @@ HandlebarsMixin.getTemplate = () => {
     }
 
     catch(e) {
+      console.error("ERR: HandlebarsMixin", e)
+
       return reject(e)
     }
 
