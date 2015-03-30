@@ -3,7 +3,7 @@ var Dragon       = require('../../../../src/dragon'),
 
 describe('Unit: View: Mixin: Stats', function() {
 
-  it('should initialize', function(done) {
+  it.skip('should initialize', function(done) {
 
     class View extends Dragon.View {}
 

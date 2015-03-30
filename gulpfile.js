@@ -1,19 +1,25 @@
 process.on('uncaughtException', console.log)
+process.on('unhandledRejection', function(reason, p) {
 
-var browserify     = require('browserify'),
+    console.log("Unhandled Rejection at: Promise ", p, " reason: ", reason)
+    // application specific logging, throwing an error, or other logic here
+
+})
+
+var babelify       = require('babelify'),
+    browserify     = require('browserify'),
     concat         = require('gulp-concat'),
     glob           = require('glob'),
     gulp           = require('gulp'),
     mocha          = require('gulp-mocha'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
-    source         = require('vinyl-source-stream'),
-    to5ify  = require('6to5-browserify')
+    source         = require('vinyl-source-stream')
 
 gulp.task('mocha-browser-build', function(done) {
 
   var testFiles   = glob.sync('./test/unit/**/*.js')
   var testHelpers = [
-    //'./lib/polyfills/Object.assign.js',
+    './lib/polyfills/nodelist.queryselectorall.js',
     './test/helpers/browser/js/runner.js'
   ]
 
@@ -31,7 +37,7 @@ gulp.task('mocha-browser-build', function(done) {
   })
 
   bundler
-    .transform(to5ify.configure({
+    .transform(babelify.configure({
       blacklist: ["useStrict"]
     }))
     .bundle()
@@ -67,4 +73,7 @@ gulp.task('mocha-cli', function() {
 
 })
 
-gulp.task('t', ['mocha-cli', 'mocha-browser-run'])
+gulp.task('t', [
+  //'mocha-cli',
+  'mocha-browser-run'
+])

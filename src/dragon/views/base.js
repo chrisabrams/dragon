@@ -17,6 +17,14 @@ class DragonBaseView {
 
   constructor(options = {}) {
 
+    /*
+    A template must be assigned to the view, whether it be on the View Class or the instance
+    */
+    if(!options.template && !this.template) {
+      throw new Error('A view must have a template.')
+      return
+    }
+
     var _this = this
 
     this.initialize(options)
@@ -47,7 +55,7 @@ class DragonBaseView {
   /*
   @method attach
   @type Function
-  @returns Promise
+  @return this
   @desc Attaches the view to the DOM
   */
 
@@ -63,9 +71,9 @@ class DragonBaseView {
       See for basic info: https://developer.mozilla.org/en-US/docs/Web/API/NodeList
       See this guy (which I ignore) for a super long list of reasons: http://toddmotto.com/ditch-the-array-foreach-call-nodelist-hack/
       */
-      Array.prototype.forEach.call(_this.$container, ($container) => {
+      Array.prototype.forEach.call(_this.$container, function($container) {
 
-        $container[_this.containerMethod](this._vel)
+        $container[_this.containerMethod](_this._vel)
 
       })
     }
@@ -81,6 +89,9 @@ class DragonBaseView {
 
   }
 
+  /*
+  TODO: Figure out how to get this to work
+  */
   defineAttributes() {
 
     /*
@@ -115,85 +126,9 @@ class DragonBaseView {
 
   }
 
-  defineContainer(options) {
-
-    /*
-    @property container
-    @type String
-    @default undefined
-    @desc Define the selector upon which the view is attached to
-    */
-
-    Object.defineProperty(this, 'container', {
-
-      get: () => {
-
-        return this._container
-
-      },
-
-      set: (selector) => {
-
-        /*
-        @property $container
-        @type Object
-        @default undefined
-        @desc Reference to container DOM object
-        */
-
-        this.$container = document.querySelectorAll(selector)
-
-        this._container = this.$container[0]
-      }
-
-    })
-
-    this.container = options.container
-
-  }
-
-  defineEl(options) {
-
-    /*
-    @property el
-    @type
-    @default undefined
-    @desc Define the selector which represents the view
-    */
-
-    Object.defineProperty(this, 'el', {
-
-      get: () => {
-
-        return this._el
-
-      },
-
-      set: (selector) => {
-
-        /*
-        @property $el
-        @type Object
-        @default undefined
-        @desc Reference to view DOM object
-        */
-        this.$el = document.querySelectorAll(selector)
-
-        this._el = this.$el[0]
-
-      }
-
-    })
-
-    //this.el = options.el
-
-  }
-
   defineProperties(options) {
 
-    this.defineAttributes(options)
-    this.defineContainer(options)
-    this.defineEl(options)
+    this.defineAttributes()
 
     /*
     @property attached
@@ -255,11 +190,12 @@ class DragonBaseView {
   @type Function
   @returns String
   @desc Gets the template for the view
+
+  @notes This function can do whatever the developer desires. Mixins, such as Handlebars Mixin, will take overwrite this. The developer should feel comfortable overwriting this.
   */
   getTemplate() {
 
-    throw new Error('This method should be overwritten.')
-    return
+    return this.template
 
   }
 
@@ -270,7 +206,7 @@ class DragonBaseView {
   /*
   @method render
   @type Function
-  @returns Promise
+  @return this
   @desc Renders the view
   */
 
@@ -290,7 +226,7 @@ class DragonBaseView {
     if(!this.vel) {
 
       this.vel  = convertHTML(template)
-      this.vel.tagName = tagName
+      this.vel.tagName = this.tagName
       this._vel = createElement(this.vel)
 
     }
@@ -305,7 +241,14 @@ class DragonBaseView {
 
     this.setAttributes(extraction.attributes)
 
-    if(this.attachOnInit && this.$container.length > 0 && !this.attached) {
+    /*
+    If
+    the view is to attach on initialize,
+    the view has not already been attached,
+    the view's container is present in the DOM,
+    then attach
+    */
+    if(this.attachOnInit && !this.attached && this.$container.length > 0) {
 
       this.attach()
 
@@ -363,6 +306,8 @@ class DragonBaseView {
     @desc List of mixins
     @note This adds a mixin to the instance, not the class
     */
+
+    // TODO: need to combine the options with the this to have a full array
     this.mixins = options.mixins || []
 
     this.mixins.forEach( (Mixin) => {
@@ -380,7 +325,10 @@ class DragonBaseView {
 
     Object.keys(options).forEach( (key) => {
 
-      var ignore = ['container', 'el']
+      var ignore = [
+        //'container',
+        //'el'
+      ]
 
       // If the property is not on the ignore list
       if(ignore.indexOf(key) == -1) {
@@ -389,12 +337,21 @@ class DragonBaseView {
 
     })
 
+    this.$container = document.querySelectorAll(this.container)
+
+    // TODO: get this to work
+    /*
+    if(this.$container.length > 0) {
+      this.$el = document.querySelectorAll(this.$container[0])
+    }
+    */
+
   }
 
 }
 
 /* Developer Notes
-The following properties & methods are assigned on the prototype to allow for overriding.
+The following properties & methods are assigned on the prototype to allow for easier overriding.
 */
 
 /*
