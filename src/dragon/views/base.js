@@ -337,7 +337,7 @@ class DragonBaseView {
 
     })
 
-    this.$container = document.querySelectorAll(this.container)
+    this.$container = this.$(this.container)
 
     // TODO: get this to work
     /*
@@ -353,6 +353,12 @@ class DragonBaseView {
 /* Developer Notes
 The following properties & methods are assigned on the prototype to allow for easier overriding.
 */
+
+DragonBaseView.prototype.$ = function(selector) {
+
+  return document.querySelectorAll(selector)
+
+}
 
 /*
 @property attachOnInit
