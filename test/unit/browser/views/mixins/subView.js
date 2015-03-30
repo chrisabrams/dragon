@@ -1,5 +1,5 @@
-var Dragon     = require('../../../../src/dragon'),
-    SubViewMixin = require('../../../../src/dragon/views/mixins/subView')
+var Dragon     = require('../../../../../src/dragon'),
+    SubViewMixin = require('../../../../../src/dragon/views/mixins/subView')
 
 describe('Unit: View: Mixin: SubView', function() {
 

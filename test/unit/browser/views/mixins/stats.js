@@ -1,5 +1,5 @@
-var Dragon       = require('../../../../src/dragon'),
-    ViewStatsMixin = require('../../../../src/dragon/views/mixins/stats')
+var Dragon       = require('../../../../../src/dragon'),
+    ViewStatsMixin = require('../../../../../src/dragon/views/mixins/stats')
 
 describe('Unit: View: Mixin: Stats', function() {
 

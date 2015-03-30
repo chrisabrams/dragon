@@ -1,7 +1,6 @@
-var FooMixin = require('../../mixins/foo'),
-    Dragon = require('../../../src/dragon')
+var Dragon = require('../../../../src/dragon')
 
-describe('Unit: View: Base', function() {
+describe('Unit: Browser: View: Base', function() {
 
   it('should get tagName from empty div', function(done) {
 

@@ -1,6 +1,5 @@
-var FooMixin        = require('../../../mixins/foo'),
-    HandlebarsMixin = require('../../../../src/dragon/views/mixins/handlebars'),
-    Dragon        = require('../../../../src/dragon')
+var HandlebarsMixin = require('../../../../../src/dragon/views/mixins/handlebars'),
+    Dragon        = require('../../../../../src/dragon')
 
 describe('Unit: View: Mixins: Handlebars', function() {
 

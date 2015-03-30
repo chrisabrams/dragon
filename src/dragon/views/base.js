@@ -76,6 +76,23 @@ class DragonBaseView {
         $container[_this.containerMethod](_this._vel)
 
       })
+
+      // Define $el
+      if(this.id) {
+        this.$el = this.$('#' + this.id)
+      }
+
+
+      // TODO: add . for each className item
+      else if(this.className) {
+        this.$el = this.$(this.className)
+      }
+
+      // TODO: only query within container
+      else {
+        this.$el = this.$(this.tagName)
+      }
+
     }
 
     catch(e) {
@@ -151,15 +168,38 @@ class DragonBaseView {
   /*
   @method detach
   @type Function
-  @returns Promise
   @desc Detachs the view from the DOM
   */
   detach() {
+
+    Array.prototype.forEach.call(this.$el, function(el) {
+
+      // I've always thought this is a funny way to remove Nodes from the DOM :O
+      el.parentNode.removeChild(el)
+
+    })
+
+  }
+
+  /*
+  @method detach
+  @type Function
+  @desc Completely disposes of the view, it's DOM, events, etc.
+  */
+  dispose() {
+
+    this.detach()
 
   }
 
   getTagName(template) {
 
+    var el = document.createElement('div')
+    el.innerHTML = template
+
+    return el.firstChild.tagName.toLowerCase()
+
+    /*
     var tagNameFrag = document.createDocumentFragment()
     tagNameFrag.textContent = template
 
@@ -182,6 +222,7 @@ class DragonBaseView {
     }
 
     return tagName
+    */
 
   }
 
@@ -213,9 +254,6 @@ class DragonBaseView {
   render() {
 
     var template = this.getTemplate()
-
-    // Get the tagName if it hasn't previously been grabbed
-    // This really isn't needed; the tagName will be stored on the model *if* needed
 
     if(!this.tagName) {
 
@@ -270,6 +308,7 @@ class DragonBaseView {
   setAttributes(attributes) {
     var _this = this
 
+    /*
     // Assigned once
     if(!this.id && attributes.id) {
       this.id = attributes.id
@@ -280,6 +319,22 @@ class DragonBaseView {
     if(!this.className && attributes.className) {
       this.className = attributes['className']
       delete attributes['className']
+    }
+    */
+
+    var el = document.createElement('div')
+    el.innerHTML = this.getTemplate()
+
+    if(el.firstChild.id) {
+
+      this.id = el.firstChild.id
+
+    }
+
+    if(el.firstChild.className) {
+
+      this.className = el.firstChild.className
+
     }
 
     // Other attributes can be re-assigned
@@ -339,13 +394,6 @@ class DragonBaseView {
 
     this.$container = this.$(this.container)
 
-    // TODO: get this to work
-    /*
-    if(this.$container.length > 0) {
-      this.$el = document.querySelectorAll(this.$container[0])
-    }
-    */
-
   }
 
 }
@@ -354,11 +402,13 @@ class DragonBaseView {
 The following properties & methods are assigned on the prototype to allow for easier overriding.
 */
 
-DragonBaseView.prototype.$ = function(selector) {
-
-  return document.querySelectorAll(selector)
-
-}
+/*
+@property $
+@type Object
+@default dolla
+@desc $ engine
+*/
+DragonBaseView.prototype.$ = require('dolla')
 
 /*
 @property attachOnInit

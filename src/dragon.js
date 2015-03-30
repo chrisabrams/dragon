@@ -1,5 +1,4 @@
 var Dragon = {
-  $ : null,
   //Application    : require('./dragon/application'),
   //Collection     : require('./dragon/models/collection'),
   //CollectionView : require('./dragon/views/collectionView'),
