@@ -71,27 +71,51 @@ class DragonBaseView {
       See for basic info: https://developer.mozilla.org/en-US/docs/Web/API/NodeList
       See this guy (which I ignore) for a super long list of reasons: http://toddmotto.com/ditch-the-array-foreach-call-nodelist-hack/
       */
+
+      //console.log("DEBUG: Attaching: Container", this.$container)
+
       Array.prototype.forEach.call(_this.$container, function($container) {
 
-        $container[_this.containerMethod](_this._vel)
+        var placement;
+
+        /*
+        NOTES: https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
+        */
+        switch(_this.attachPlacement) {
+
+          //case 'beginning': $container['insertAdjacentHTML']('afterbegin', _this._vel); break;
+          case 'beginning': $container['prependChild'](_this._vel); break;
+          default: $container['appendChild'](_this._vel)
+
+        }
 
       })
 
       // Define $el
       if(this.id) {
-        this.$el = this.$('#' + this.id)
-      }
+        var id   = '#' + this.id
 
+        this.el  = id
+        this.$el = this.$(id)
+      }
 
       // TODO: add . for each className item
       else if(this.className) {
-        this.$el = this.$(this.className)
+        var className = this.className
+
+        this.el       = className
+        this.$el      = this.$(className)
       }
 
       // TODO: only query within container
       else {
-        this.$el = this.$(this.tagName)
+        var tagName = this.tagName
+
+        this.el     = tagName
+        this.$el    = this.$(tagName)
       }
+
+      //console.log("DEBUG: Attaching: El", this.$el)
 
     }
 
@@ -171,13 +195,35 @@ class DragonBaseView {
   @desc Detachs the view from the DOM
   */
   detach() {
+    //console.log("DEBUG: Detaching: Container", this.$container)
+    //console.log("DEBUG: Detaching: El", this.$el)
 
-    Array.prototype.forEach.call(this.$el, function(el) {
+    Array.prototype.forEach.call(this.$container, (container) => {
 
-      // I've always thought this is a funny way to remove Nodes from the DOM :O
-      el.parentNode.removeChild(el)
+      var els = container.querySelectorAll(this.el)
+
+      Array.prototype.forEach.call(els, (el) => {
+
+        container.removeChild(el)
+
+      })
 
     })
+
+    /*Array.prototype.forEach.call(this.$el, function(el) {
+
+      container.removeChild
+
+      // I've always thought this is a funny way to remove Nodes from the DOM :O
+      console.log("el", el)
+
+      console.log("parent", el.parentNode)
+
+      //TODO: Fix the angryness from multiple copies of same ID - yes the developer *shouldnt* do that, but this should still communicate that instead of just freaking out
+
+      el.parentNode.removeChild(el)
+
+    })*/
 
   }
 
@@ -419,21 +465,21 @@ DragonBaseView.prototype.$ = require('dolla')
 DragonBaseView.prototype.attachOnInit = true
 
 /*
+@property attachPlacement
+@type String
+@default 'append'
+@options 'append', 'prepend'
+@desc Determines where the view is attached into the container
+*/
+DragonBaseView.prototype.attachPlacement = 'after'
+
+/*
 @property renderOnInit
 @type Boolean
 @default true
 @desc Whether to render the view on initialization
 */
 DragonBaseView.prototype.renderOnInit = true
-
-/*
-@property containerMethod
-@type String
-@default 'append'
-@options 'append', 'prepend'
-@desc Determines how the view is attached to the DOM
-*/
-DragonBaseView.prototype.containerMethod = 'appendChild'
 
 /*
 @property tagName

@@ -1,3 +1,8 @@
+require('../lib/polyfills/element.remove')
+require('../lib/polyfills/node.prependchild')
+require('../lib/polyfills/nodelist.queryselectorall')
+require('../lib/polyfills/nodelist.remove')
+
 var Dragon = {
   //Application    : require('./dragon/application'),
   //Collection     : require('./dragon/models/collection'),
