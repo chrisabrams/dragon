@@ -1,4 +1,5 @@
-var EventsMixin         = require('../events')
+var EventsMixin         = require('../events'),
+    uniqueId            = require('../utils/uniqueId')
 
 var createElement       = require('virtual-dom/create-element')
 var diff                = require('virtual-dom/diff')
@@ -18,6 +19,7 @@ var convertHTML = require('html-to-vdom')({
 class DragonBaseView {
 
   constructor(options = {}) {
+    this.uid = uniqueId('view')
 
     this.events         = this.events || []
     this.expandedEvents = []
@@ -469,7 +471,7 @@ class DragonBaseView {
 
       Object.assign(this, Mixin)
 
-    }, this)
+    })
 
   }
 
