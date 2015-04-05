@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mocha Test Runner</title>
-    <link rel="stylesheet" href="css/mocha.css">
+    <link rel="stylesheet" href="../../helpers/browser/css/mocha.css">
   </head>
   <body>
     <div id="mocha"></div>
@@ -16,12 +16,6 @@
     <script src="js/sinon-chai.js"></script>
     <script>mocha.setup('bdd')</script>
     <script src="js/spec.js"></script>
-    <script>
-    if(window.mochaPhantomJS) {
-      mochaPhantomJS.run();
-    } else {
-      mocha.run();
-    }
-    </script>
+
   </body>
 </html>

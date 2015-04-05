@@ -37,6 +37,7 @@
     "browserify": "^6.1.0",
     "chai": "^2.2.0",
     "chalk": "^1.0.0",
+    "express": "^4.12.3",
     "glob": "^5.0.3",
     "gulp": "^3.8.11",
     "gulp-babel": "^4.0.0",
@@ -55,6 +56,7 @@
     "paradigm-gulp-watch-handlebars": "0.0.1",
     "paradigm-minimist-watching": "0.0.1",
     "run-sequence": "^1.0.2",
+    "serve-static": "^1.9.2",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0",
     "vinyl-source-stream": "^1.1.0"

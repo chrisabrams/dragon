@@ -1,3 +1,5 @@
+var EventsMixin         = require('../events')
+
 var createElement       = require('virtual-dom/create-element')
 var diff                = require('virtual-dom/diff')
 var extractFromTemplate = require('./helpers/extractFromTemplate')
@@ -17,15 +19,29 @@ class DragonBaseView {
 
   constructor(options = {}) {
 
+    this.events         = this.events || []
+    this.expandedEvents = []
+
+    Object.assign(this, EventsMixin)
+
     /*
+    TODO: Remove these requirements (below) as view should be able to bind to an existing DOM
     A template must be assigned to the view, whether it be on the View Class or the instance
     */
+
+    if(!options.container && !this.container) {
+      throw new Error('A view must have a container.')
+      return
+    }
+
     if(!options.template && !this.template) {
       throw new Error('A view must have a template.')
       return
     }
 
-    var _this = this
+    /*
+    END TODO requirement
+    */
 
     this.initialize(options)
 
@@ -33,15 +49,19 @@ class DragonBaseView {
     if(this.renderOnInit) {
 
       //If the view is set to attach on initialization
-      if(!this.attached && this.attachOnInit) {
+      if(!this.attached && this.attachOnInit && this.$container.length > 0) {
 
-        //this.on('rendered', this.attach)
+        this.on('rendered', () => {
+          this.attach()
+        })
 
       }
 
       this.render()
 
     }
+
+    this.bindEvents()
 
   }
 
@@ -92,6 +112,11 @@ class DragonBaseView {
       })
 
       // Define $el
+
+      /*
+      TODO: add support for binding to existing DOM
+      */
+
       if(this.id) {
         var id   = '#' + this.id
 
@@ -115,6 +140,8 @@ class DragonBaseView {
         this.$el    = this.$(tagName)
       }
 
+      this.attached = true
+
       //console.log("DEBUG: Attaching: El", this.$el)
 
     }
@@ -127,6 +154,65 @@ class DragonBaseView {
     }
 
     return this
+
+  }
+
+  bindEvents() {
+
+    this.events.forEach( (item) => {
+
+      var $selector = this.$(item[0]), // TODO: scope this locally
+          action    = item[1],
+          listener  = item[2]
+
+      Array.prototype.forEach.call(this.$selector, (selector) => {
+
+        selector.addEventListener(action, listener, false)
+
+        this.expandedEvents.push([selector, action, listener])
+
+      })
+
+    })
+
+    /*
+    this.eventsList = []
+
+    Object.keys(this.events).forEach( (selector) => {
+
+      Object.keys(selector).forEach( (event) => {
+
+        var listener = selector[event]
+
+        // TODO: figure out how to scope within element
+        $(selector).forEach( (selectorInstance) => {
+
+          selectorInstance.addEventListener(event, listener, false)
+
+        })
+
+        this.eventsList.push([selector, event, listener])
+
+      })
+
+    })
+    */
+
+  }
+
+  unBindEvents() {
+
+    this.expandedEventsList.forEach( (eventItem) => {
+
+      var selector  = item[0], // TODO: scope this locally
+          action    = item[1],
+          listener  = item[2]
+
+      selector.removeEventListener(action, listener, false)
+
+    })
+
+    this.expandedEventsList = []
 
   }
 
@@ -198,6 +284,11 @@ class DragonBaseView {
     //console.log("DEBUG: Detaching: Container", this.$container)
     //console.log("DEBUG: Detaching: El", this.$el)
 
+    if(this.detached) {
+      throw new Error('Cannot detach view as it has already been detached')
+      return
+    }
+
     Array.prototype.forEach.call(this.$container, (container) => {
 
       var els = container.querySelectorAll(this.el)
@@ -209,6 +300,8 @@ class DragonBaseView {
       })
 
     })
+
+    this.detached = true
 
     /*Array.prototype.forEach.call(this.$el, function(el) {
 
@@ -234,6 +327,7 @@ class DragonBaseView {
   */
   dispose() {
 
+    this.unBindEvents()
     this.detach()
 
   }
@@ -244,31 +338,6 @@ class DragonBaseView {
     el.innerHTML = template
 
     return el.firstChild.tagName.toLowerCase()
-
-    /*
-    var tagNameFrag = document.createDocumentFragment()
-    tagNameFrag.textContent = template
-
-    // TODO: this is a janky way of getting the tagName
-    var tagName;
-    var tagFrag    = tagNameFrag.textContent.split('<')[1]
-    var indexGator = tagNameFrag.textContent.indexOf('>')
-    var indexSpace = tagNameFrag.textContent.indexOf(' ')
-
-    if(indexSpace == -1 || indexGator < indexSpace) {
-
-      tagName = tagFrag.split('>')[0]
-
-    }
-
-    else {
-
-      tagName = tagFrag.split(' ')[0]
-
-    }
-
-    return tagName
-    */
 
   }
 
@@ -283,10 +352,6 @@ class DragonBaseView {
   getTemplate() {
 
     return this.template
-
-  }
-
-  getTemplateData() {
 
   }
 
@@ -325,18 +390,7 @@ class DragonBaseView {
 
     this.setAttributes(extraction.attributes)
 
-    /*
-    If
-    the view is to attach on initialize,
-    the view has not already been attached,
-    the view's container is present in the DOM,
-    then attach
-    */
-    if(this.attachOnInit && !this.attached && this.$container.length > 0) {
-
-      this.attach()
-
-    }
+    this.trigger('rendered')
 
     return this
 
@@ -451,8 +505,8 @@ The following properties & methods are assigned on the prototype to allow for ea
 /*
 @property $
 @type Object
-@default dolla
-@desc $ engine
+@default native
+@desc $ query engine
 */
 DragonBaseView.prototype.$ = require('dolla')
 

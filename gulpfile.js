@@ -54,11 +54,10 @@ gulp.task('build', function(done) {
 
 })
 
-gulp.task('mocha-browser-build', function(done) {
+function buildBrowserMocha(options) {
 
-  var testFiles   = glob.sync('./test/unit/browser/**/*.js')
-  var testHelpers = [
-    './lib/polyfills/nodelist.queryselectorall.js',
+  var testFiles   = glob.sync(options.testFiles)
+  var testHelpers = options.testHelpers || [
     './test/helpers/browser/js/runner.js'
   ]
 
@@ -84,15 +83,35 @@ gulp.task('mocha-browser-build', function(done) {
       console.log(arguments)
     })
     .pipe(source('spec.js'))
-    .pipe(gulp.dest('test/helpers/browser/js'))
+    .pipe(gulp.dest(options.testDest))
     .on('end', function() {
-      console.log('test/helpers/browser/js/spec.js created.')
-      done()
+      //console.log('test/helpers/browser/js/spec.js created.')
+      options.done()
     })
+
+}
+
+gulp.task('mocha-build', function(done) {
+
+  buildBrowserMocha({
+    done: done,
+    testDest: 'test/helpers/browser/js',
+    testFiles: './test/unit/browser/**/*.js'
+  })
 
 })
 
-gulp.task('mocha-browser-run', ['mocha-browser-build'], function() {
+gulp.task('mocha-build-ui-events', function(done) {
+
+  buildBrowserMocha({
+    done: done,
+    testDest: 'test/helpers/browser/js',
+    testFiles: './test/ui/events/**/*.js'
+  })
+
+})
+
+gulp.task('mocha-browser', ['mocha-build'], function() {
 
   return gulp
     .src('./test/helpers/browser/runner.html')

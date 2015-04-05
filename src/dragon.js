@@ -2,6 +2,7 @@ require('../lib/polyfills/element.remove')
 require('../lib/polyfills/node.prependchild')
 require('../lib/polyfills/nodelist.queryselectorall')
 require('../lib/polyfills/nodelist.remove')
+require('../lib/polyfills/Object.assign')
 
 var Dragon = {
   //Application    : require('./dragon/application'),
@@ -18,7 +19,10 @@ var Dragon = {
   //Route          : require('./dragon/router/route'),
   //Router         : require('./dragon/router/router'),
   //SyncMachine    : require('./dragon/models/syncMachine'),
-  //utils          : require('./dragon/lib/utils'),
+  Events         : require('./dragon/events'),
+  Utils          : {
+    uniqueId     : require('./dragon/utils/uniqueId')
+  },
   View           : require('./dragon/views/base')
 }
 
