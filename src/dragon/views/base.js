@@ -51,7 +51,7 @@ class DragonBaseView {
       //If the view is set to attach on initialization
       if(!this.attached && this.attachOnInit && this.$container.length > 0) {
 
-        this.on('rendered', () => {
+        this.once('render', () => {
           this.attach()
         })
 
@@ -390,7 +390,7 @@ class DragonBaseView {
 
     this.setAttributes(extraction.attributes)
 
-    this.trigger('rendered')
+    this.trigger('render')
 
     return this
 

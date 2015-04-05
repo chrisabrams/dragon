@@ -87,7 +87,7 @@ module.exports = Events = {
 
       ran = true
 
-      _self.off(name, once)
+      _this.off(name, once)
 
       callback.apply(this, arguments)
 
