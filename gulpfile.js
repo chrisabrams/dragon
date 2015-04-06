@@ -101,6 +101,16 @@ gulp.task('mocha-build', function(done) {
 
 })
 
+gulp.task('mocha-build-events-ui', function(done) {
+
+  buildBrowserMocha({
+    done: done,
+    testDest: 'test/helpers/browser/js',
+    testFiles: './test/events/ui/**/*.js'
+  })
+
+})
+
 gulp.task('mocha-build-ui-events', function(done) {
 
   buildBrowserMocha({

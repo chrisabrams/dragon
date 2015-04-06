@@ -24,8 +24,10 @@ class DragonBaseView {
 
     this.events         = this.events || []
     this.expandedEvents = []
-
     Object.assign(this, EventsMixin)
+
+    this.listen         = this.listen || []
+    this.bindListens()
 
     /*
     TODO: Remove these requirements (below) as view should be able to bind to an existing DOM
@@ -145,6 +147,8 @@ class DragonBaseView {
 
       this.attached = true
 
+      this.trigger('addedToDOM')
+
       //console.log("DEBUG: Attaching: El", this.$el)
 
     }
@@ -178,28 +182,18 @@ class DragonBaseView {
 
     })
 
-    /*
-    this.eventsList = []
+  }
 
-    Object.keys(this.events).forEach( (selector) => {
+  bindListens() {
 
-      Object.keys(selector).forEach( (event) => {
+    this.listen.forEach( (item) => {
 
-        var listener = selector[event]
+      var eventName = item[0],
+          handler   = item[1]
 
-        // TODO: figure out how to scope within element
-        $(selector).forEach( (selectorInstance) => {
-
-          selectorInstance.addEventListener(event, listener, false)
-
-        })
-
-        this.eventsList.push([selector, event, listener])
-
-      })
+      this.on(eventName, handler)
 
     })
-    */
 
   }
 
@@ -276,6 +270,7 @@ class DragonBaseView {
   dispose() {
 
     this.unBindEvents()
+    this.unBindListens()
     this.detach()
 
   }
@@ -451,6 +446,19 @@ class DragonBaseView {
     })
 
     this.expandedEventsList = []
+
+  }
+
+  unBindListens() {
+
+    this.listen.forEach( (item) => {
+
+      var eventName = item[0],
+          handler   = item[1]
+
+      this.off(eventName, handler)
+
+    })
 
   }
 

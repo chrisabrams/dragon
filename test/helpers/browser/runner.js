@@ -6,6 +6,10 @@ var express     = require('express'),
 server.use(serveStatic(__dirname))
 
 server.get('/events/ui', function(req, res, next) {
+  res.sendfile(path.join(__dirname, '../../events/ui', 'runner.html'))
+})
+
+server.get('/ui/events', function(req, res, next) {
   res.sendfile(path.join(__dirname, '../../ui/events', 'runner.html'))
 })
 

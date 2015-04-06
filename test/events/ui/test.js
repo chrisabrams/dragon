@@ -1,8 +1,8 @@
 var Dragon = require('../../../src/dragon')
 
-describe('UI: Events', function() {
+describe('Events: UI', function() {
 
-  it('should add an event listener', function(done) {
+  it('should fire addedToDOM event', function(done) {
     this.timeout(100000)
 
     class View extends Dragon.View {
@@ -11,15 +11,15 @@ describe('UI: Events', function() {
 
         this.container = 'body'
 
-        this.events = [
-          ['#button', 'click', this.clickHandler]
+        this.listen = [
+          ['addedToDOM', this.onAddedToDOM]
         ]
 
         super(options)
 
       }
 
-      clickHandler() {
+      onAddedToDOM() {
 
         done()
 
@@ -28,7 +28,7 @@ describe('UI: Events', function() {
     }
 
     var view = new View({
-      template: '<button id="button" type="button">Click Me</button>'
+      template: '<div>Hello there!</div>'
     })
 
   })
