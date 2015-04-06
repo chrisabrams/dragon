@@ -1,5 +1,6 @@
 var EventsMixin         = require('../events'),
-    uniqueId            = require('../utils/uniqueId')
+    Utils               = require('../utils'),
+    uniqueId            = Utils.uniqueId
 
 var createElement       = require('virtual-dom/create-element')
 var diff                = require('virtual-dom/diff')
@@ -202,62 +203,7 @@ class DragonBaseView {
 
   }
 
-  unBindEvents() {
-
-    this.expandedEventsList.forEach( (eventItem) => {
-
-      var selector  = item[0], // TODO: scope this locally
-          action    = item[1],
-          listener  = item[2]
-
-      selector.removeEventListener(action, listener, false)
-
-    })
-
-    this.expandedEventsList = []
-
-  }
-
-  /*
-  TODO: Figure out how to get this to work
-  */
-  defineAttributes() {
-
-    /*
-    @property attributes
-    @type Object
-    @desc A store of attributes from the outer tag of the template
-    @overridable true
-    */
-    this.attributes = this.attributes || {}
-
-    /*
-    @property attributes
-    @type Object
-    @desc A store of attributes from the outer tag of the template
-    @overridable true
-    */
-    /*this.attributesProxy = this.attributesProxy || new Proxy(this.attributes, {
-
-      get: (target, name) => {
-
-        return name in target ? target[name] : null
-
-      },
-
-      set: (obj, prop, val) => {
-
-        obj[prop] = val
-
-      }
-
-    })*/
-
-  }
-
   defineProperties(options) {
-
-    this.defineAttributes()
 
     /*
     @property attached
@@ -407,22 +353,9 @@ class DragonBaseView {
   @param attributes {Object}
   */
 
-  setAttributes(attributes) {
-    var _this = this
+  setAttributes() {
 
-    /*
-    // Assigned once
-    if(!this.id && attributes.id) {
-      this.id = attributes.id
-      delete attributes.id
-    }
-
-    // Assigned once
-    if(!this.className && attributes.className) {
-      this.className = attributes['className']
-      delete attributes['className']
-    }
-    */
+    this.attributes = {}
 
     var el = document.createElement('div')
     el.innerHTML = this.getTemplate()
@@ -439,10 +372,17 @@ class DragonBaseView {
 
     }
 
-    // Other attributes can be re-assigned
-    Object.keys(attributes).forEach( (key) => {
+    var ignore = [
+      'class',
+      'id'
+    ]
 
-      _this.attributes[key] = attributes[key]
+    Array.from(el.firstChild.attributes).forEach( (item) => {
+
+      // If the attribute is not on the ignore list
+      if(ignore.indexOf(item.name) == -1) {
+        this.attributes[item.name] = item.value
+      }
 
     })
 
@@ -495,6 +435,22 @@ class DragonBaseView {
     })
 
     this.$container = this.$(this.container)
+
+  }
+
+  unBindEvents() {
+
+    this.expandedEventsList.forEach( (eventItem) => {
+
+      var selector  = item[0], // TODO: scope this locally
+          action    = item[1],
+          listener  = item[2]
+
+      selector.removeEventListener(action, listener, false)
+
+    })
+
+    this.expandedEventsList = []
 
   }
 

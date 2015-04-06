@@ -20,16 +20,18 @@ describe('UI: Events', function() {
       }
 
       clickHandler() {
-        console.log("clicked")
 
         done()
+
       }
 
     }
 
     var view = new View({
-      template: '<div><button id="button" type="button">Click Me</button></div>'
+      template: '<button id="button" type="button">Click Me</button>'
     })
+
+    console.log("view", view)
 
   })
 
