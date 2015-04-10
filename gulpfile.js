@@ -16,6 +16,7 @@ var babelify       = require('babelify'),
     mkdirp         = require('mkdirp'),
     mocha          = require('gulp-mocha'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
+    path           = require('path'),
     sequence       = require('run-sequence'),
     size           = require('gulp-size'),
     source         = require('vinyl-source-stream'),
@@ -54,7 +55,7 @@ gulp.task('build', function(done) {
 
 })
 
-function buildBrowserMocha(options) {
+function buildBrowserMocha(options, done) {
 
   var testFiles   = glob.sync(options.testFiles)
   var testHelpers = options.testHelpers || [
@@ -83,41 +84,42 @@ function buildBrowserMocha(options) {
       console.log(arguments)
     })
     .pipe(source('spec.js'))
-    .pipe(gulp.dest(options.testDest))
+    .pipe(gulp.dest('test/helpers/browser/js/'))
     .on('end', function() {
-      //console.log('test/helpers/browser/js/spec.js created.')
-      options.done()
+      done()
     })
 
 }
 
-gulp.task('mocha-build', function(done) {
+gulp.task('mocha-browser-build', function(done) {
 
   buildBrowserMocha({
-    done: done,
-    testDest: 'test/helpers/browser/js',
     testFiles: './test/unit/browser/**/*.js'
-  })
+  }, done)
+
+})
+
+gulp.task('mocha-build-bind-existing-dom', function(done) {
+
+  buildBrowserMocha({
+    testFiles: './test/bind/existing-dom/**/*.js'
+  }, done)
 
 })
 
 gulp.task('mocha-build-events-ui', function(done) {
 
   buildBrowserMocha({
-    done: done,
-    testDest: 'test/helpers/browser/js',
     testFiles: './test/events/ui/**/*.js'
-  })
+  }, done)
 
 })
 
 gulp.task('mocha-build-ui-events', function(done) {
 
   buildBrowserMocha({
-    done: done,
-    testDest: 'test/helpers/browser/js',
     testFiles: './test/ui/events/**/*.js'
-  })
+  }, done)
 
 })
 

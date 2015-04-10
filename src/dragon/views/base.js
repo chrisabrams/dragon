@@ -22,6 +22,8 @@ class DragonBaseView {
   constructor(options = {}) {
     this.uid = uniqueId('view')
 
+    this.options = options
+
     this.events         = this.events || []
     this.expandedEvents = []
     Object.assign(this, EventsMixin)
@@ -29,35 +31,26 @@ class DragonBaseView {
     this.listen         = this.listen || []
     this.bindListens()
 
-    /*
-    TODO: Remove these requirements (below) as view should be able to bind to an existing DOM
-    A template must be assigned to the view, whether it be on the View Class or the instance
-    */
+    this.initialize()
 
-    if(!options.container && !this.container) {
-      throw new Error('A view must have a container.')
-      return
-    }
+  }
 
-    if(!options.template && !this.template) {
-      throw new Error('A view must have a template.')
-      return
-    }
+  initialize() {
 
-    /*
-    END TODO requirement
-    */
+    this.setProperties()
+    this.setMixins()
+    this.ensureElement()
 
-    this.initialize(options)
-
-    //If the view is set to render on initialization
-    if(this.renderOnInit) {
+    //If the view is not binded to the DOM and is set to render on initialization
+    if(!this.attached && this.renderOnInit) {
 
       //If the view is set to attach on initialization
-      if(!this.attached && this.attachOnInit && this.$container.length > 0) {
+      if(this.attachOnInit) {
 
         this.once('render', () => {
+
           this.attach()
+
         })
 
       }
@@ -70,13 +63,6 @@ class DragonBaseView {
 
   }
 
-  initialize(options) {
-
-    this.setProperties(options)
-    this.setMixins(options)
-
-  }
-
   /*
   @method attach
   @type Function
@@ -85,8 +71,6 @@ class DragonBaseView {
   */
 
   attach() {
-
-    var _this = this
 
     try {
 
@@ -97,68 +81,37 @@ class DragonBaseView {
       See this guy (which I ignore) for a super long list of reasons: http://toddmotto.com/ditch-the-array-foreach-call-nodelist-hack/
       */
 
-      //console.log("DEBUG: Attaching: Container", this.$container)
-
-      Array.prototype.forEach.call(_this.$container, function($container) {
+      Array.prototype.forEach.call(this.$container, ($container) => {
 
         var placement;
 
-        /*
-        NOTES: https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
-        */
-        switch(_this.attachPlacement) {
+        switch(this.attachPlacement) {
 
-          //case 'beginning': $container['insertAdjacentHTML']('afterbegin', _this._vel); break;
-          case 'beginning': $container['prependChild'](_this._vel); break;
-          default: $container['appendChild'](_this._vel)
+          // Attach before all other children in container
+          case 'beginning': $container['prependChild'](this._vel); break;
+
+          // Attach normally, after all children in container
+          default: $container['appendChild'](this._vel)
 
         }
 
       })
-
-      // Define $el
-
-      /*
-      TODO: add support for binding to existing DOM
-      */
-
-      if(this.id) {
-        var id   = '#' + this.id
-
-        this.el  = id
-        this.$el = this.$(id)
-      }
-
-      // TODO: add . for each className item
-      else if(this.className) {
-        var className = this.className
-
-        this.el       = className
-        this.$el      = this.$(className)
-      }
-
-      // TODO: only query within container
-      else {
-        var tagName = this.tagName
-
-        this.el     = tagName
-        this.$el    = this.$(tagName)
-      }
-
-      this.attached = true
-
-      this.trigger('addedToDOM')
-
-      //console.log("DEBUG: Attaching: El", this.$el)
 
     }
 
     catch(e) {
 
       throw new Error(e)
-      return
 
     }
+
+    if(!this.$el) {
+      this.setElement()
+    }
+
+    this.attached = true
+
+    this.trigger('addedToDOM')
 
     return this
 
@@ -194,26 +147,6 @@ class DragonBaseView {
       this.on(eventName, handler)
 
     })
-
-  }
-
-  defineProperties(options) {
-
-    /*
-    @property attached
-    @type Boolean
-    @default false
-    @desc Whether to the view has been attached to the DOM
-    */
-    this.attached = false
-
-    /*
-    @property disposed
-    @type Boolean
-    @default false
-    @desc Whether the view has been disposed
-    */
-    this.disposed = false
 
   }
 
@@ -272,6 +205,35 @@ class DragonBaseView {
     this.unBindEvents()
     this.unBindListens()
     this.detach()
+
+  }
+
+  ensureElement() {
+
+    if(this.el) {
+
+      var _$el = this.$(this.el)
+
+      // Binding to an existing DOM
+      if(_$el.length > 0) {
+
+        this.$el = _$el
+        this.attached = true
+
+        return
+
+      }
+
+    }
+
+    // Attach new DOM
+    if(!this.el && !this.container) {
+      throw new Error('A view must have a container.')
+    }
+
+    if(!this.el && !this.template) {
+      throw new Error('A view must have a template.')
+    }
 
   }
 
@@ -383,6 +345,33 @@ class DragonBaseView {
 
   }
 
+  setElement() {
+
+    if(this.id) {
+      var id   = `#${this.id}`
+
+      if(!this.el) this.el = id
+      this.$el = this.$(id)
+    }
+
+    // TODO: add . for each className item
+    else if(this.className) {
+      var className = this.className
+
+      if(!this.el) this.el = className
+      this.$el = this.$(className)
+    }
+
+    // TODO: only query within container
+    else {
+      var tagName = this.tagName
+
+      if(!this.el) this.el = tagName
+      this.$el = this.$(tagName)
+    }
+
+  }
+
   /*
   @function setMixins
   @type Function
@@ -410,21 +399,40 @@ class DragonBaseView {
 
   }
 
-  setProperties(options = {}) {
-    var _this = this
+  setProperties() {
 
-    this.defineProperties(options)
+    /*
+    @property attached
+    @type Boolean
+    @default false
+    @desc Whether to the view has been attached to the DOM
+    */
+    this.attached = false
+
+    /*
+    @property disposed
+    @type Boolean
+    @default false
+    @desc Whether the view has been disposed
+    */
+    this.disposed = false
+
+    var allowedOptions = [
+      'container',
+      'el',
+      'template'
+    ]
+
+    var options = Object.assign(this.options)
 
     Object.keys(options).forEach( (key) => {
 
-      var ignore = [
-        //'container',
-        //'el'
-      ]
-
       // If the property is not on the ignore list
-      if(ignore.indexOf(key) == -1) {
-        _this[key] = options[key]
+      if(allowedOptions.indexOf(key) > -1) {
+
+        this[key] = options[key]
+        delete this.options[key]
+
       }
 
     })

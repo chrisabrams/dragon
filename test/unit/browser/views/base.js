@@ -36,21 +36,24 @@ describe('Unit: Browser: View: Base', function() {
 
     class View extends Dragon.View {}
 
+    View.prototype.attachOnInit = false
+
     var view = new View({
+      container: 'body',
       template: '<div></div>' // Views must have a template as there is no wrapping tag
     })
 
     expect(view).to.be.an('object')
-    expect(view.defineAttributes).to.be.a('function')
     expect(view.attach).to.be.a('function')
     expect(view.attached).to.be.a('boolean')
     expect(view.attached).to.equal(false)
     expect(view.attachOnInit).to.be.a('boolean')
-    expect(view.attachOnInit).to.equal(true)
+    expect(view.attachOnInit).to.equal(false)
     expect(view.attachPlacement).to.be.a('string')
     expect(view.attachPlacement).to.equal('after')
     expect(view.renderOnInit).to.be.a('boolean')
     expect(view.renderOnInit).to.equal(true)
+    expect(view.container).to.be.a('string')
     expect(view._container).to.equal(undefined)
     expect(view.$container).to.be.an('object')
     expect(view.$el).to.equal(undefined)
@@ -58,9 +61,12 @@ describe('Unit: Browser: View: Base', function() {
     expect(view.disposed).to.be.a('boolean')
     expect(view.disposed).to.equal(false)
     expect(view.el).to.equal(undefined)
+    expect(view.ensureElement).to.be.a('function')
     expect(view.mixins).to.be.an('array')
     expect(view.mixins.length).to.equal(0)
     expect(view.render).to.be.a('function')
+    expect(view.setAttributes).to.be.a('function')
+    expect(view.setProperties).to.be.a('function')
     expect(view.tagName).to.equal('div')
     expect(view.template).to.equal('<div></div>')
 

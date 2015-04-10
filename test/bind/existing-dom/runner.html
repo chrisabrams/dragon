@@ -10,18 +10,15 @@
   <body>
     <div id="mocha"></div>
 
+    <div id="hello">Sup</div>
+
     <script src="/js/mocha.js"></script>
     <script src="/js/chai.js"></script>
     <script src="/js/sinon.js"></script>
     <script src="/js/sinon-chai.js"></script>
     <script>mocha.setup('bdd')</script>
     <script src="/js/spec.js"></script>
-    <script>
-    if(window.mochaPhantomJS) {
-      mochaPhantomJS.run();
-    } else {
-      mocha.run();
-    }
-    </script>
+    <script>mocha.run();</script>
+
   </body>
 </html>

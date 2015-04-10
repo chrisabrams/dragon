@@ -3,7 +3,12 @@ var express     = require('express'),
     server      = express(),
     serveStatic = require('serve-static')
 
-server.use(serveStatic(__dirname))
+server.use('/css', serveStatic(path.join(__dirname, '/css')))
+server.use('/js', serveStatic(path.join(__dirname, '/js')))
+
+server.get('/bind/existing-dom', function(req, res, next) {
+  res.sendfile(path.join(__dirname, '../../bind/existing-dom', 'runner.html'))
+})
 
 server.get('/events/ui', function(req, res, next) {
   res.sendfile(path.join(__dirname, '../../events/ui', 'runner.html'))
