@@ -12,6 +12,9 @@ What if Backbone were to be created today? What would the project look like? Wit
 - `super()` is used, and is expected to be used by developers to call parent methods.
 - [io.js](https://iojs.org/en/index.html) is required for server-side usage.
 
+### Collections
+- Collections use the base Model by default instead of whining about not having a Model
+
 ### Mixins
 - No more `.extend()` for mixing. Just use `Object.assign` directly.
 

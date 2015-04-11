@@ -131,6 +131,18 @@ gulp.task('mocha-browser', ['mocha-build'], function() {
 
 })
 
+gulp.task('mocha-collections', function() {
+
+  return gulp
+    .src([
+      './test/helpers/cli/runner.js',
+      './lib/polyfills/**/*.js',
+      './test/unit/collections/**/*.js'
+    ], {read: false})
+    .pipe(mocha({reporter: 'spec'}))
+
+})
+
 gulp.task('mocha-models', function() {
 
   return gulp

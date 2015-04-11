@@ -7,7 +7,6 @@ require('../lib/polyfills/Object.assign')
 
 var Dragon = {
   //Application    : require('./dragon/application'),
-  //Collection     : require('./dragon/models/collection'),
   //CollectionView : require('./dragon/views/collectionView'),
   //Composer       : require('./dragon/composition/composer'),
   //Composition    : require('./dragon/composition/composition'),
@@ -19,6 +18,7 @@ var Dragon = {
   //Route          : require('./dragon/router/route'),
   //Router         : require('./dragon/router/router'),
   //SyncMachine    : require('./dragon/models/syncMachine'),
+  Collection     : require('./dragon/collections/base'),
   Events         : require('./dragon/events'),
   Model          : require('./dragon/models/base'),
   Utils          : require('./dragon/utils'),

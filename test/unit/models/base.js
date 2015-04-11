@@ -4,7 +4,9 @@ describe('Unit: Models: Base', function() {
 
   it('should initialize', function(done) {
 
-    var model = new Dragon.Model()
+    class Model extends Dragon.Model {}
+
+    var model = new Model()
 
     expect(model).to.be.an('object')
     expect(model.attr).be.an('object')
@@ -18,7 +20,9 @@ describe('Unit: Models: Base', function() {
 
   it('should assign an attribute', function(done) {
 
-    var model = new Dragon.Model()
+    class Model extends Dragon.Model {}
+
+    var model = new Model()
 
     model.attr.foo = 'bar'
 
@@ -30,20 +34,17 @@ describe('Unit: Models: Base', function() {
 
   it('should assign a default attribute', function(done) {
 
-    /*
-    TODO: There's gotta be a better way to clone classes and methods; airport wifi not so great :/
-    */
-    var defaults = Object.assign(Dragon.Model.prototype.defaults)
+    class Model extends Dragon.Model {}
 
-    Dragon.Model.prototype.defaults = {
+    var model = new Model()
+
+    Model.prototype.defaults = {
       foo: 'bar'
     }
 
-    var model = new Dragon.Model()
+    var model = new Model()
 
     expect(model.attr.foo).to.be.a('string')
-
-    Dragon.Model.prototype.defaults = defaults
 
     done()
 
@@ -51,7 +52,9 @@ describe('Unit: Models: Base', function() {
 
   it('should trigger change on an attribute', function(done) {
 
-    var model = new Dragon.Model()
+    class Model extends Dragon.Model {}
+
+    var model = new Model()
 
     model.attr.foo = 'bar'
 
@@ -67,7 +70,9 @@ describe('Unit: Models: Base', function() {
 
   it('should trigger add on an attribute add', function(done) {
 
-    var model = new Dragon.Model()
+    class Model extends Dragon.Model {}
+
+    var model = new Model()
 
     model.attr.foo = 'bar'
 
@@ -85,7 +90,9 @@ describe('Unit: Models: Base', function() {
 
   it('should trigger update on an attribute change', function(done) {
 
-    var model = new Dragon.Model()
+    class Model extends Dragon.Model {}
+
+    var model = new Model()
 
     model.attr.foo = 'bar'
 
@@ -105,7 +112,9 @@ describe('Unit: Models: Base', function() {
 
   it('should trigger delete on an attribute delete', function(done) {
 
-    var model = new Dragon.Model()
+    class Model extends Dragon.Model {}
+
+    var model = new Model()
 
     model.attr.foo = 'bar'
 
@@ -125,7 +134,9 @@ describe('Unit: Models: Base', function() {
 
   it('should clear all attributes', function(done) {
 
-    var model = new Dragon.Model()
+    class Model extends Dragon.Model {}
+
+    var model = new Model()
 
     model.attr.foo = 'bar'
 
@@ -139,7 +150,9 @@ describe('Unit: Models: Base', function() {
 
   it('should convert attributes to JSON', function(done) {
 
-    var model = new Dragon.Model()
+    class Model extends Dragon.Model {}
+
+    var model = new Model()
 
     model.attr.foo = 'bar'
 

@@ -4,18 +4,8 @@ var EventsMixin         = require('../events'),
 
 class DragonBaseModel {
 
-  constructor() {
+  constructor(attr = {}, options = {}) {
     this.uid = uniqueId('model')
-
-    var attr    = {},
-        options = {}
-
-    switch(arguments.length) {
-
-      case 1: attr = arguments[0]; break;
-      case 2: options = arguments[0]; attr = arguments[1]; break;
-
-    }
 
     Object.assign(this, EventsMixin)
     Object.assign(attr, this.defaults)
