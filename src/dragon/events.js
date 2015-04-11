@@ -56,7 +56,7 @@ var triggerEvents = function(events, args) {
 
 var listenMethods = {listenTo: 'on', listenToOnce: 'once'}
 
-module.exports = Events = {
+var Events = {
 
   // Bind an event to a `callback` function. Passing `"all"` will bind
   // the callback to all events fired.
@@ -196,3 +196,5 @@ Object.keys(listenMethods).forEach(function(method) {
     return this
   }
 })
+
+module.exports = Events

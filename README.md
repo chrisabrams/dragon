@@ -9,11 +9,23 @@ What if Backbone were to be created today? What would the project look like? Wit
 ### General Changes
 - No more `initialize()`. With ES6 classes, the `constructor()` is used directly.
 - No more `.extend()` for extending a View, Model, etc. Instead, ES6 `class` and `extends` are used.
-- No more `.extend()` for mixing. Just use `Object.assign` directly.
 - `super()` is used, and is expected to be used by developers to call parent methods.
+- [io.js](https://iojs.org/en/index.html) is required for server-side usage.
 
 ### Mixins
-Mixins come with the box.
+- No more `.extend()` for mixing. Just use `Object.assign` directly.
+
+### Models
+- No more `.set()` and `.get()`; instead, just use the model's `attr` directly, as `'Object.observe'` is observing changes.
+- No more `.has()`; just check for the property existence directly
+- No more `.unset()`; just delete it directly.
+- `.toJSON` actually returns JSON
+- Currently previous/changed properties/methods are not implemented as they can be found in the changes array. Open to re-implementation.
+
+### Views
+- No more wrapping tags; views' DOM is 100% from template or attaching to existing DOM element(s)
+
+## TODO
 
 ### Router
 The router is inspired from Chapin.
@@ -37,6 +49,7 @@ The controller is inspired from Chapin.
 ## Mixin Ideas
 
 ### Models
+- Delete/Unset that doesn't use `delete`
 - LocalStorate
 - Pagination
 - Schemas

@@ -131,13 +131,13 @@ gulp.task('mocha-browser', ['mocha-build'], function() {
 
 })
 
-gulp.task('mocha-cli', function() {
+gulp.task('mocha-models', function() {
 
   return gulp
     .src([
       './test/helpers/cli/runner.js',
       './lib/polyfills/**/*.js',
-      './test/unit/**/*.js'
+      './test/unit/models/**/*.js'
     ], {read: false})
     .pipe(mocha({reporter: 'spec'}))
 
@@ -149,6 +149,7 @@ gulp.task('mocha-server-run', function() {
     .src([
       './test/helpers/cli/runner.js',
       './lib/polyfills/**/*.js',
+      './test/unit/models/**/*.js',
       './test/unit/server/**/*.js'
     ], {read: false})
     .pipe(mocha({reporter: 'spec'}))

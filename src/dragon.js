@@ -15,12 +15,12 @@ var Dragon = {
   //Dispatcher     : require('./dragon/router/dispatcher'),
   //EventBroker    : require('./dragon/lib/eventBroker'),
   //mediator       : require('./dragon/mediator/mediator'),
-  //Model          : require('./dragon/models/model'),
   //Layout         : require('./dragon/views/layout'),
   //Route          : require('./dragon/router/route'),
   //Router         : require('./dragon/router/router'),
   //SyncMachine    : require('./dragon/models/syncMachine'),
   Events         : require('./dragon/events'),
+  Model          : require('./dragon/models/base'),
   Utils          : require('./dragon/utils'),
   View           : require('./dragon/views/base')
 }
