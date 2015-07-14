@@ -1,11 +1,3 @@
-process.on('uncaughtException', console.log)
-process.on('unhandledRejection', function(reason, p) {
-
-    console.log("Unhandled Rejection at: Promise ", p, " reason: ", reason)
-    // application specific logging, throwing an error, or other logic here
-
-})
-
 var babelify       = require('babelify'),
     browserify     = require('browserify'),
     chalk          = require('chalk'),
@@ -22,17 +14,19 @@ var babelify       = require('babelify'),
     source         = require('vinyl-source-stream'),
     watching       = require('paradigm-minimist-watching')
 
+gulp.task('b', ['build'])
+
 gulp.task('build', function(done) {
 
   var bundler = browserify({
     bundleExternal: true,
     cache: {},
-    debug: true,
+    debug: false,
     entries: [
       './src/dragon.js'
     ],
     extensions: [],
-    fullPaths: true,
+    fullPaths: false,
     insertGlobals: false,
     packageCache: {},
     standalone: 'Dragon'
@@ -47,9 +41,9 @@ gulp.task('build', function(done) {
       console.log(arguments)
     })
     .pipe(source('dragon.js'))
-    .pipe(gulp.dest('build/'))
+    .pipe(gulp.dest('dist/'))
     .on('end', function() {
-      console.log('build/dragon.js created.')
+      console.log('dist/dragon.js created.')
       done()
     })
 
@@ -170,5 +164,14 @@ gulp.task('mocha-server-run', function() {
 
 gulp.task('t', [
   //'mocha-cli',
-  'mocha-browser-run'
+  //'mocha-browser-run'
+  'mocha-models'
 ])
+
+/*.on('error', function(err) {
+  console.error(err)
+  process.exit(1)
+})
+.on('end', function() {
+  process.exit(0)
+})*/

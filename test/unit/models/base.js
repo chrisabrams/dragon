@@ -68,6 +68,27 @@ describe('Unit: Models: Base', function() {
 
   })
 
+  it('should not collide changes when observing two different objects from two different models', function(done) {
+
+    class Model extends Dragon.Model {}
+
+    var a = new Model(),
+        b = new Model()
+
+    b.on('change', (changes) => {
+
+      console.log("changes in test", changes)
+      expect(changes.length).to.equal(1)
+
+      done()
+
+    })
+
+    a.attr.foo = 'x'
+    b.attr.foo = 'y'
+
+  })
+
   it('should trigger add on an attribute add', function(done) {
 
     class Model extends Dragon.Model {}

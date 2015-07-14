@@ -7,13 +7,11 @@ class DragonBaseModel {
   constructor(attr = {}, options = {}) {
     this.uid = uniqueId('model')
 
+    this.options = options
+
     Object.assign(this, EventsMixin)
-    Object.assign(attr, this.defaults)
 
-    // Model attributes store
-    this.attr = attr
-
-    this.observeAttributes()
+    this.initialize(attr)
 
   }
 
@@ -23,6 +21,17 @@ class DragonBaseModel {
 
   }
 
+  initialize(attr = {}) {
+
+    Object.assign(this.attr, this.defaults, attr)
+
+    this.observeAttributes()
+
+  }
+
+  /*
+  TODO: add an an unobserve option
+  */
   observeAttributes() {
 
     // Trigger changes on model
@@ -72,6 +81,8 @@ class DragonBaseModel {
   }
 
 }
+
+DragonBaseModel.prototype.attr = {}
 
 DragonBaseModel.prototype.defaults = {}
 

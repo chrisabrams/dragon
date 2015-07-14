@@ -1,1 +1,1 @@
-module.exports = require('./build/dragon')
+module.exports = require('./dist/dragon')

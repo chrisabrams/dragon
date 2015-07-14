@@ -4,23 +4,25 @@ require('../lib/polyfills/node.prependchild')
 require('../lib/polyfills/nodelist.queryselectorall')
 require('../lib/polyfills/nodelist.remove')
 require('../lib/polyfills/Object.assign')
+require('object.observe')
 
 var Dragon = {
-  //Application    : require('./dragon/application'),
   //CollectionView : require('./dragon/views/collectionView'),
   //Composer       : require('./dragon/composition/composer'),
   //Composition    : require('./dragon/composition/composition'),
-  //Controller     : require('./dragon/controllers/controller'),
   //Dispatcher     : require('./dragon/router/dispatcher'),
   //EventBroker    : require('./dragon/lib/eventBroker'),
   //mediator       : require('./dragon/mediator/mediator'),
   //Layout         : require('./dragon/views/layout'),
-  //Route          : require('./dragon/router/route'),
-  //Router         : require('./dragon/router/router'),
   //SyncMachine    : require('./dragon/models/syncMachine'),
+  Application    : require('./dragon/application/base'),
   Collection     : require('./dragon/collections/base'),
+  Component      : require('./dragon/components/base'),
+  ComponentAPI   : require('./dragon/components/api'),
+  Controller     : require('./dragon/controllers/base'),
   Events         : require('./dragon/events'),
   Model          : require('./dragon/models/base'),
+  Router         : require('./dragon/router/base'),
   Utils          : require('./dragon/utils'),
   View           : require('./dragon/views/base')
 }

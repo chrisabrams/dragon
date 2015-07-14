@@ -20,22 +20,43 @@ var convertHTML = require('html-to-vdom')({
 class DragonBaseView {
 
   constructor(options = {}) {
+
     this.uid = uniqueId('view')
 
-    this.options = options
+    this.options = {}
 
-    this.events         = this.events || []
-    this.expandedEvents = []
+    Object.keys(options).forEach( (option) => {
+
+      if(this.directOptions.indexOf(option) > -1) {
+
+        this[option] = options[option]
+
+      }
+
+      else {
+
+        this.options[option] = option
+
+      }
+
+    })
+
     Object.assign(this, EventsMixin)
 
-    this.listen         = this.listen || []
-    this.bindListens()
+    this._events    = []
+    this._listeners = []
 
     this.initialize()
 
   }
 
   initialize() {
+
+    this.events         = this.events || []
+    this.expandedEvents = []
+
+    //this.listen         = this.listen || []
+    //this.bindListens()
 
     this.setProperties()
     this.setMixins()
@@ -119,25 +140,34 @@ class DragonBaseView {
 
   bindEvents() {
 
-    this.events.forEach( (item) => {
+    this._events.forEach( (ev) => {
 
-      var $selector = this.$(item[0]), // TODO: scope this locally
-          action    = item[1],
-          listener  = item[2]
+      var action  = ev[0],
+          handler = ev[ev.length - 1].bind(this)
 
-      Array.prototype.forEach.call(this.$selector, (selector) => {
+      switch(ev.length) {
 
-        selector.addEventListener(action, listener, false)
+        case 3:
 
-        this.expandedEvents.push([selector, action, listener])
+          var $selector = this.$(ev[1]) // TODO: scope this locally
 
-      })
+          Array.prototype.forEach.call($selector, (selector) => {
+
+            selector.addEventListener(action, handler, false)
+
+          })
+
+          break;
+
+        default:
+
+      }
 
     })
 
   }
 
-  bindListens() {
+  /*bindListens() {
 
     this.listen.forEach( (item) => {
 
@@ -148,7 +178,7 @@ class DragonBaseView {
 
     })
 
-  }
+  }*/
 
   /*
   @method detach
@@ -164,6 +194,16 @@ class DragonBaseView {
       return
     }
 
+    /*
+    TODO:
+    This is a weird error; if you put a return here, then it will not detach, but the error makes it sound like there is no DOM node to detach.
+    */
+    if(!this.$container) {
+      //throw new Error('this.$container is not defined')
+      console.error(('DEBUG: Detach Error: this.$container is not defined'))
+      //return
+    }
+
     Array.prototype.forEach.call(this.$container, (container) => {
 
       var els = container.querySelectorAll(this.el)
@@ -177,6 +217,7 @@ class DragonBaseView {
     })
 
     this.detached = true
+    this.trigger('detach')
 
     /*Array.prototype.forEach.call(this.$el, function(el) {
 
@@ -202,9 +243,14 @@ class DragonBaseView {
   */
   dispose() {
 
-    this.unBindEvents()
-    this.unBindListens()
-    this.detach()
+    if(!this.desposed) {
+
+      this.unBindEvents()
+      this.unBindListens()
+      this.detach()
+      this.desposed = true
+
+    }
 
   }
 
@@ -237,6 +283,57 @@ class DragonBaseView {
 
   }
 
+  event(action) {
+
+    var handler = arguments[arguments.length - 1],
+        origHandler = arguments[arguments.length - 1],
+        selector,
+        _this   = this
+
+    switch(action) {
+
+      case 'enter':
+
+        action = 'keydown'
+
+        handler = function(e) {
+
+          if(e.keyCode == 13) {
+            e.preventDefault()
+            origHandler.call(_this, e)
+
+          }
+
+        }
+
+        break
+
+      default:
+
+    }
+
+    switch(arguments.length) {
+
+      case 2:
+
+        selector = this.el
+
+        break
+
+      case 3:
+
+        selector = arguments[1]
+
+        break
+
+      default:
+
+    }
+
+    this._events.push([action, selector, handler])
+
+  }
+
   getTagName(template) {
 
     var el = document.createElement('div')
@@ -256,7 +353,34 @@ class DragonBaseView {
   */
   getTemplate() {
 
-    return this.template
+    var model = {}
+
+    if(this.model && typeof this.model == 'object') {
+      model = this.model
+    }
+
+    return this.template(model.attr)
+
+  }
+
+  listen() {
+
+    var ev      = arguments[0],
+        handler = arguments[1]
+
+    switch(arguments.length) {
+
+      case 2:
+
+        this.on(ev, handler.bind(this))
+
+        break;
+
+      default:
+
+    }
+
+    this._listeners.push(ev, handler)
 
   }
 
@@ -280,6 +404,12 @@ class DragonBaseView {
     if(!this.vel) {
 
       this.vel  = convertHTML(template)
+
+      /*
+      While newer versions of VDOM support multiple outer tags, we're gonna stick with one outer tag
+      */
+      if(this.vel instanceof Array) this.vel = this.vel[0]
+
       this.vel.tagName = this.tagName
       this._vel = createElement(this.vel)
 
@@ -354,9 +484,16 @@ class DragonBaseView {
       this.$el = this.$(id)
     }
 
-    // TODO: add . for each className item
     else if(this.className) {
-      var className = this.className
+
+      var splitClassName = this.className.split(' ')
+        var className = ''
+
+      for(let i = 0, l = splitClassName.length; i < l; i++) {
+
+        className += `.${splitClassName[i]}`
+
+      }
 
       if(!this.el) this.el = className
       this.$el = this.$(className)
@@ -443,28 +580,29 @@ class DragonBaseView {
 
   unBindEvents() {
 
-    this.expandedEventsList.forEach( (eventItem) => {
+    this.expandedEvents.forEach( (item) => {
 
       var selector  = item[0], // TODO: scope this locally
           action    = item[1],
           listener  = item[2]
 
       selector.removeEventListener(action, listener, false)
+      //$(selector).off(action, listenMethod)
 
     })
 
-    this.expandedEventsList = []
+    this.expandedEvents = []
 
   }
 
   unBindListens() {
 
-    this.listen.forEach( (item) => {
+    this._listeners.forEach( (item) => {
 
-      var eventName = item[0],
-          handler   = item[1]
+      var ev      = item[0],
+          handler = item[1]
 
-      this.off(eventName, handler)
+      this.off(ev, handler)
 
     })
 
@@ -482,7 +620,7 @@ The following properties & methods are assigned on the prototype to allow for ea
 @default native
 @desc $ query engine
 */
-DragonBaseView.prototype.$ = require('dolla')
+DragonBaseView.prototype.$ = document.querySelectorAll.bind(document)
 
 /*
 @property attachOnInit
@@ -500,6 +638,22 @@ DragonBaseView.prototype.attachOnInit = true
 @desc Determines where the view is attached into the container
 */
 DragonBaseView.prototype.attachPlacement = 'after'
+
+/*
+Direct Options
+Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
+*/
+DragonBaseView.prototype.directOptions = [
+  'attachOnInit',
+  'attachPlacement',
+  'collection',
+  'container',
+  'events',
+  'listen',
+  'model',
+  'renderOnInit',
+  'template'
+]
 
 /*
 @property renderOnInit
