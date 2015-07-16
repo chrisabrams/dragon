@@ -190,7 +190,7 @@ class DragonBaseView {
     //console.log("DEBUG: Detaching: El", this.$el)
 
     if(this.detached) {
-      throw new Error('Cannot detach view as it has already been detached')
+      console.error('Cannot detach view as it has already been detached')
       return
     }
 
@@ -242,7 +242,7 @@ class DragonBaseView {
   @desc Completely disposes of the view, it's DOM, events, etc.
   */
   dispose() {
-
+    console.log("view is disposing", this)
     if(!this.desposed) {
 
       this.unBindEvents()

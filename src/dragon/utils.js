@@ -1,5 +1,11 @@
 var Utils = {}
 
+Utils.log = function() {
+
+  if(this._debug) console.log.apply(console, arguments)
+
+}
+
 /*
 Dragon.Utils.uniqueId
 

@@ -15,6 +15,8 @@ class DragonRoute {
     this.requiredParams = []
     this.optionalParams = []
 
+    this.createRegExp()
+
   }
 
   createRegExp() {
@@ -119,6 +121,16 @@ class DragonRoute {
 
   }
 
+  removeTrailingSlash(path) {
+
+    if (path.slice(-1) === '/') {
+      path.slice(0, -1);
+    }
+
+    return path
+
+  }
+
   replaceParams(s, cb) {
 
     return s.replace(paramRegExp, cb)
@@ -139,7 +151,9 @@ class DragonRoute {
 
   testConstraints() {
 
-    if(var constraints = this.options.constraints) {
+    var constraints = this.options.constraints
+
+    if(constraints) {
 
       for(var name in constraints) {
 

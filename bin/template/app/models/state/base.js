@@ -28,9 +28,9 @@ class DragonState extends Dragon.Model {
   }
 
   add(key, options) {
-    console.log(arguments)
+
     this._states[key] = options
-    console.log(this._states)
+
   }
 
   beforeCurrentState(key) {

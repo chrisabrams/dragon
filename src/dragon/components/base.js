@@ -12,6 +12,7 @@ class DragonComponent {
   }
 
   dispose() {
+    console.log("component disposed", this)
 
     Object.keys(this).forEach( (property) => {
 

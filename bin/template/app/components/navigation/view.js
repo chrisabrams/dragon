@@ -1,4 +1,4 @@
-var BaseView = require('../base/view'),
+var BaseView = require('../../views/base'),
     Dragon   = require('dragon'),
     template = require('./template')
 

@@ -2,12 +2,16 @@ var Auth = require('./controllers/auth')
 
 module.exports = (router) => {
 
-  var auth = new Auth()
+  router.get('/auth/create', {
+    controller: Auth,
+    action: 'create'
+  })
 
-  router.get('/auth/create', auth.create)
+  router.get('/auth/login', {
+    controller: Auth,
+    action: 'login'
+  })
 
-  router.get('/auth/login', auth.login)
-
-  router.get('/', '/auth/login')
+  //router.get('/', '/auth/login')
 
 }

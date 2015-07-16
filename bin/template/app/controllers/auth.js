@@ -1,4 +1,5 @@
-var AuthComponent       = require('../components/auth/index'),
+var CreateAuthComponent = require('../components/auth/create'),
+    LoginAuthComponent  = require('../components/auth/login'),
     Dragon              = require('dragon'),
     NavigationComponent = require('../components/navigation/index')
 
@@ -6,21 +7,21 @@ class AuthController extends Dragon.Controller {
 
   constructor() {
     super()
+
+
   }
 
   create(req, next) {
 
     this.navigation = new NavigationComponent()
-    var auth        = new AuthComponent()
-    this.create     = auth.create()
+    this.create     = new CreateAuthComponent()
 
   }
 
   login(req, next) {
 
     this.navigation = new NavigationComponent()
-    var auth        = new AuthComponent()
-    this.login      = auth.login()
+    this.login      = new LoginAuthComponent()
 
   }
 

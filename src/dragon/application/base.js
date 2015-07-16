@@ -1,4 +1,5 @@
-var Router = require('../router/base')
+var Dispatcher = require('../router/dispatcher'),
+    Router     = require('../router/base')
 
 class DragonApplication {
 
@@ -18,6 +19,16 @@ class DragonApplication {
     })
 
     this.loadRoutes()
+
+    var dispatcher = this.dispatcher = new Dispatcher()
+
+    this.router.on('match', function(route, params, options) {
+
+      dispatcher.dispatch(route, params, options)
+
+    })
+
+    this.router.start()
 
   }
 
