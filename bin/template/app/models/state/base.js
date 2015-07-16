@@ -1,6 +1,6 @@
 var Dragon = require('dragon')
 
-class State extends Dragon.Model {
+class DragonState extends Dragon.Model {
 
   constructor(options = {}) {
 
@@ -10,21 +10,27 @@ class State extends Dragon.Model {
 
   initialize() {
 
-    super.initialize()
-
     this.el      = this.options.el
 
     this._state  = this.options.default || 'default'
     this._states = {}
 
-    this.beforeAll = this.options.beforeAll
+    this.beforeAll = this.options.beforeAll || this.beforeAll || function() {}
 
-    Object.keys(this.options.states).forEach( (key) => {
+    super.initialize()
+
+    /*Object.keys(this.options.states).forEach( (key) => {
 
       this._states[key] = this.options.states[key]
 
-    })
+    })*/
 
+  }
+
+  add(key, options) {
+    console.log(arguments)
+    this._states[key] = options
+    console.log(this._states)
   }
 
   beforeCurrentState(key) {
@@ -83,4 +89,4 @@ class State extends Dragon.Model {
 
 }
 
-module.exports = State
+module.exports = DragonState

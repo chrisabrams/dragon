@@ -1,6 +1,6 @@
 var Dragon        = require('dragon'),
     //InputFocusMixin = require('../../mixins/views/inputFocus'),
-    RefsViewMixin = require('../../mixins/views/refs')
+    RefsViewMixin = require('../mixins/views/refs')
 
 class BaseView extends Dragon.View {
 
@@ -9,7 +9,7 @@ class BaseView extends Dragon.View {
     super(options)
 
     //this.mixin(BaseView, InputFocusMixin)
-    this.mixin(BaseView, RefsViewMixin)
+    //this.mixin(BaseView, RefsViewMixin)
 
   }
 
@@ -27,5 +27,6 @@ class BaseView extends Dragon.View {
 
 }
 
+BaseView.prototype.mixin(BaseView, RefsViewMixin)
 
 module.exports = BaseView

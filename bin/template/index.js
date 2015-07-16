@@ -6,6 +6,15 @@ require('babel/polyfill')
 
 var Server = require('paradigm-server-express')
 
+var glob = require('glob'),
+    hbs  = require('./node_modules/paradigm-server-express/node_modules/hbs')
+
+var helpers = glob.sync('./app/templates/helpers/*.js')
+
+helpers.forEach(function(helper) {
+  require(helper)(hbs)
+})
+
 var server = new Server({
   paths: {
     routes: './server/routes',

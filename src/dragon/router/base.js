@@ -10,9 +10,24 @@ class DragonRouter {
 
   }
 
-  get() {
+  get(path, handler) {
 
-    return this.router.get.apply(this.router, arguments)
+    let forwardPath = arguments[1]
+
+    // Forward route
+    if(typeof forwardPath == 'string') {
+
+      this.navigate(forwardPath)
+      return
+    }
+
+    return this.router.get(path, (req, ev, next) => {
+
+      ev.stopPropagation()
+
+      handler.call(this.router, req, next)
+
+    })
 
   }
 

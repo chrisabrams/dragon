@@ -1,6 +1,6 @@
 module.exports = (server) => {
 
-  server.get('/', (req, res) => {
+  server.get(/^[^.]+$|\.(?!(css|gif|ico|jpg|js|mp4|tiff|woff)$)([^.]+$)/, (req, res) => {
 
     res.render('index', {
       layout: false

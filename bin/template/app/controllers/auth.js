@@ -8,10 +8,19 @@ class AuthController extends Dragon.Controller {
     super()
   }
 
-  login(req, ev) {
+  create(req, next) {
 
     this.navigation = new NavigationComponent()
-    this.auth       = new AuthComponent()
+    var auth        = new AuthComponent()
+    this.create     = auth.create()
+
+  }
+
+  login(req, next) {
+
+    this.navigation = new NavigationComponent()
+    var auth        = new AuthComponent()
+    this.login      = auth.login()
 
   }
 

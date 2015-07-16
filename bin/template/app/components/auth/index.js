@@ -1,17 +1,32 @@
-var Dragon = require('dragon'),
+var CreateView = require('./views/create'),
+    Dragon = require('dragon'),
     Model  = require('./models/auth'),
-    View   = require('./view')
+    LoginView = require('./views/login')
 
 class AuthComponent extends Dragon.Component {
 
   constructor() {
     super()
+  }
+
+  create() {
 
     this.model = new Model()
 
-    this.view = new View({
+    this.view = new CreateView({
       model: this.model
     })
+
+  }
+
+  login() {
+
+    this.model = new Model()
+
+    this.view = new LoginView({
+      model: this.model
+    })
+
   }
 
 }

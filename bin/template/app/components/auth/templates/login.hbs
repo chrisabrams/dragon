@@ -1,0 +1,19 @@
+<div class="row">
+  <form class="block-form auth-form login-form col-xs-12 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4" data-state="">
+    <div class="form-group">
+      <input type="text" class="form-control login-field" value="" placeholder="Enter your name" id="auth-username" autofocus>
+      <label class="login-field-icon fui-user" for="auth-username"></label>
+    </div>
+
+    <div class="form-group">
+      <input type="password" class="form-control login-field" value="" placeholder="Password" id="auth-password">
+      <label class="login-field-icon fui-lock" for="auth-pass"></label>
+    </div>
+
+    <button id="auth-submit" class="btn btn-primary btn-lg btn-block btn-submit" href="#">
+      <span class="btn-auth-text">Log in</span>
+      {{> ../../../templates/partials/spinner}}
+    </button>
+    <a class="login-link" href="#">Lost your password?</a>
+  </form>
+</div>
