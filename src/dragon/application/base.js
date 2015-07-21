@@ -1,22 +1,16 @@
 var Dispatcher = require('../router/dispatcher'),
-    Router     = require('../router/base')
+    Router     = require('../router/base'),
+    utils      = require('../utils')
 
 class DragonApplication {
 
   constructor(options) {
+    this.uid = utils.uniqueId(this)
 
     this.options = options
     this.routes  = this.options.routes
 
-    this.initialize()
-
-  }
-
-  initialize() {
-
-    this.router = new Router({
-      pushState: true
-    })
+    this.router = new Router()
 
     this.loadRoutes()
 
@@ -38,6 +32,18 @@ class DragonApplication {
 
   }
 
+  dispose() {
+
+    if(!this.disposed) {
+
+      utils.dispose(this)
+
+    }
+
+  }
+
 }
+
+DragonApplication.prototype.disposed = false
 
 module.exports = DragonApplication

@@ -4,7 +4,9 @@ var EventsMixin = require('../events'),
 
 class DragonRouter {
 
-  constructor(options) {
+  constructor(options = {}) {
+
+    this.uid = utils.uniqueId(this)
 
     this._currentHandler = null
     this._currentUrl = null
@@ -17,8 +19,6 @@ class DragonRouter {
     this.options = options
 
     document.addEventListener('click', this.onLinkClick.bind(this), false)
-
-    window.router = this
 
   }
 
@@ -97,8 +97,6 @@ class DragonRouter {
     var matched = false,
         path    = this.getPath()
 
-    console.log("url change detected", path)
-
     for(var i = 0, l = this._routes.length; i < l; i++) {
 
       var item    = this._routes[i],
@@ -106,7 +104,6 @@ class DragonRouter {
           route   = item.route
 
       if(route.regExp.test(path)) {
-        console.log("route matched", path)
 
         var params = route.extractParams(path)
 
@@ -155,14 +152,22 @@ class DragonRouter {
 
   dispose() {
 
-    this.stop()
+    if(!this.disposed) {
 
-    document.removeEventListener('click', this.onLinkClick, false)
+      this.stop()
+
+      document.removeEventListener('click', this.onLinkClick, false)
+
+      utils.dispose(this)
+
+    }
 
   }
 
 }
 
 Object.assign(DragonRouter.prototype, EventsMixin)
+
+DragonRouter.prototype.disposed = false
 
 module.exports = DragonRouter

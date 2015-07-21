@@ -1,11 +1,10 @@
 var EventsMixin         = require('../events'),
-    Utils               = require('../utils'),
-    uniqueId            = Utils.uniqueId
+    utils               = require('../utils')
 
 class DragonBaseModel {
 
   constructor(attr = {}, options = {}) {
-    this.uid = uniqueId('model')
+    this.uid = utils.uniqueId(this)
 
     this.options = options
 
@@ -80,11 +79,23 @@ class DragonBaseModel {
 
   }
 
+  dispose() {
+
+    if(!this.disposed) {
+
+      utils.dispose(this)
+
+    }
+
+  }
+
 }
 
 DragonBaseModel.prototype.attr = {}
 
 DragonBaseModel.prototype.defaults = {}
+
+DragonBaseModel.prototype.disposed = false
 
 DragonBaseModel.prototype.url = ''
 

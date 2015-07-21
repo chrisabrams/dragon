@@ -1,25 +1,18 @@
+var utils = require('../utils')
+
 class DragonController {
 
   constructor() {
-
+    this.uid = utils.uniqueId(this)
   }
 
   dispose() {
-    console.log("controller disposed", this)
 
-    Object.keys(this).forEach( (property) => {
+    if(!this.disposed) {
 
-      if(typeof this[property].dispose == 'function') {
+      utils.dispose(this)
 
-        this[property].dispose()
-
-        delete this[property]
-
-      }
-
-    })
-
-    this.disposed = true
+    }
 
   }
 

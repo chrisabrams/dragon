@@ -1,6 +1,5 @@
 var EventsMixin         = require('../events'),
-    Utils               = require('../utils'),
-    uniqueId            = Utils.uniqueId
+    utils               = require('../utils')
 
 var createElement       = require('virtual-dom/create-element')
 var diff                = require('virtual-dom/diff')
@@ -21,7 +20,7 @@ class DragonBaseView {
 
   constructor(options = {}) {
 
-    this.uid = uniqueId('view')
+    this.uid = utils.uniqueId(this)
 
     this.options = {}
 
@@ -233,24 +232,6 @@ class DragonBaseView {
       el.parentNode.removeChild(el)
 
     })*/
-
-  }
-
-  /*
-  @method detach
-  @type Function
-  @desc Completely disposes of the view, it's DOM, events, etc.
-  */
-  dispose() {
-    console.log("view is disposing", this)
-    if(!this.desposed) {
-
-      this.unBindEvents()
-      this.unBindListens()
-      this.detach()
-      this.desposed = true
-
-    }
 
   }
 
@@ -608,6 +589,25 @@ class DragonBaseView {
 
   }
 
+  /*
+  @method detach
+  @type Function
+  @desc Completely disposes of the view, it's DOM, events, etc.
+  */
+  dispose() {
+
+    if(!this.disposed) {
+
+      this.unBindEvents()
+      this.unBindListens()
+      this.detach()
+
+      utils.dispose(this)
+
+    }
+
+  }
+
 }
 
 /* Developer Notes
@@ -654,6 +654,8 @@ DragonBaseView.prototype.directOptions = [
   'renderOnInit',
   'template'
 ]
+
+DragonBaseView.prototype.disposed = false
 
 /*
 @property renderOnInit

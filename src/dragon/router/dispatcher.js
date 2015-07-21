@@ -1,6 +1,10 @@
+var utils = require('../utils')
+
 class DragonDispatcher {
 
   constructor(options = {}) {
+
+    this.uid = utils.uniqueId(this)
 
     this.currentController = null
 
@@ -8,9 +12,7 @@ class DragonDispatcher {
 
   dispatch(route, params, options = {}) {
 
-    console.log("current handler", this.currentHandler)
     if(this.currentController && this.currentController.dispose) {
-      console.log("dispatcher called dispose")
 
       this.currentController.dispose()
     }
@@ -28,6 +30,18 @@ class DragonDispatcher {
 
   }
 
+  dispose() {
+
+    if(!this.disposed) {
+
+      utils.dispose(this)
+
+    }
+
+  }
+
 }
+
+DragonDispatcher.prototype.disposed = false
 
 module.exports = DragonDispatcher

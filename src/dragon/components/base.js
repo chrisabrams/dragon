@@ -1,6 +1,9 @@
+var utils = require('../utils')
+
 class DragonComponent {
 
   constructor(options = {}) {
+    this.uid = utils.uniqueId(this)
 
     this.options = options
 
@@ -12,21 +15,12 @@ class DragonComponent {
   }
 
   dispose() {
-    console.log("component disposed", this)
 
-    Object.keys(this).forEach( (property) => {
+    if(!this.disposed) {
 
-      if(typeof this[property].dispose == 'function') {
+      utils.dispose(this)
 
-        this[property].dispose()
-
-        delete this[property]
-
-      }
-
-    })
-
-    this.disposed = true
+    }
 
   }
 
