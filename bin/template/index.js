@@ -22,3 +22,5 @@ var server = new Server({
   },
   port: 9999
 })
+
+server.start()
