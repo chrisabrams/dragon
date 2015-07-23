@@ -7,10 +7,10 @@ module.exports = {
   entry: {
     vendor: ['handlebars'],
     app: [
-      //'./app/templates/**/*.js',
       './app/index.js'
     ]
   },
+
   output: {
     filename: '[name].js',
     path: path.join(__dirname, './public/js')
@@ -21,7 +21,18 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        query: {
+          optional: [
+            'es7.classProperties',
+            'es7.decorators',
+            /*
+            TODO: Figure out why the runtime isn't working
+            */
+            //'runtime'
+          ],
+          //stage: 0
+        }
       },
       { test: /\.hbs$/, loader: 'handlebars-loader' },
       { test: /\.json$/, loader: 'json-loader' }
@@ -44,7 +55,7 @@ module.exports = {
     new webpack.IgnorePlugin(/node_modules\/^paradigm/),
     new webpack.NormalModuleReplacementPlugin(/^(net|dns)$/, path.resolve(__dirname, 'shims/blank.js')),
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.CommonsChunkPlugin('vendors', 'vendor.js'),
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
     new ChunkManifestPlugin({
       filename: "manifest.json",
       manifestVariable: "webpackManifest"

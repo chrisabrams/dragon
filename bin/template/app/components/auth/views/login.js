@@ -7,15 +7,10 @@ class LoginView extends FormView {
 
   constructor(options = {}) {
     super(options)
-  }
 
-  initialize() {
-
-    this.container = '#app-container'
-    this.template  = template
+    this.on('addedToDOM', this.onAddedToDOM)
 
     super.initialize()
-
   }
 
   formSubmit(e) {
@@ -69,5 +64,8 @@ class LoginView extends FormView {
   }
 
 }
+
+LoginView.prototype.container = '#app-container'
+LoginView.prototype.template  = template
 
 module.exports = LoginView

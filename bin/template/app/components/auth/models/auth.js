@@ -3,10 +3,10 @@ var //schema       = require('sdk/resources/auth/schemas/login'),
 
 class AuthModel extends ThoughtModel {
 
-  initialize() {
+  constructor(options = {}) {
 
-    super.initialize()
-    window.damodel = this
+    super(options)
+
   }
 
   login(pkg) {

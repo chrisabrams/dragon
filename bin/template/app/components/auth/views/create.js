@@ -7,15 +7,10 @@ class CreateView extends FormView {
 
   constructor(options = {}) {
     super(options)
-  }
 
-  initialize() {
-
-    this.container = '#app-container'
-    this.template  = template
+    this.on('addedToDOM', this.onAddedToDOM)
 
     super.initialize()
-
   }
 
   formSubmit(e) {
@@ -71,5 +66,8 @@ class CreateView extends FormView {
   }
 
 }
+
+CreateView.prototype.container = '#app-container'
+CreateView.prototype.template  = template
 
 module.exports = CreateView

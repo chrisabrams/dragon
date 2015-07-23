@@ -4,9 +4,10 @@ var BaseView = require('../../views/base'),
 
 class NavigationView extends BaseView {
 
-  constructor() {
+  constructor(options = {}) {
+    super(options)
 
-    super()
+    super.initialize()
 
   }
 

@@ -45,21 +45,15 @@ class DragonBaseView {
     this._events    = []
     this._listeners = []
 
-    this.initialize()
+    this.setProperties()
+
+    this.ensureElement()
+
+    //this.initialize()
 
   }
 
   initialize() {
-
-    this.events         = this.events || []
-    this.expandedEvents = []
-
-    //this.listen         = this.listen || []
-    //this.bindListens()
-
-    this.setProperties()
-    this.setMixins()
-    this.ensureElement()
 
     //If the view is not binded to the DOM and is set to render on initialization
     if(!this.attached && this.renderOnInit) {
@@ -78,8 +72,6 @@ class DragonBaseView {
       this.render()
 
     }
-
-    this.bindEvents()
 
   }
 
@@ -137,32 +129,28 @@ class DragonBaseView {
 
   }
 
-  bindEvents() {
+  bindEvent() {
 
-    this._events.forEach( (ev) => {
+    var action  = arguments[0],
+        handler = arguments[arguments.length - 1].bind(this)
 
-      var action  = ev[0],
-          handler = ev[ev.length - 1].bind(this)
+    switch(arguments.length) {
 
-      switch(ev.length) {
+      case 3:
 
-        case 3:
+        var $selector = arguments[1]
 
-          var $selector = this.$(ev[1]) // TODO: scope this locally
+        Array.prototype.forEach.call($selector, (selector) => {
 
-          Array.prototype.forEach.call($selector, (selector) => {
+          selector.addEventListener(action, handler, false)
 
-            selector.addEventListener(action, handler, false)
+        })
 
-          })
+        break;
 
-          break;
+      default:
 
-        default:
-
-      }
-
-    })
+    }
 
   }
 
@@ -264,7 +252,23 @@ class DragonBaseView {
 
   }
 
-  event(action) {
+  event() {
+
+    if(!this.attached) {
+      this.on('addedToDOM', () => {
+
+        this._event.apply(this, arguments)
+
+      })
+    }
+
+    else {
+      this._event.apply(this, arguments)
+    }
+
+  }
+
+  _event(action) {
 
     var handler = arguments[arguments.length - 1],
         origHandler = arguments[arguments.length - 1],
@@ -311,7 +315,19 @@ class DragonBaseView {
 
     }
 
+    selector = this.$(selector)
+
     this._events.push([action, selector, handler])
+
+    if(this.attached) {
+      this.bindEvent(action, selector, handler)
+    }
+
+    else {
+      this.on('addedToDOM', () => {
+        this.bindEvent(action, selector, handler)
+      })
+    }
 
   }
 
@@ -490,50 +506,7 @@ class DragonBaseView {
 
   }
 
-  /*
-  @function setMixins
-  @type Function
-  @desc Sets Mixin(s) on instance
-
-  @arg options {Object}
-  */
-  setMixins(options = {}) {
-
-    /*
-    @property mixins
-    @type Array
-    @desc List of mixins
-    @note This adds a mixin to the instance, not the class
-    */
-
-    // TODO: need to combine the options with the this to have a full array
-    this.mixins = options.mixins || []
-
-    this.mixins.forEach( (Mixin) => {
-
-      Object.assign(this, Mixin)
-
-    })
-
-  }
-
   setProperties() {
-
-    /*
-    @property attached
-    @type Boolean
-    @default false
-    @desc Whether to the view has been attached to the DOM
-    */
-    this.attached = false
-
-    /*
-    @property disposed
-    @type Boolean
-    @default false
-    @desc Whether the view has been disposed
-    */
-    this.disposed = false
 
     var allowedOptions = [
       'container',
@@ -561,18 +534,21 @@ class DragonBaseView {
 
   unBindEvents() {
 
-    this.expandedEvents.forEach( (item) => {
+    this._events.forEach( (item) => {
 
-      var selector  = item[0], // TODO: scope this locally
-          action    = item[1],
+      var action    = item[0],
+          $selector = item[1], // TODO: scope this locally
           listener  = item[2]
 
-      selector.removeEventListener(action, listener, false)
-      //$(selector).off(action, listenMethod)
+      Array.prototype.forEach.call($selector, (selector) => {
+
+        selector.removeEventListener(action, listener, false)
+
+      })
 
     })
 
-    this.expandedEvents = []
+    this._events = []
 
   }
 
@@ -621,6 +597,8 @@ The following properties & methods are assigned on the prototype to allow for ea
 @desc $ query engine
 */
 DragonBaseView.prototype.$ = document.querySelectorAll.bind(document)
+
+DragonBaseView.prototype.attached = false
 
 /*
 @property attachOnInit

@@ -5,9 +5,6 @@ class FormView extends BaseView {
 
   constructor(options = {}) {
     super(options)
-  }
-
-  initialize() {
 
     this.event('click', '.auth-form input', this.inputClearError)
     this.event('click', '.auth-form #auth-submit', this.formSubmit)
@@ -15,10 +12,7 @@ class FormView extends BaseView {
     this.event('enter',   '.auth-form', this.formSubmit)
     this.event('keydown', '.auth-form input', this.inputClearError)
 
-    this.listen('addedToDOM', this.onAddedToDOM)
-
-
-    super.initialize()
+    //super.initialize()
 
   }
 

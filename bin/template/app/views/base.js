@@ -5,12 +5,9 @@ var Dragon        = require('dragon'),
 class BaseView extends Dragon.View {
 
   constructor(options = {}) {
-
     super(options)
 
-    //this.mixin(BaseView, InputFocusMixin)
-    //this.mixin(BaseView, RefsViewMixin)
-
+    //super.initialize()
   }
 
   mixin(target, source) {

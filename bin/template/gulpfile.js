@@ -1,12 +1,9 @@
-var babelify       = require('babelify'),
-    browserify     = require('browserify'),
-    chalk          = require('chalk'),
+var chalk          = require('chalk'),
     concat         = require('gulp-concat'),
     fs             = require('fs'),
     glob           = require('glob'),
     gulp           = require('gulp'),
     gutil          = require('gulp-util'),
-    hbsfy          = require('hbsfy'),
     mkdirp         = require('mkdirp'),
     mocha          = require('gulp-mocha'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
@@ -16,8 +13,7 @@ var babelify       = require('babelify'),
     size           = require('gulp-size'),
     source         = require('vinyl-source-stream'),
     stylus         = require('gulp-stylus'),
-    watching       = require('paradigm-minimist-watching'),
-    watchify       = require('watchify')
+    watching       = require('paradigm-minimist-watching')
 
 gulp.task('app-css', function() {
 
