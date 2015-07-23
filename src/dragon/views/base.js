@@ -45,15 +45,12 @@ class DragonBaseView {
     this._events    = []
     this._listeners = []
 
-    this.setProperties()
-
-    this.ensureElement()
-
-    //this.initialize()
-
   }
 
   initialize() {
+
+    this.setProperties()
+    this.ensureElement()
 
     //If the view is not binded to the DOM and is set to render on initialization
     if(!this.attached && this.renderOnInit) {
@@ -83,6 +80,8 @@ class DragonBaseView {
   */
 
   attach() {
+
+    if(this.$container.length == 0) return console.error('No container(s) found.')
 
     try {
 

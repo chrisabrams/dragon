@@ -1,16 +1,17 @@
 Dragon
 ========
 
+Hypothesis: What if Backbone were created today, with ES 6&7, Virtual DOM, etc?
+
 ## Hypothesis of project
-What if Backbone were to be created today? What would the project look like? With ECMAScript 6, HTML5 pushState, Virtual DOM, new ways of data-binding, etc., front-end development has evolved. This project sets out to see what such an evolution would look like from scratch.
+What if Backbone were to be created today? What would the project look like? With ECMAScript 6 & 7, HTML5 pushState, Virtual DOM, new ways of data-binding, etc., front-end development has evolved. This project sets out to see what such an evolution would look like from scratch.
 
 ## Changes from Backbone to Dragon
 
 ### General Changes
-- No more `initialize()`. With ES6 classes, the `constructor()` is used directly.
+- ES6 classes and ES7 class properties.
 - No more `.extend()` for extending a View, Model, etc. Instead, ES6 `class` and `extends` are used.
 - `super()` is used, and is expected to be used by developers to call parent methods.
-- [io.js](https://iojs.org/en/index.html) is required for server-side usage.
 
 ### Collections
 - Collections use the base Model by default instead of whining about not having a Model
@@ -28,26 +29,22 @@ What if Backbone were to be created today? What would the project look like? Wit
 ### Views
 - No more wrapping tags; views' DOM is 100% from template or attaching to existing DOM element(s)
 
-## TODO
-
 ### Router
 The router is inspired from Chapin.
 
-- `match` is introduced; this assigns routes to a controller & action
-- Objects in router can now be disposed.
-
-### Dispatcher
-The dispatcher is inspired from Chapin.
-
-- Responsible for instantiating controller & action on matching route.
+- Objects in router can now be disposed, which has always been a bane for Backbone's router.
 
 ### Controllers
 The controller is inspired from Chapin.
 
 - Controllers have been added to provide MVC structure with the router.
 
-### Views
-- View, or "wrapping", tags don't exist. All HTML that represents the view is in the template itself.
+### Dispatcher
+The dispatcher is inspired from Chapin.
+
+- Responsible for instantiating controller & action on matching route.
+
+## TODO
 
 ## Mixin Ideas
 

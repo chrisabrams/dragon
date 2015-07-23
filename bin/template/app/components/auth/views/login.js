@@ -5,12 +5,15 @@ var FormView  = require('../../../views/form'),
 
 class LoginView extends FormView {
 
+  container = '#app-container'
+  template  = template
+
   constructor(options = {}) {
     super(options)
 
     this.on('addedToDOM', this.onAddedToDOM)
 
-    super.initialize()
+    this.initialize()
   }
 
   formSubmit(e) {
@@ -64,8 +67,5 @@ class LoginView extends FormView {
   }
 
 }
-
-LoginView.prototype.container = '#app-container'
-LoginView.prototype.template  = template
 
 module.exports = LoginView
