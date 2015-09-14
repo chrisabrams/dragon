@@ -6,12 +6,6 @@ class DragonFormState extends State {
 
     super(options)
 
-  }
-
-  initialize() {
-
-    super.initialize()
-
     this.add('default', {
       before: () => {
 
@@ -25,6 +19,30 @@ class DragonFormState extends State {
     })
 
     this.add('error', {
+      before: () => {
+
+      },
+      active: () => {
+
+      },
+      after: () => {
+
+      }
+    })
+
+    this.add('submitting', {
+      before: () => {
+
+      },
+      active: () => {
+
+      },
+      after: () => {
+
+      }
+    })
+
+    this.add('success', {
       before: () => {
 
       },

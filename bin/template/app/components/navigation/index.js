@@ -3,10 +3,12 @@ var Dragon = require('dragon'),
 
 class NavigationComponent extends Dragon.Component {
 
-  constructor() {
-    super()
+  constructor(options = {}) {
+    super(options)
 
-    this.view = new View()
+    this.view = new View({
+      model: options.app.models.user
+    })
   }
 
 }

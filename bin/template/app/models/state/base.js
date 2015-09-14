@@ -6,24 +6,12 @@ class DragonState extends Dragon.Model {
 
     super(null, options)
 
-  }
-
-  initialize() {
-
     this.el      = this.options.el
 
     this._state  = this.options.default || 'default'
     this._states = {}
 
     this.beforeAll = this.options.beforeAll || this.beforeAll || function() {}
-
-    super.initialize()
-
-    /*Object.keys(this.options.states).forEach( (key) => {
-
-      this._states[key] = this.options.states[key]
-
-    })*/
 
   }
 
@@ -79,6 +67,9 @@ class DragonState extends Dragon.Model {
       this.el.setAttribute('data-state', key)
 
       active()
+
+      this.trigger('state', key)
+      this.trigger(`state:${key}`)
     }
 
     else {

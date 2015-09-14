@@ -1,10 +1,15 @@
-
-
-var Dragon = require('dragon'),
-    routes = require('./routes')
+var Dragon    = require('dragon'),
+    routes    = require('./routes'),
+    UserModel = require('./models/user')
 
 var app = new Dragon.Application({
   routes
 })
 
-//app.start()
+app.indisposable = true
+
+app.models = {}
+
+app.models.user = new UserModel()
+
+app.start()

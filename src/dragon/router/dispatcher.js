@@ -6,6 +6,10 @@ class DragonDispatcher {
 
     this.uid = utils.uniqueId(this)
 
+    this.options = options
+
+    this.app = options.app
+
     this.currentController = null
 
   }
@@ -23,10 +27,14 @@ class DragonDispatcher {
 
     var controller = new options.controller()
 
+    /*
+    TODO: Find a better way to pass app instance to controller
+    */
+    controller.app = this.app
+
     controller[options.action](req)
 
     this.currentController = controller
-
 
   }
 
@@ -34,7 +42,9 @@ class DragonDispatcher {
 
     if(!this.disposed) {
 
-      utils.dispose(this)
+      utils.dispose(this, {
+        ignoreProperties: ['app']
+      })
 
     }
 

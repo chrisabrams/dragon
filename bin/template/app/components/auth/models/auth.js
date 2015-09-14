@@ -1,11 +1,25 @@
-var //schema       = require('sdk/resources/auth/schemas/login'),
-    ThoughtModel = require('../../base/models/thought')
+var BaseModel = require('../../../models/base'),
+    user      = require('sdk/resources/users')
 
-class AuthModel extends ThoughtModel {
+class AuthModel extends BaseModel {
 
-  constructor(options = {}) {
+  constructor(attr = {}, options = {}) {
 
-    super(options)
+    if(options.create) {
+
+    }
+
+    super(attr, options)
+
+  }
+
+  create(pkg) {
+
+    return new Promise( (resolve, reject) => {
+
+      user.create(pkg).then(resolve, reject)
+
+    })
 
   }
 
@@ -27,15 +41,6 @@ class AuthModel extends ThoughtModel {
 
   }
 
-}
-
-AuthModel.prototype.schema = {
-  "username": {
-    "type": "string"
-  },
-  "password": {
-    "type": "string"
-  }
 }
 
 module.exports = AuthModel

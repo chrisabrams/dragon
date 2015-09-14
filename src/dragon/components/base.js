@@ -7,11 +7,6 @@ class DragonComponent {
 
     this.options = options
 
-    this.initialize()
-  }
-
-  initialize() {
-
   }
 
   dispose() {

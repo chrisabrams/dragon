@@ -8,27 +8,20 @@ class DragonApplication {
     this.uid = utils.uniqueId(this)
 
     this.options = options
-    this.routes  = this.options.routes
 
-    this.router = new Router()
+    this.router = new Router({
+      routes: this.options.routes
+    })
 
-    this.loadRoutes()
-
-    var dispatcher = this.dispatcher = new Dispatcher()
+    var dispatcher = this.dispatcher = new Dispatcher({
+      app: this
+    })
 
     this.router.on('match', function(route, params, options) {
 
       dispatcher.dispatch(route, params, options)
 
     })
-
-    this.router.start()
-
-  }
-
-  loadRoutes() {
-
-    this.routes(this.router)
 
   }
 
@@ -39,6 +32,12 @@ class DragonApplication {
       utils.dispose(this)
 
     }
+
+  }
+
+  start() {
+
+    this.router.start()
 
   }
 

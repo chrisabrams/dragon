@@ -1,5 +1,5 @@
-var EventsMixin         = require('../events'),
-    utils               = require('../utils')
+var EventsMixin = require('../events'),
+    utils       = require('../utils')
 
 class DragonBaseModel {
 
@@ -8,23 +8,17 @@ class DragonBaseModel {
 
     this.options = options
 
-    Object.assign(this, EventsMixin)
-
-    this.initialize(attr)
-
-  }
-
-  clear() {
-
-    this.attr = {}
-
-  }
-
-  initialize(attr = {}) {
-
     Object.assign(this.attr, this.defaults, attr)
 
     this.observeAttributes()
+  }
+
+  /*
+  TODO: not the full appr
+  */
+  clear() {
+
+    this.attr = {}
 
   }
 
@@ -79,13 +73,9 @@ class DragonBaseModel {
 
   }
 
-  dispose() {
+  dispose(options = {}) {
 
-    if(!this.disposed) {
-
-      utils.dispose(this)
-
-    }
+    utils.dispose(this, options)
 
   }
 
@@ -97,6 +87,10 @@ DragonBaseModel.prototype.defaults = {}
 
 DragonBaseModel.prototype.disposed = false
 
+DragonBaseModel.prototype.indisposable = false
+
 DragonBaseModel.prototype.url = ''
+
+Object.assign(DragonBaseModel.prototype, EventsMixin)
 
 module.exports = DragonBaseModel

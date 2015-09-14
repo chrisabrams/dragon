@@ -1,4 +1,5 @@
-var utils = require('../utils')
+var composeStore = require('../lib/composeStore'),
+    utils        = require('../utils')
 
 class DragonController {
 
@@ -6,11 +7,28 @@ class DragonController {
     this.uid = utils.uniqueId(this)
   }
 
+  compose(key, val, options = {}) {
+
+    if(arguments.length == 1) return composeStore[key]
+
+    /*
+    TODO: Figure out how updating/replacing a composition would work.
+    */
+    if(!composeStore[key] || options.update) {
+
+      composeStore[key] = val
+
+    }
+
+  }
+
   dispose() {
 
     if(!this.disposed) {
 
-      utils.dispose(this)
+      utils.dispose(this, {
+        ignoreProperties: ['app']
+      })
 
     }
 

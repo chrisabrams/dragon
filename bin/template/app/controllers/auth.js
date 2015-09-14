@@ -5,22 +5,26 @@ var CreateAuthComponent = require('../components/auth/create'),
 
 class AuthController extends Dragon.Controller {
 
-  constructor() {
-    super()
-
-
+  constructor(options = {}) {
+    super(options)
   }
 
   create(req, next) {
 
-    this.navigation = new NavigationComponent()
+    //this.navigation = new NavigationComponent()
+    this.compose('navigation', new NavigationComponent({
+      app: this.app
+    }))
     this.create     = new CreateAuthComponent()
 
   }
 
   login(req, next) {
 
-    this.navigation = new NavigationComponent()
+    //this.navigation = new NavigationComponent()
+    this.compose('navigation', new NavigationComponent({
+      app: this.app
+    }))
     this.login      = new LoginAuthComponent()
 
   }

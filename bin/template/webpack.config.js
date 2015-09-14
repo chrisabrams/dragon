@@ -5,7 +5,11 @@ var ChunkManifestPlugin = require('chunk-manifest-webpack-plugin'),
 module.exports = {
 
   entry: {
-    vendor: ['handlebars'],
+    vendor: [
+      'handlebars',
+      'joi',
+      'moment'
+    ],
     app: [
       './app/index.js'
     ]
@@ -21,11 +25,14 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
+        //exclude: /node_modules/,
         query: {
+          blacklist: [
+            'useStrict'
+          ],
           optional: [
             'es7.classProperties',
-            'es7.decorators',
+            //'es7.decorators',
             /*
             TODO: Figure out why the runtime isn't working
             */
@@ -38,6 +45,11 @@ module.exports = {
       { test: /\.json$/, loader: 'json-loader' }
     ]
   },
+
+  /*node: {
+    dns: 'mock',
+    net: 'mock'
+  },*/
 
   resolve: {
     root: path.join(__dirname, './app'),

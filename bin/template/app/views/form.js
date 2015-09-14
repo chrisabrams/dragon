@@ -16,6 +16,10 @@ class FormView extends BaseView {
 
   }
 
+  formError(err) {
+    console.error("Form error", err)
+  }
+
   inputClearError(e) {
 
     var parentEl = e.target.parentElement

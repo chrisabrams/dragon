@@ -1,12 +1,12 @@
 var EventsMixin         = require('../events'),
     utils               = require('../utils')
 
-var createElement       = require('virtual-dom/create-element')
-var diff                = require('virtual-dom/diff')
-var extractFromTemplate = require('./helpers/extractFromTemplate')
-var patch               = require('virtual-dom/patch')
-var VNode               = require('virtual-dom/vnode/vnode')
-var VText               = require('virtual-dom/vnode/vtext')
+var createElement       = require('virtual-dom/create-element'),
+    diff                = require('virtual-dom/diff'),
+    extractFromTemplate = require('./helpers/extractFromTemplate'),
+    patch               = require('virtual-dom/patch'),
+    VNode               = require('virtual-dom/vnode/vnode'),
+    VText               = require('virtual-dom/vnode/vtext')
 
 var convertHTML = require('html-to-vdom')({
   VNode: VNode,
@@ -40,8 +40,6 @@ class DragonBaseView {
 
     })
 
-    Object.assign(this, EventsMixin)
-
     this._events    = []
     this._listeners = []
 
@@ -51,6 +49,7 @@ class DragonBaseView {
 
     this.setProperties()
     this.ensureElement()
+    this.ensureContainer()
 
     //If the view is not binded to the DOM and is set to render on initialization
     if(!this.attached && this.renderOnInit) {
@@ -81,8 +80,6 @@ class DragonBaseView {
 
   attach() {
 
-    if(this.$container.length == 0) return console.error('No container(s) found.')
-
     try {
 
       /*
@@ -99,7 +96,7 @@ class DragonBaseView {
         switch(this.attachPlacement) {
 
           // Attach before all other children in container
-          case 'beginning': $container['prependChild'](this._vel); break;
+          case 'first': $container['prependChild'](this._vel); break;
 
           // Attach normally, after all children in container
           default: $container['appendChild'](this._vel)
@@ -219,6 +216,18 @@ class DragonBaseView {
       el.parentNode.removeChild(el)
 
     })*/
+
+  }
+
+  ensureContainer() {
+
+    if(this.container) {
+
+      this.$container = this.$(this.container)
+
+      if(this.$container.length == 0) throw new Error('No container(s) found.')
+
+    }
 
   }
 
@@ -349,7 +358,9 @@ class DragonBaseView {
   */
   getTemplate() {
 
-    var model = {}
+    var model = {
+      attr: {}
+    }
 
     if(this.model && typeof this.model == 'object') {
       model = this.model
@@ -527,8 +538,6 @@ class DragonBaseView {
 
     })
 
-    this.$container = this.$(this.container)
-
   }
 
   unBindEvents() {
@@ -584,6 +593,8 @@ class DragonBaseView {
   }
 
 }
+
+Object.assign(DragonBaseView.prototype, EventsMixin)
 
 /* Developer Notes
 The following properties & methods are assigned on the prototype to allow for easier overriding.

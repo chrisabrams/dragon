@@ -1,18 +1,14 @@
 var Dragon = require('dragon'),
     Joi    = require('joi')
 
-class ThoughtModel extends Dragon.Model {
+class BaseModel extends Dragon.Model {
 
-  constructor() {
-    super()
-  }
+  constructor(attr = {}, options = {}) {
+    super(attr, options)
 
-  initialize() {
+    if(options.schema) this.schema = options.schema
 
     this.schemaTranslate(this.schema)
-
-    super.initialize()
-
   }
 
   /*
@@ -118,4 +114,4 @@ class ThoughtModel extends Dragon.Model {
 
 }
 
-module.exports = ThoughtModel
+module.exports = BaseModel

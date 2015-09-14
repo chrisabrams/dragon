@@ -40,30 +40,6 @@ class LoginView extends FormView {
       el: this.refs('form')
     })
 
-    this.state.add('submitting', {
-      before: () => {
-
-      },
-      active: () => {
-
-      },
-      after: () => {
-
-      }
-    })
-
-    this.state.add('success', {
-      before: () => {
-
-      },
-      active: () => {
-
-      },
-      after: () => {
-
-      }
-    })
-
   }
 
 }

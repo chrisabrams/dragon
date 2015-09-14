@@ -9,14 +9,16 @@ class DragonRouter {
     this.uid = utils.uniqueId(this)
 
     this._currentHandler = null
-    this._currentUrl = null
-    this._debug = options.debug || false
-    this._history = window.history
-    this._location = window.location
-    this._routes = []
-    this._started = false
+    this._currentUrl     = null
+    this._debug          = options.debug || false
+    this._history        = window.history
+    this._location       = window.location
+    this._routes         = []
+    this._started        = false
 
     this.options = options
+
+    this.loadRoutes()
 
     document.addEventListener('click', this.onLinkClick.bind(this), false)
 
@@ -62,6 +64,12 @@ class DragonRouter {
 
   }
 
+  loadRoutes() {
+
+    this.options.routes(this)
+
+  }
+
   navigate(path, options = {}) {
 
     this._history[options.replace ? 'replaceState' : 'pushState']({}, document.title, path)
@@ -78,7 +86,7 @@ class DragonRouter {
       var href = el.getAttribute('href'),
           rel  = el.getAttribute('rel')
 
-      if(!href || href == '' || href.charAt(0) == '#' || (rel && rel == 'external')) return
+      if(!href || href == '' || href.charAt(0) == '#' || (rel && rel == 'external') || href.indexOf('//') > -1) return
 
       /*if(external) {
         window.open(href)
