@@ -1,10 +1,10 @@
 {
   "name": "dragon.js",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Single Page Apps with ES6",
   "main": "src/dragon.js",
   "bin": {
-    "dragon": "./bin/dragon"
+    "dragon.js": "./bin/dragon"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
