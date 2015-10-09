@@ -344,7 +344,7 @@ class DragonBaseView {
     var el = document.createElement('div')
     el.innerHTML = template
 
-    return el.firstChild.tagName.toLowerCase()
+    return el.firstElementChild.tagName.toLowerCase()
 
   }
 
