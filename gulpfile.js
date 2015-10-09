@@ -1,5 +1,4 @@
-var babelify       = require('babelify'),
-    browserify     = require('browserify'),
+var babel          = require('gulp-babel'),
     chalk          = require('chalk'),
     concat         = require('gulp-concat'),
     glob           = require('glob'),
@@ -12,7 +11,8 @@ var babelify       = require('babelify'),
     sequence       = require('run-sequence'),
     size           = require('gulp-size'),
     source         = require('vinyl-source-stream'),
-    watching       = require('paradigm-minimist-watching')
+    watching       = require('paradigm-minimist-watching'),
+    webpack        = require('webpack-stream')
 
 gulp.task('b', ['build'])
 
@@ -159,6 +159,14 @@ gulp.task('mocha-server-run', function() {
       './test/unit/server/**/*.js'
     ], {read: false})
     .pipe(mocha({reporter: 'spec'}))
+
+})
+
+gulp.task('sandbox', function() {
+
+  return gulp.src([])
+  .pipe(webpack(require('./test/sandbox/webpack.config')))
+  .pipe(gulp.dest('./test/sandbox/public/js/'))
 
 })
 
