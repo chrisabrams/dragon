@@ -7,7 +7,7 @@ var Dragon = require('../../../../src/dragon')
 
 describe('Unit: Server: View: Base', function() {
 
-  it.only('should construct a view', function(done) {
+  it('should construct a view', function(done) {
 
     class View extends Dragon.View {
 

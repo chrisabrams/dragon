@@ -13,6 +13,10 @@ class DragonBaseModel {
     this.observeAttributes()
   }
 
+  initialize() {
+
+  }
+
   /*
   TODO: not the full appr
   */

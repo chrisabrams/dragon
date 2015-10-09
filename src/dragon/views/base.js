@@ -606,7 +606,17 @@ The following properties & methods are assigned on the prototype to allow for ea
 @default native
 @desc $ query engine
 */
-DragonBaseView.prototype.$ = document.querySelectorAll.bind(document)
+//DragonBaseView.prototype.$ = document.querySelectorAll.bind(document)
+DragonBaseView.prototype.$ = function(selector) {
+
+  var doc = null
+
+  if(typeof global == 'object' && global.document) doc = global.document
+  if(typeof window == 'object' && window.document) doc = window.document
+
+  return doc.querySelectorAll.call(doc, selector)
+
+}
 
 DragonBaseView.prototype.attached = false
 
