@@ -1,6 +1,6 @@
 {
   "name": "dragon.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Single Page Apps with ES6",
   "main": "src/dragon.js",
   "bin": {
@@ -36,7 +36,7 @@
     "minimist": "^1.1.1",
     "object.observe": "^0.2.4",
     "paradigm-server-express": "0.0.10",
-    "virtual-dom": "^2.1.1"
+    "virtual-dom": "chrisabrams/virtual-dom"
   },
   "devDependencies": {
     "babel": "^5.8.23",
@@ -59,11 +59,6 @@
     "jsdom": "^3.1.2",
     "json-loader": "^0.5.3",
     "mkdirp": "^0.5.1",
-    "paradigm-gulp-clean": "0.0.1",
-    "paradigm-gulp-copy-assets": "0.0.1",
-    "paradigm-gulp-stylus": "0.0.1",
-    "paradigm-gulp-watch": "0.0.2",
-    "paradigm-gulp-watch-handlebars": "0.0.1",
     "paradigm-minimist-watching": "0.0.1",
     "run-sequence": "^1.0.2",
     "serve-static": "^1.9.2",
