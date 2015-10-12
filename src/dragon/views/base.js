@@ -109,7 +109,7 @@ class DragonBaseView {
 
     catch(e) {
 
-      throw new Error(e)
+      console.error(e)
 
     }
 
@@ -182,7 +182,7 @@ class DragonBaseView {
     This is a weird error; if you put a return here, then it will not detach, but the error makes it sound like there is no DOM node to detach.
     */
     if(!this.$container) {
-      //throw new Error('this.$container is not defined')
+
       console.error(('DEBUG: Detach Error: this.$container is not defined'))
       //return
     }
@@ -225,7 +225,7 @@ class DragonBaseView {
 
       this.$container = this.$(this.container)
 
-      if(this.$container.length == 0) throw new Error('No container(s) found.')
+      if(this.$container.length == 0) console.error('No container(s) found.')
 
     }
 
@@ -251,11 +251,11 @@ class DragonBaseView {
 
     // Attach new DOM
     if(!this.el && !this.container) {
-      throw new Error('A view must have a container.')
+      console.error('A view must have a container.')
     }
 
     if(!this.el && !this.template) {
-      throw new Error('A view must have a template.')
+      console.error('A view must have a template.')
     }
 
   }
