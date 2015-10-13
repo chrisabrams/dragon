@@ -248,6 +248,7 @@ class DragonBaseView {
       }
       else{
         console.error('Target element not found.');
+        return
       }
     }
 
