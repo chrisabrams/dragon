@@ -246,7 +246,9 @@ class DragonBaseView {
         return
 
       }
-
+      else{
+        console.error('Target element not found.');
+      }
     }
 
     // Attach new DOM
