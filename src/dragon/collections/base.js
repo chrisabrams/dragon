@@ -64,7 +64,7 @@ class DragonBaseCollection {
       else {
         let model =  new this.model(entry) ;
         this.models.push(model);
-        this.trigger('add', entry);
+        this.trigger('add', model);
       }
 
     }
