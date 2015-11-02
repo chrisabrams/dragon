@@ -34,7 +34,7 @@ class DragonBaseView {
 
       else {
 
-        this.options[option] = option
+        this.options[option] = options[option]
 
       }
 
