@@ -59,10 +59,12 @@ class DragonBaseCollection {
 
       if(entry instanceof this.model) {
         this.models.push(entry)
+        this.trigger('add', entry)
       }
-
       else {
-        this.models.push(new this.model(entry))
+        let model =  new this.model(entry) ;
+        this.models.push(model);
+        this.trigger('add', model);
       }
 
     }
