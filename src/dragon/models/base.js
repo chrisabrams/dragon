@@ -5,7 +5,7 @@ class DragonBaseModel {
 
   constructor(attr = {}, options = {}) {
     this.uid = utils.uniqueId(this)
-
+    this.attr = {};
     this.options = options
 
     Object.assign(this.attr, this.defaults, attr)
@@ -85,7 +85,6 @@ class DragonBaseModel {
 
 }
 
-DragonBaseModel.prototype.attr = {}
 
 DragonBaseModel.prototype.defaults = {}
 
