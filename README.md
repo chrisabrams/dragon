@@ -50,7 +50,7 @@ The dispatcher is inspired from Chapin.
 
 ### Models
 - Delete/Unset that doesn't use `delete`
-- LocalStorate
+- LocalStorage
 - Pagination
 - Schemas
 - Undo/Redo
