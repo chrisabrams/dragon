@@ -30,17 +30,17 @@ What if Backbone were to be created today? What would the project look like? Wit
 - No more wrapping tags; views' DOM is 100% from template or attaching to existing DOM element(s)
 
 ### Router
-The router is inspired from Chapin.
+The router is inspired from Chaplin.
 
 - Objects in router can now be disposed, which has always been a bane for Backbone's router.
 
 ### Controllers
-The controller is inspired from Chapin.
+The controller is inspired from Chaplin.
 
 - Controllers have been added to provide MVC structure with the router.
 
 ### Dispatcher
-The dispatcher is inspired from Chapin.
+The dispatcher is inspired from Chaplin.
 
 - Responsible for instantiating controller & action on matching route.
 
