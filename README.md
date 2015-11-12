@@ -55,7 +55,6 @@ The dispatcher is inspired from Chaplin.
 - Schemas
 - Undo/Redo
 - Validation
-- WebSQL
 
 ### Views
 - Collection View
