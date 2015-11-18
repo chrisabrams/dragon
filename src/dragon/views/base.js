@@ -22,6 +22,62 @@ class DragonBaseView {
 
     this.uid = utils.uniqueId(this)
 
+    /*
+    Defaults
+    */
+    this.attached = false
+
+    /*
+    @property attachOnInit
+    @type Boolean
+    @default true
+    @desc Whether to attach the view on initialization
+    */
+    this.attachOnInit = true
+
+    /*
+    @property attachPlacement
+    @type String
+    @default 'append'
+    @options 'append', 'prepend'
+    @desc Determines where the view is attached into the container
+    */
+    this.attachPlacement = 'after'
+
+    /*
+    Direct Options
+    Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
+    */
+    this.directOptions = [
+      'attachOnInit',
+      'attachPlacement',
+      'collection',
+      'container',
+      'events',
+      'listen',
+      'model',
+      'renderOnInit',
+      'template'
+    ]
+
+    this.disposed = false
+
+    /*
+    @property renderOnInit
+    @type Boolean
+    @default true
+    @desc Whether to render the view on initialization
+    */
+    this.renderOnInit = true
+
+    /*
+    @property template
+    @type ????
+    @default null
+    @desc Template for the view
+    */
+    this.template = null
+
     this.options = {}
 
     Object.keys(options).forEach( (option) => {
@@ -43,13 +99,13 @@ class DragonBaseView {
     this._events    = []
     this._listeners = []
 
-  }
-
-  initialize() {
-
     this.setProperties()
     this.ensureElement()
     this.ensureContainer()
+
+  }
+
+  initialize() {
 
     //If the view is not binded to the DOM and is set to render on initialization
     if(!this.attached && this.renderOnInit) {
@@ -216,6 +272,25 @@ class DragonBaseView {
       el.parentNode.removeChild(el)
 
     })*/
+
+  }
+
+  /*
+  @method detach
+  @type Function
+  @desc Completely disposes of the view, it's DOM, events, etc.
+  */
+  dispose() {
+
+    if(!this.disposed) {
+
+      this.unBindEvents()
+      this.unBindListens()
+      this.detach()
+
+      utils.dispose(this)
+
+    }
 
   }
 
@@ -576,25 +651,6 @@ class DragonBaseView {
 
   }
 
-  /*
-  @method detach
-  @type Function
-  @desc Completely disposes of the view, it's DOM, events, etc.
-  */
-  dispose() {
-
-    if(!this.disposed) {
-
-      this.unBindEvents()
-      this.unBindListens()
-      this.detach()
-
-      utils.dispose(this)
-
-    }
-
-  }
-
 }
 
 Object.assign(DragonBaseView.prototype, EventsMixin)
@@ -620,67 +676,5 @@ DragonBaseView.prototype.$ = function(selector) {
   return doc.querySelectorAll.call(doc, selector)
 
 }
-
-DragonBaseView.prototype.attached = false
-
-/*
-@property attachOnInit
-@type Boolean
-@default true
-@desc Whether to attach the view on initialization
-*/
-DragonBaseView.prototype.attachOnInit = true
-
-/*
-@property attachPlacement
-@type String
-@default 'append'
-@options 'append', 'prepend'
-@desc Determines where the view is attached into the container
-*/
-DragonBaseView.prototype.attachPlacement = 'after'
-
-/*
-Direct Options
-Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
-*/
-DragonBaseView.prototype.directOptions = [
-  'attachOnInit',
-  'attachPlacement',
-  'collection',
-  'container',
-  'events',
-  'listen',
-  'model',
-  'renderOnInit',
-  'template'
-]
-
-DragonBaseView.prototype.disposed = false
-
-/*
-@property renderOnInit
-@type Boolean
-@default true
-@desc Whether to render the view on initialization
-*/
-DragonBaseView.prototype.renderOnInit = true
-
-/*
-@property tagName
-@type String
-@default null
-@desc The tag of the view
-@note This value is ignored after a view's initial render
-*/
-//DragonBaseView.prototype.tagName = null
-
-/*
-@property template
-@type ????
-@default null
-@desc Template for the view
-*/
-DragonBaseView.prototype.template = null
 
 module.exports = DragonBaseView
