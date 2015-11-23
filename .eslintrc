@@ -1,0 +1,17 @@
+{
+    "ecmaFeatures": {
+      "arrowFunctions": true,
+      "blockBindings": true,
+      "classes": true,
+      "defaultParams": true,
+      "destructuring": true,
+      "octalLiterals": true,
+      "spread": true,
+      "superInFunctions": true,
+      "templateStrings": true
+    },
+    "parser": "babel-eslint",
+    "rules": {
+      "strict": 0
+    }
+}

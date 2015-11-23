@@ -1,3 +1,5 @@
+'use strict';
+
 var Dispatcher = require('../router/dispatcher'),
     Router     = require('../router/base'),
     utils      = require('../utils')

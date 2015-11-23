@@ -1,3 +1,5 @@
+'use strict';
+
 var composeStore = require('../lib/composeStore'),
     utils        = require('../utils')
 

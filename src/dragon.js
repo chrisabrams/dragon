@@ -1,3 +1,5 @@
+'use strict';
+
 require('../lib/polyfills/Array.from')
 require('../lib/polyfills/element.remove')
 require('../lib/polyfills/node.prependchild')
@@ -18,7 +20,7 @@ var Dragon = {
   Application    : require('./dragon/application/base'),
   Collection     : require('./dragon/collections/base'),
   Component      : require('./dragon/components/base'),
-  ComponentAPI   : require('./dragon/components/api'),
+  //ComponentAPI   : require('./dragon/components/api'),
   Controller     : require('./dragon/controllers/base'),
   Events         : require('./dragon/events'),
   Model          : require('./dragon/models/base'),

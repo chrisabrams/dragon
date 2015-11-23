@@ -1,3 +1,5 @@
+'use strict';
+
 var Utils = {}
 
 Utils.uid = {}
