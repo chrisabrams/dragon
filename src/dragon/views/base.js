@@ -102,12 +102,13 @@ class DragonBaseView {
     this._listeners = []
 
     this.setProperties()
-    this.ensureElement()
-    this.ensureContainer()
 
   }
 
   initialize() {
+
+    this.ensureElement()
+    this.ensureContainer()
 
     //If the view is not binded to the DOM and is set to render on initialization
     if(!this.attached && this.renderOnInit) {
