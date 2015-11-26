@@ -83,6 +83,60 @@ class DragonBaseModel {
 
   }
 
+  pairs(object = this.attr) {
+    var index = -1,
+    props = this.keys(object),
+    length = props.length,
+    result = Array(length);
+    while (++index < length) {
+      let key = props[index];
+      result[index] = [key, object[key]];
+    }
+    return result;
+  }
+
+  baseValues(object , props) {
+    var index = -1,
+    length = props.length,
+    result = Array(length);
+
+    while (++index < length) {
+      result[index] = object[props[index]];
+    }
+    return result;
+  }
+
+  values(object = this.attr) {
+    return baseValues(object, this.keys(object));
+  }
+
+  keys(object = this.attr){
+    return Object.keys(object);
+  }
+
+  // Invert the keys and values of an object. The values must be serializable.
+  invert = function(obj = this.attr) {
+    var result = {},
+    index = -1,
+    props = this.keys(obj),
+    length = props.length;
+
+    while (++index < length) {
+      result[obj[props[index]]] = props[index];
+    }
+    return result;
+  }
+
+  isEmpty(value = this.attr) {
+    if (value == null) {
+      return true;
+    }
+    if (isArrayLike(value) && (isArray(value) || isString(value) || isArguments(value) ||
+    (isObjectLike(value) && isFunction(value.splice)))) {
+      return !value.length;
+    }
+    return !keys(value).length;
+  }
 }
 
 
