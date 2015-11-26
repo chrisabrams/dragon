@@ -95,6 +95,30 @@ class DragonBaseModel {
     return result;
   }
 
+  // Internal pick helper function to determine if `obj` has key `key`.
+  var keyInObj = function(value, key, obj) {
+    return key in obj;
+  };
+
+// Return a copy of the object only containing the whitelisted properties.
+  function pick(obj=this.attr, ...keys) {
+    var result = {}, iteratee = keys[0];
+    if (obj == null) return result;
+    if (_.isFunction(iteratee)) {
+      if (keys.length > 1) iteratee = iteratee; //TODO optimized callback for enable context
+      keys = this.keys(obj); //not working in inherited properties keys
+    } else {
+      iteratee = keyInObj;
+      obj = Object(obj);
+    }
+    for (var i = 0, length = keys.length; i < length; i++) {
+      var key = keys[i];
+      var value = obj[key];
+      if (iteratee(value, key, obj)) result[key] = value;
+    }
+    return result;
+  }
+
   baseValues(object , props) {
     var index = -1,
     length = props.length,
@@ -126,7 +150,6 @@ class DragonBaseModel {
     }
     return result;
   }
-
   isEmpty(value = this.attr) {
     if (value == null) {
       return true;
