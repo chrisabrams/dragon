@@ -101,10 +101,11 @@ class DragonBaseModel {
   };
 
 // Return a copy of the object only containing the whitelisted properties.
-  pick(obj=this.attr, ...keys) {
-    var result = {}, iteratee = keys[0];
+  pick(...keys) {
+    debugger;
+    var obj=this.attr,result = {}, iteratee = keys[0];
     if (obj == null) return result;
-    if (_.isFunction(iteratee)) {
+    if (typeof iteratee === 'function') {
       if (keys.length > 1) iteratee = iteratee; //TODO optimized callback for enable context
       keys = this.keys(obj); //not working in inherited properties keys
     } else {
@@ -119,6 +120,20 @@ class DragonBaseModel {
     return result;
   }
 
+  // Return a copy of the object without the blacklisted properties.
+  omit (...keys) {
+    var obj=this.attr,iteratee = keys[0], context;
+    if (typeof iteratee === 'function') {
+      iteratee = iteratee;
+      if (keys.length > 1) context = keys[1];
+    } else {
+      iteratee = function(value, key, obj) {
+        return keys.indexOf(key) == -1;
+      };
+    }
+    return this.pick(iteratee, context);
+  }
+
   baseValues(object , props) {
     var index = -1,
     length = props.length,
@@ -131,7 +146,7 @@ class DragonBaseModel {
   }
 
   values(object = this.attr) {
-    return baseValues(object, this.keys(object));
+    return this.baseValues(object, this.keys(object));
   }
 
   keys(object = this.attr){
