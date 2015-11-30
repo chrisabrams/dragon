@@ -60,6 +60,7 @@
     "handlebars-template-loader": "^0.5.3",
     "jsdom": "^3.1.2",
     "json-loader": "^0.5.3",
+    "lodash": "^3.10.1",
     "mkdirp": "^0.5.1",
     "paradigm-minimist-watching": "0.0.1",
     "run-sequence": "^1.0.2",
