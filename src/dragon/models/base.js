@@ -102,7 +102,6 @@ class DragonBaseModel {
 
 // Return a copy of the object only containing the whitelisted properties.
   pick(...keys) {
-    debugger;
     var obj=this.attr,result = {}, iteratee = keys[0];
     if (obj == null) return result;
     if (typeof iteratee === 'function') {
