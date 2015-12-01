@@ -1,3 +1,5 @@
+'use strict';
+
 var EventsMixin = require('../events'),
     Route       = require('./route'),
     utils       = require('../utils')

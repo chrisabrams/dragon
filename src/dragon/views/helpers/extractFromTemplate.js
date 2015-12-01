@@ -1,3 +1,5 @@
+'use strict';
+
 var extractFromTemplate = (template) => {
 
   var tempEl1 = document.createElement('div')

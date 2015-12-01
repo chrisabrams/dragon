@@ -1,3 +1,5 @@
+'use strict';
+
 var escapeRegExp   = /[\-{}\[\]+?.,\\\^$|#\s]/g,
     optionalRegExp = /\((.*?)\)/g,
     paramRegExp    = /(?::|\*)(\w+)/g
