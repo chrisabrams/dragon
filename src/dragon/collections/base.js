@@ -77,6 +77,18 @@ class DragonBaseCollection {
 
   }
 
+  [Symbol.iterator](){
+    var collectionsModels = this.models,index = 0
+    return {
+      next: function next () {
+        if (index + 1 > collectionsModels.length) {
+          return { done: true };
+        }
+        return { value: collectionsModels[index++], done: false };
+      }
+    }
+  }
+
   dispose() {
 
     if(!this.disposed) {
@@ -94,5 +106,6 @@ DragonBaseCollection.prototype.dispose = false
 DragonBaseCollection.prototype.model = Model
 
 DragonBaseCollection.prototype.url = ''
+
 
 module.exports = DragonBaseCollection

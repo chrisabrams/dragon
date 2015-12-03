@@ -167,15 +167,15 @@ class DragonBaseModel {
     return result;
   }
 
+  isArrayLike = function(collection) {
+    var length = collection[length];
+    return typeof length == 'number' && length >= 0 && length <= (Math.pow(2, 53) - 1);
+  }; 
+
   isEmpty(value = this.attr) {
-    if (value == null) {
-      return true;
-    }
-    if (isArrayLike(value) && (isArray(value) || isString(value) || isArguments(value) ||
-    (isObjectLike(value) && isFunction(value.splice)))) {
-      return !value.length;
-    }
-    return !keys(value).length;
+    if (value == null) return true;
+    if (isArrayLike(value) && (_.isArray(value) || _.isString(value) || _.isArguments(value))) return value.length === 0;
+    return this.keys(value).length === 0;
   }
 }
 

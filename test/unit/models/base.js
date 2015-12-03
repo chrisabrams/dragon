@@ -15,7 +15,7 @@ describe('Unit: Models: Base', function() {
     expect(model).to.be.an('object')
     expect(model.attr).be.an('object')
     expect(model.defaults).be.an('object')
-    expect(model.uid).to.be.a('string')
+    expect(model.uid).to.be.a('symbol')
     expect(model.url).to.be.a('string')
 
     done()
@@ -242,6 +242,31 @@ describe('Unit: Models: Base', function() {
     var value = model.pick("foo")
     expect(value).to.be.an('object')
     expect(value).to.eql({foo : 'bar'})
+    done()
+  })
+
+  it('should omit  some  values(foo)', function(done) {
+
+    class ModelJ extends Dragon.Model {}
+
+    var model = new ModelJ()
+
+    model.attr = {foo : 'bar', foobar : 'baz'}
+    var value = model.omit("foo")
+    expect(value).to.be.an('object')
+    expect(value).to.eql({foobar : 'baz'})
+    done()
+  })
+  it('should return the keys', function(done) {
+
+    class ModelJ extends Dragon.Model {}
+
+    var model = new ModelJ()
+
+    model.attr = {foo : 'bar', foobar : 'baz'}
+    var keys = model.keys()
+    expect(keys).to.be.an('array')
+    expect(keys).to.eql(['foo','foobar'])
     done()
   })
 
