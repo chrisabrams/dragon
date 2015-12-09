@@ -13,8 +13,8 @@ class DragonBaseCollection {
 
     this.models = []
 
-    if(!(entries instanceof Array)) {
-      throw new Error('Collection entries must be an array')
+    if(!(entries[Symbol.iterator])) {
+      throw new Error('Collection entries must be an iterable')
     }
 
     if(!this.model || !(this.model instanceof Function)) {
@@ -48,17 +48,15 @@ class DragonBaseCollection {
   Should also consider concatting arrays as pushing arrays of 1000 or more can be very time consuming/lots of looping.
   Overall this function sucks but helps move the project forward atm.
   */
-  ensureEntries(entries) {
 
+  ensureEntries(entries) {
+    // we will suppport all kind of iterable  here !!
     // It is simpler to manage things by making a single item an array
-    if(!(entries instanceof Array)) {
+    if(!(entries[Symbol.iterator])) {
       entries = [entries]
     }
 
-    for(let i = 0, l = entries.length; i < l; i++) {
-
-      let entry = entries[i]
-
+    for(let entry of entries) {
       if(entry instanceof this.model) {
         this.models.push(entry)
       }
