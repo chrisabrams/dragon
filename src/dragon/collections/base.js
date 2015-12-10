@@ -29,10 +29,24 @@ class DragonBaseCollection {
 
   }
 
+
+  var collectionArray = 
+  [0,[{name:"reduce"},{name:"inject",alias:"reduce"},{name:"foldl",alias:"reduce"},
+      {name:"invoke"},{name:"reduceRight"},{name:"foldr",alias:"reduceRight"},
+      {name:"without"},{name:"difference"}],
+  [1,[{name:"toArray"},{name:"size"},{name:"shuffle"},{name:"isEmpty"},{name:"chain"}]],
+  [3,[{name:"forEach"},{name:"each"},{name:"map"},{name:"collect"},{name:"find"},
+      {name:"detect"},{name:"filter"},{name:"select"},{name:"reject"},{name:"every"},{name:"all"},
+      {name:"some"},{name:"any"},{name:"include"},{name:"includes"},{name:"contains"},{name:"max"},
+      {name:"min"},{name:"first"},{name:"head"},{name:"take"},{name:"initial"},{name:"rest"},
+      {name:"tail"},{name:"drop"},{name:"last"},{name:"indexOf"},{name:"lastIndexOf"},{name:"sample"},{name:"partition"},
+      {name:"groupBy"},{name:"countBy"},{name:"sortBy"},{name:"indexBy"},{name:"findIndex"},{name:"findLastIndex"}]]
+  ] , collectionMethods = new map(collectionArray);
+  
+ console.log(collectionsModels);
+
   add(entries) {
-
     this.ensureEntries(entries)
-
   }
 
   clear() {
