@@ -87,6 +87,8 @@ class DragonBaseView {
     //this.ensureElement()
     //this.ensureContainer()
 
+    this.$container = document.querySelectorAll(this.options.container)
+
     this.el = document.createElement('div')
 
     if(typeof this.options.container == 'string') {
@@ -95,6 +97,16 @@ class DragonBaseView {
 
     else if(this.options.container instanceof createContainer) {
       this.container = this.options.container
+    }
+
+    if(!this.attached && this.attachOnInit) {
+
+      this.once('render', () => {
+
+        this.attach()
+
+      })
+
     }
 
     this.render()
@@ -125,10 +137,11 @@ class DragonBaseView {
         switch(this.attachPlacement) {
 
           // Attach before all other children in container
-          case 'first': $container['prependChild'](this._vel); break;
+          case 'first'   : $container['prependChild'](this.el); break;
+          case 'prepend' : $container['prependChild'](this.el); break;
 
           // Attach normally, after all children in container
-          default: $container['appendChild'](this._vel)
+          default: $container['appendChild'](this.el)
 
         }
 
@@ -142,9 +155,9 @@ class DragonBaseView {
 
     }
 
-    if(!this.$el) {
+    /*if(!this.$el) {
       this.setElement()
-    }
+    }*/
 
     this.attached = true
 
@@ -449,13 +462,9 @@ class DragonBaseView {
     }
 
     this.el.innerHTML = this.template
-    //this.container.render()
 
     console.log('View', this)
     this.trigger('render')
-
-    document.querySelector(this.options.container).appendChild(this.el)
-    this.trigger('addedToDOM')
 
     return this
 

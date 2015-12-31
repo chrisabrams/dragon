@@ -202,12 +202,22 @@
 	    //this.ensureElement()
 	    //this.ensureContainer()
 
+	    this.$container = document.querySelectorAll(this.options.container);
+
 	    this.el = document.createElement('div');
 
 	    if (typeof this.options.container == 'string') {
 	      this.container = (0, _stardux.createContainer)(this.el);
 	    } else if (this.options.container instanceof _stardux.createContainer) {
 	      this.container = this.options.container;
+	    }
+
+	    if (!this.attached && this.attachOnInit) {
+
+	      this.once('render', function () {
+
+	        _this2.attach();
+	      });
 	    }
 
 	    this.render();
@@ -242,11 +252,13 @@
 
 	            // Attach before all other children in container
 	            case 'first':
-	              $container['prependChild'](_this3._vel);break;
+	              $container['prependChild'](_this3.el);break;
+	            case 'prepend':
+	              $container['prependChild'](_this3.el);break;
 
 	            // Attach normally, after all children in container
 	            default:
-	              $container['appendChild'](_this3._vel);
+	              $container['appendChild'](_this3.el);
 
 	          }
 	        });
@@ -255,9 +267,9 @@
 	        console.error(e);
 	      }
 
-	      if (!this.$el) {
-	        this.setElement();
-	      }
+	      /*if(!this.$el) {
+	        this.setElement()
+	      }*/
 
 	      this.attached = true;
 
@@ -548,13 +560,9 @@
 	      }
 
 	      this.el.innerHTML = this.template;
-	      //this.container.render()
 
 	      console.log('View', this);
 	      this.trigger('render');
-
-	      document.querySelector(this.options.container).appendChild(this.el);
-	      this.trigger('addedToDOM');
 
 	      return this;
 	    }
