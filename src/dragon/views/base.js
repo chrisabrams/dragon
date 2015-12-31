@@ -87,16 +87,17 @@ class DragonBaseView {
     //this.ensureElement()
     //this.ensureContainer()
 
-    this.$container = document.querySelectorAll(this.options.container)
-
     // We need a wrapping tag; too dangerous not to have one
     this.el = document.createElement('div')
 
     if(typeof this.options.container == 'string') {
+      this.$container = document.querySelectorAll(this.options.container)
       this.container = createContainer(this.el)
     }
 
     else if(this.options.container instanceof createContainer) {
+      //this.$container =
+      //TODO: figure out how to get $container from an already created container
       this.container = this.options.container
     }
 
