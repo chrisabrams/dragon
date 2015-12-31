@@ -1,19 +1,8 @@
 'use strict';
 
-var EventsMixin         = require('../events'),
-    utils               = require('../utils')
-
-var createElement       = require('virtual-dom/create-element'),
-    diff                = require('virtual-dom/diff'),
-    extractFromTemplate = require('./helpers/extractFromTemplate'),
-    patch               = require('virtual-dom/patch'),
-    VNode               = require('virtual-dom/vnode/vnode'),
-    VText               = require('virtual-dom/vnode/vtext')
-
-var convertHTML = require('html-to-vdom')({
-  VNode: VNode,
-  VText: VText
-})
+import {createContainer} from 'stardux'
+import EventsMixin       from '../events'
+import utils             from '../utils'
 
 /*
 @class DragonBaseView
@@ -680,4 +669,4 @@ DragonBaseView.prototype.$ = function(selector) {
 
 }
 
-module.exports = DragonBaseView
+export default DragonBaseView

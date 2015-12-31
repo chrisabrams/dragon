@@ -1,7 +1,7 @@
 {
   "name": "dragon.js",
-  "version": "0.0.5",
-  "description": "Single Page Apps with ES6",
+  "version": "0.2.0",
+  "description": "Single Page Apps with ES6/7",
   "main": "src/dragon.js",
   "bin": {
     "dragon.js": "./bin/dragon"
@@ -20,7 +20,11 @@
     "app",
     "spa",
     "es6",
-    "ecmascript6"
+    "es7",
+    "ecmascript6",
+    "ecmascript7",
+    "es2015",
+    "es2016"
   ],
   "author": "Chris Abrams <mail@chrisabrams.com>",
   "license": "MIT",
@@ -29,19 +33,18 @@
   },
   "homepage": "https://github.com/chrisabrams/dragon",
   "dependencies": {
-    "babel-core": "^6.2.1",
+    "babel-core": "^6.3.26",
     "babel-loader": "^6.2.0",
     "babel-plugin-transform-runtime": "^6.1.18",
-    "babel-preset-es2015": "^6.1.18",
-    "babel-preset-stage-0": "^6.1.18",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
     "grapnel": "^0.5.9",
-    "hbs": "^3.1.1",
-    "html-to-vdom": "^0.7.0",
-    "html2hscript": "^1.2.1",
+    "incremental-dom": "^0.3.0",
     "minimist": "^1.1.1",
-    "object.observe": "^0.2.4",
-    "paradigm-server-express": "0.0.10",
-    "virtual-dom": "^2.1.1"
+    "paradigm-server-express": "0.0.13",
+    "redux": "3.0.5",
+    "stardux": "0.0.2",
+    "starplate": "0.0.25"
   },
   "devDependencies": {
     "chai": "^2.2.0",
@@ -56,12 +59,10 @@
     "gulp-mocha-phantomjs": "^0.10.1",
     "gulp-size": "^1.2.1",
     "gulp-util": "^3.0.4",
-    "handlebars": "^3.0.3",
-    "handlebars-template-loader": "^0.5.3",
-    "jsdom": "^3.1.2",
     "json-loader": "^0.5.3",
     "lodash": "^3.10.1",
     "mkdirp": "^0.5.1",
+    "nodemon": "^1.8.1",
     "paradigm-minimist-watching": "0.0.1",
     "run-sequence": "^1.0.2",
     "serve-static": "^1.9.2",
@@ -69,7 +70,7 @@
     "sinon-chai": "^2.7.0",
     "superagent": "^1.4.0",
     "vinyl-source-stream": "^1.1.0",
-    "webpack": "^1.12.2",
-    "webpack-stream": "^2.1.1"
+    "webpack": "^1.12.9",
+    "webpack-stream": "^2.3.0"
   }
 }

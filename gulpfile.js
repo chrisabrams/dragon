@@ -7,6 +7,7 @@ var babel          = require('gulp-babel'),
     mkdirp         = require('mkdirp'),
     mocha          = require('gulp-mocha'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
+    nodemon        = require('nodemon'),
     path           = require('path'),
     sequence       = require('run-sequence'),
     size           = require('gulp-size'),
@@ -15,75 +16,6 @@ var babel          = require('gulp-babel'),
     webpack        = require('webpack-stream')
 
 gulp.task('b', ['build'])
-
-gulp.task('build', function(done) {
-
-  var bundler = browserify({
-    bundleExternal: true,
-    cache: {},
-    debug: false,
-    entries: [
-      './src/dragon.js'
-    ],
-    extensions: [],
-    fullPaths: false,
-    insertGlobals: false,
-    packageCache: {},
-    standalone: 'Dragon'
-  })
-
-  bundler
-    .transform(babelify.configure({
-      blacklist: ["useStrict"]
-    }))
-    .bundle()
-    .on('error', function() {
-      console.log(arguments)
-    })
-    .pipe(source('dragon.js'))
-    .pipe(gulp.dest('dist/'))
-    .on('end', function() {
-      console.log('dist/dragon.js created.')
-      done()
-    })
-
-})
-
-function buildBrowserMocha(options, done) {
-
-  var testFiles   = glob.sync(options.testFiles)
-  var testHelpers = options.testHelpers || [
-    './test/helpers/browser/js/runner.js'
-  ]
-
-  var sources = testHelpers.concat(testFiles)
-
-  var bundler = browserify({
-    bundleExternal: true,
-    cache: {},
-    debug: true,
-    entries: sources,
-    extensions: [],
-    fullPaths: true,
-    insertGlobals: false,
-    packageCache: {}
-  })
-
-  bundler
-    .transform(babelify.configure({
-      blacklist: ["useStrict"]
-    }))
-    .bundle()
-    .on('error', function() {
-      console.log(arguments)
-    })
-    .pipe(source('spec.js'))
-    .pipe(gulp.dest('test/helpers/browser/js/'))
-    .on('end', function() {
-      done()
-    })
-
-}
 
 gulp.task('mocha-browser-build', function(done) {
 
@@ -175,6 +107,44 @@ gulp.task('t', [
   //'mocha-browser-run'
   'mocha-models'
 ])
+
+gulp.task('test-watch', ['test-webpack'], function () {
+
+  nodemon({
+    //env: ,
+    //nodeArgs: ['--debug'],
+    script: 'test/helpers/browser/runner.js',
+    watch: ['./src/']
+  })
+  .on('start', function() {
+
+    livereload.listen()
+
+    gulp.watch(path.join(__dirname, './src/**/*.js'), ['webpack'])
+    gulp.watch(path.join(__dirname, './src/**/*.js'), livereload.reload)
+
+  })
+  .on('restart', function () {
+
+    var files = arguments[0]
+
+    files.forEach( function(file) {
+      file = file.replace(process.cwd(), '') // Just show relative file path.
+
+      console.log('File changed:', chalk.yellow(file))
+    })
+
+  })
+
+})
+
+gulp.task('test-webpack', function() {
+
+  gulp.src([])
+  .pipe(webpack(require('./webpack.test')))
+  .pipe(gulp.dest('./test/helpers/browser/js/'))
+
+})
 
 /*.on('error', function(err) {
   console.error(err)
