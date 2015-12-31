@@ -9,7 +9,9 @@ var config = {
       './src/dragon.js'
     ],
     spec: [
-      './test/unit/views/base.js'
+      './test/helpers/browser/js/runner.js',
+      './test/unit/views/base.js',
+      './test/integration/views/base.js',
     ]
   },
 

@@ -43,7 +43,7 @@ class DragonBaseView {
       'attachOnInit',
       'attachPlacement',
       'collection',
-      'container',
+      //'container',
       'events',
       'listen',
       'model',
@@ -52,14 +52,6 @@ class DragonBaseView {
     ]
 
     this.disposed = false
-
-    /*
-    @property renderOnInit
-    @type Boolean
-    @default true
-    @desc Whether to render the view on initialization
-    */
-    this.renderOnInit = true
 
     /*
     @property template
@@ -90,33 +82,22 @@ class DragonBaseView {
     this._events    = []
     this._listeners = []
 
-    this.setProperties()
+    //this.setProperties()
 
-  }
+    //this.ensureElement()
+    //this.ensureContainer()
 
-  initialize() {
+    this.el = document.createElement('div')
 
-    this.ensureElement()
-    this.ensureContainer()
-
-    //If the view is not binded to the DOM and is set to render on initialization
-    if(!this.attached && this.renderOnInit) {
-
-      //If the view is set to attach on initialization
-      if(this.attachOnInit) {
-
-        this.once('render', () => {
-
-          this.attach()
-
-        })
-
-      }
-
-      this.render()
-
+    if(typeof this.options.container == 'string') {
+      this.container = createContainer(this.el)
     }
 
+    else if(this.options.container instanceof createContainer) {
+      this.container = this.options.container
+    }
+
+    this.render()
   }
 
   /*
@@ -428,15 +409,7 @@ class DragonBaseView {
   */
   getTemplate() {
 
-    var model = {
-      attr: {}
-    }
-
-    if(this.model && typeof this.model == 'object') {
-      model = this.model
-    }
-
-    return this.template(model.attr)
+    return this.template
 
   }
 
@@ -470,39 +443,19 @@ class DragonBaseView {
 
   render() {
 
-    var template = this.getTemplate()
-
-    if(!this.tagName) {
-
-      this.tagName = this.getTagName(template)
-
+    if(!this.container) {
+      console.error('Container type not valid.')
+      return this
     }
 
-    if(!this.vel) {
+    this.el.innerHTML = this.template
+    //this.container.render()
 
-      this.vel  = convertHTML(template)
-
-      /*
-      While newer versions of VDOM support multiple outer tags, we're gonna stick with one outer tag
-      */
-      if(this.vel instanceof Array) this.vel = this.vel[0]
-
-      this.vel.tagName = this.tagName
-      this._vel = createElement(this.vel)
-
-    }
-
-    var vel     = convertHTML(template)
-    var patches = diff(this.vel, vel)
-
-    this._vel   = patch(this._vel, patches)
-    this.vel    = vel
-
-    var extraction = extractFromTemplate(template)
-
-    this.setAttributes(extraction.attributes)
-
+    console.log('View', this)
     this.trigger('render')
+
+    document.querySelector(this.options.container).appendChild(this.el)
+    this.trigger('addedToDOM')
 
     return this
 

@@ -167,17 +167,11 @@
 	    Direct Options
 	    Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
 	    */
-	    this.directOptions = ['attachOnInit', 'attachPlacement', 'collection', 'container', 'events', 'listen', 'model', 'renderOnInit', 'template'];
+	    this.directOptions = ['attachOnInit', 'attachPlacement', 'collection',
+	    //'container',
+	    'events', 'listen', 'model', 'renderOnInit', 'template'];
 
 	    this.disposed = false;
-
-	    /*
-	    @property renderOnInit
-	    @type Boolean
-	    @default true
-	    @desc Whether to render the view on initialization
-	    */
-	    this.renderOnInit = true;
 
 	    /*
 	    @property template
@@ -203,44 +197,33 @@
 	    this._events = [];
 	    this._listeners = [];
 
-	    this.setProperties();
-	  }
+	    //this.setProperties()
 
-	  _createClass(DragonBaseView, [{
-	    key: 'initialize',
-	    value: function initialize() {
-	      var _this3 = this;
+	    //this.ensureElement()
+	    //this.ensureContainer()
 
-	      this.ensureElement();
-	      this.ensureContainer();
+	    this.el = document.createElement('div');
 
-	      //If the view is not binded to the DOM and is set to render on initialization
-	      if (!this.attached && this.renderOnInit) {
-
-	        //If the view is set to attach on initialization
-	        if (this.attachOnInit) {
-
-	          this.once('render', function () {
-
-	            _this3.attach();
-	          });
-	        }
-
-	        this.render();
-	      }
+	    if (typeof this.options.container == 'string') {
+	      this.container = (0, _stardux.createContainer)(this.el);
+	    } else if (this.options.container instanceof _stardux.createContainer) {
+	      this.container = this.options.container;
 	    }
 
-	    /*
-	    @method attach
-	    @type Function
-	    @return this
-	    @desc Attaches the view to the DOM
-	    */
+	    this.render();
+	  }
 
-	  }, {
+	  /*
+	  @method attach
+	  @type Function
+	  @return this
+	  @desc Attaches the view to the DOM
+	  */
+
+	  _createClass(DragonBaseView, [{
 	    key: 'attach',
 	    value: function attach() {
-	      var _this4 = this;
+	      var _this3 = this;
 
 	      try {
 
@@ -255,15 +238,15 @@
 
 	          var placement;
 
-	          switch (_this4.attachPlacement) {
+	          switch (_this3.attachPlacement) {
 
 	            // Attach before all other children in container
 	            case 'first':
-	              $container['prependChild'](_this4._vel);break;
+	              $container['prependChild'](_this3._vel);break;
 
 	            // Attach normally, after all children in container
 	            default:
-	              $container['appendChild'](_this4._vel);
+	              $container['appendChild'](_this3._vel);
 
 	          }
 	        });
@@ -324,7 +307,7 @@
 	  }, {
 	    key: 'detach',
 	    value: function detach() {
-	      var _this5 = this;
+	      var _this4 = this;
 
 	      //console.log("DEBUG: Detaching: Container", this.$container)
 	      //console.log("DEBUG: Detaching: El", this.$el)
@@ -346,7 +329,7 @@
 
 	      Array.prototype.forEach.call(this.$container, function (container) {
 
-	        var els = container.querySelectorAll(_this5.el);
+	        var els = container.querySelectorAll(_this4.el);
 
 	        Array.prototype.forEach.call(els, function (el) {
 
@@ -430,13 +413,13 @@
 	  }, {
 	    key: 'event',
 	    value: function event() {
-	      var _this6 = this,
+	      var _this5 = this,
 	          _arguments = arguments;
 
 	      if (!this.attached) {
 	        this.on('addedToDOM', function () {
 
-	          _this6._event.apply(_this6, _arguments);
+	          _this5._event.apply(_this5, _arguments);
 	        });
 	      } else {
 	        this._event.apply(this, arguments);
@@ -445,7 +428,7 @@
 	  }, {
 	    key: '_event',
 	    value: function _event(action) {
-	      var _this7 = this;
+	      var _this6 = this;
 
 	      var handler = arguments[arguments.length - 1],
 	          origHandler = arguments[arguments.length - 1],
@@ -498,7 +481,7 @@
 	        this.bindEvent(action, selector, handler);
 	      } else {
 	        this.on('addedToDOM', function () {
-	          _this7.bindEvent(action, selector, handler);
+	          _this6.bindEvent(action, selector, handler);
 	        });
 	      }
 	    }
@@ -524,15 +507,7 @@
 	    key: 'getTemplate',
 	    value: function getTemplate() {
 
-	      var model = {
-	        attr: {}
-	      };
-
-	      if (this.model && _typeof(this.model) == 'object') {
-	        model = this.model;
-	      }
-
-	      return this.template(model.attr);
+	      return this.template;
 	    }
 	  }, {
 	    key: 'listen',
@@ -567,37 +542,19 @@
 	    key: 'render',
 	    value: function render() {
 
-	      var template = this.getTemplate();
-
-	      if (!this.tagName) {
-
-	        this.tagName = this.getTagName(template);
+	      if (!this.container) {
+	        console.error('Container type not valid.');
+	        return this;
 	      }
 
-	      if (!this.vel) {
+	      this.el.innerHTML = this.template;
+	      //this.container.render()
 
-	        this.vel = convertHTML(template);
-
-	        /*
-	        While newer versions of VDOM support multiple outer tags, we're gonna stick with one outer tag
-	        */
-	        if (this.vel instanceof Array) this.vel = this.vel[0];
-
-	        this.vel.tagName = this.tagName;
-	        this._vel = createElement(this.vel);
-	      }
-
-	      var vel = convertHTML(template);
-	      var patches = diff(this.vel, vel);
-
-	      this._vel = patch(this._vel, patches);
-	      this.vel = vel;
-
-	      var extraction = extractFromTemplate(template);
-
-	      this.setAttributes(extraction.attributes);
-
+	      console.log('View', this);
 	      this.trigger('render');
+
+	      document.querySelector(this.options.container).appendChild(this.el);
+	      this.trigger('addedToDOM');
 
 	      return this;
 	    }
@@ -613,7 +570,7 @@
 	  }, {
 	    key: 'setAttributes',
 	    value: function setAttributes() {
-	      var _this8 = this;
+	      var _this7 = this;
 
 	      this.attributes = {};
 
@@ -636,7 +593,7 @@
 
 	        // If the attribute is not on the ignore list
 	        if (ignore.indexOf(item.name) == -1) {
-	          _this8.attributes[item.name] = item.value;
+	          _this7.attributes[item.name] = item.value;
 	        }
 	      });
 	    }
@@ -674,7 +631,7 @@
 	  }, {
 	    key: 'setProperties',
 	    value: function setProperties() {
-	      var _this9 = this;
+	      var _this8 = this;
 
 	      var allowedOptions = ['container', 'el', 'template'];
 
@@ -685,8 +642,8 @@
 	        // If the property is not on the ignore list
 	        if (allowedOptions.indexOf(key) > -1) {
 
-	          _this9[key] = options[key];
-	          delete _this9.options[key];
+	          _this8[key] = options[key];
+	          delete _this8.options[key];
 	        }
 	      });
 	    }
@@ -712,14 +669,14 @@
 	  }, {
 	    key: 'unBindListens',
 	    value: function unBindListens() {
-	      var _this10 = this;
+	      var _this9 = this;
 
 	      this._listeners.forEach(function (item) {
 
 	        var ev = item[0],
 	            handler = item[1];
 
-	        _this10.off(ev, handler);
+	        _this9.off(ev, handler);
 	      });
 	    }
 	  }]);
