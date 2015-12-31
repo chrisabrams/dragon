@@ -89,6 +89,7 @@ class DragonBaseView {
 
     this.$container = document.querySelectorAll(this.options.container)
 
+    // We need a wrapping tag; too dangerous not to have one
     this.el = document.createElement('div')
 
     if(typeof this.options.container == 'string') {
