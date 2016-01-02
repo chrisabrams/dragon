@@ -47,6 +47,7 @@ class DragonBaseView {
       'collection',
       //'container',
       'events',
+      'id',
       'listen',
       'model',
       'renderOnInit',
@@ -91,6 +92,8 @@ class DragonBaseView {
 
     // We need a wrapping tag; too dangerous not to have one
     this.el = document.createElement('div')
+
+    if(this.id) this.el.id = this.id
 
     if(typeof this.options.container == 'string') {
       this.$container = document.querySelectorAll(this.options.container)
@@ -466,6 +469,7 @@ class DragonBaseView {
     }
 
     this.el.innerHTML = this.template
+    if(this.model) this.container.update(this.model.attr)
 
     console.log('View', this)
     this.emit('render')
