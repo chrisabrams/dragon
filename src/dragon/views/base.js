@@ -1,7 +1,8 @@
 'use strict';
 
 import {createContainer} from 'stardux'
-import EventsMixin       from '../events'
+import eventsMixin       from '../events'
+import mixin             from '../mixin'
 import utils             from '../utils'
 
 /*
@@ -12,6 +13,7 @@ class DragonBaseView {
   constructor(options = {}) {
 
     this.uid = utils.uniqueId(this)
+    this.mixin(eventsMixin)
 
     /*
     Defaults
@@ -163,7 +165,7 @@ class DragonBaseView {
 
     this.attached = true
 
-    this.trigger('addedToDOM')
+    this.emit('addedToDOM')
 
     return this
 
@@ -466,7 +468,7 @@ class DragonBaseView {
     this.el.innerHTML = this.template
 
     console.log('View', this)
-    this.trigger('render')
+    this.emit('render')
 
     return this
 
@@ -609,7 +611,7 @@ class DragonBaseView {
 
 }
 
-Object.assign(DragonBaseView.prototype, EventsMixin)
+Object.assign(DragonBaseView.prototype, {mixin})
 
 /* Developer Notes
 The following properties & methods are assigned on the prototype to allow for easier overriding.

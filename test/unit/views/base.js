@@ -45,4 +45,20 @@ describe('Unit: View', function() {
 
   })
 
+  it('should manually attach to DOM', function(done) {
+
+    var view = new View({
+      attachOnInit: false,
+      container: '#app',
+      template: 'Hello World'
+    })
+
+    view.on('addedToDOM', function() {
+      done()
+    })
+
+    view.attach()
+
+  })
+
 })

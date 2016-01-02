@@ -44,7 +44,8 @@
     "paradigm-server-express": "0.0.13",
     "redux": "3.0.5",
     "stardux": "0.0.2",
-    "starplate": "0.0.25"
+    "starplate": "0.0.25",
+    "wolfy87-eventemitter": "^4.3.0"
   },
   "devDependencies": {
     "chai": "^2.2.0",
