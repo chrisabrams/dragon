@@ -61,6 +61,34 @@ describe('Unit: View', function() {
 
   })
 
+  it('should have an id', function(done) {
+
+    var view = new View({
+      container: '#app',
+      id: 'foo',
+      template: 'Hello World'
+    })
+
+    expect(view.id).to.equal('foo')
+
+    done()
+
+  })
+
+  it('should have class(es)', function(done) {
+
+    var view = new View({
+      container: '#app',
+      class: 'du',
+      template: 'Hello World'
+    })
+
+    expect(view.class).to.equal('du')
+
+    done()
+
+  })
+
   it('should have a tagName <nav>', function(done) {
 
     var view = new View({

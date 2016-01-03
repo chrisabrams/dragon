@@ -46,6 +46,8 @@ class DragonBaseView {
     this.directOptions = [
       'attachOnInit',
       'attachPlacement',
+      'bindDataOnInit',
+      'class', // why did CSS use this?
       'collection',
       'container',
       'events',
