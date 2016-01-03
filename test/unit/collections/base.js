@@ -1,4 +1,4 @@
-var Dragon = require('../../../src/dragon')
+import Dragon from '../../../src/dragon'
 
 describe('Unit: Collection', function() {
 

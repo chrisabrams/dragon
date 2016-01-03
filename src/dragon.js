@@ -9,7 +9,9 @@ import '../lib/polyfills/nodelist.remove'
 import '../lib/polyfills/Object.assign'
 import '../lib/polyfills/Array.from'
 
-import View from './dragon/views/base'
+import Collection from './dragon/collections/base'
+import Model      from './dragon/models/base'
+import View       from './dragon/views/base'
 
 var Dragon = {
   //CollectionView : require('./dragon/views/collectionView'),
@@ -21,16 +23,18 @@ var Dragon = {
   //Layout         : require('./dragon/views/layout'),
   //SyncMachine    : require('./dragon/models/syncMachine'),
   //Application    : require('./dragon/application/base'),
-  //Collection     : require('./dragon/collections/base'),
   //Component      : require('./dragon/components/base'),
   //ComponentAPI   : require('./dragon/components/api'),
   //Controller     : require('./dragon/controllers/base'),
   //Events         : require('./dragon/events'),
-  //Model          : require('./dragon/models/base'),
   //Router         : require('./dragon/router/base'),
   //Utils          : require('./dragon/utils'),
+  Collection,
+  Model,
   View
 }
 
+export {Collection}
+export {Model}
 export {View}
 export default Dragon
