@@ -51,6 +51,7 @@
     "chai": "^2.2.0",
     "chalk": "^1.0.0",
     "chunk-manifest-webpack-plugin": "0.0.1",
+    "expect.js": "^0.3.1",
     "glob": "^5.0.3",
     "gulp": "^3.8.11",
     "gulp-babel": "^5.2.1",
