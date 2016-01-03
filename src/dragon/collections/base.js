@@ -1,15 +1,17 @@
 'use strict';
 
-var EventsMixin         = require('../events'),
-    Model               = require('../models/base'),
-    utils               = require('../utils')
+import eventsMixin from '../events'
+import mixin       from '../mixin'
+import Model       from '../models/base'
+import utils       from '../utils'
 
 class DragonBaseCollection {
 
   constructor(entries = [], options = {}) {
     this.uid = utils.uniqueId(this)
+    this.mixin(eventsMixin)
 
-    Object.assign(this, EventsMixin)
+    this.disposed = false
 
     this.models = []
 
@@ -30,7 +32,10 @@ class DragonBaseCollection {
   }
 
 
-  var collectionArray = 
+  /*
+  //TODO: I have no idea what this is or why it's here
+
+  var collectionArray =
   [0,[{name:"reduce"},{name:"inject",alias:"reduce"},{name:"foldl",alias:"reduce"},
       {name:"invoke"},{name:"reduceRight"},{name:"foldr",alias:"reduceRight"},
       {name:"without"},{name:"difference"}],
@@ -42,8 +47,9 @@ class DragonBaseCollection {
       {name:"tail"},{name:"drop"},{name:"last"},{name:"indexOf"},{name:"lastIndexOf"},{name:"sample"},{name:"partition"},
       {name:"groupBy"},{name:"countBy"},{name:"sortBy"},{name:"indexBy"},{name:"findIndex"},{name:"findLastIndex"}]]
   ] , collectionMethods = new map(collectionArray);
-  
- console.log(collectionsModels);
+
+  console.log(collectionsModels);
+  */
 
   add(entries) {
     this.ensureEntries(entries)
@@ -113,11 +119,10 @@ class DragonBaseCollection {
 
 }
 
-DragonBaseCollection.prototype.dispose = false
+Object.assign(DragonBaseCollection.prototype, {mixin})
 
 DragonBaseCollection.prototype.model = Model
 
 DragonBaseCollection.prototype.url = ''
-
 
 module.exports = DragonBaseCollection

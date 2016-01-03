@@ -1,6 +1,12 @@
 var ChunkManifestPlugin = require('chunk-manifest-webpack-plugin'),
+    glob                = require('glob'),
     path                = require('path'),
     webpack             = require('webpack')
+
+// Test files
+var spec = ['./test/helpers/browser/js/runner.js']
+spec = spec.concat(glob.sync('./test/unit/**/*.js'))
+spec = spec.concat(['./test/integration/views/base.js'])
 
 var config = {
 
@@ -8,11 +14,7 @@ var config = {
     dragon: [
       './src/dragon.js'
     ],
-    spec: [
-      './test/helpers/browser/js/runner.js',
-      './test/unit/views/base.js',
-      './test/integration/views/base.js',
-    ]
+    spec
   },
 
   output: {

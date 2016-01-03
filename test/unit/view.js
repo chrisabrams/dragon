@@ -1,5 +1,5 @@
 import {createContainer} from 'stardux'
-import View              from '../../../src/dragon/views/base'
+import View              from '../../src/dragon/views/base'
 
 describe('Unit: View', function() {
 

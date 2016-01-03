@@ -58,7 +58,7 @@ gulp.task('mocha-collections', function() {
     .src([
       './test/helpers/cli/runner.js',
       './lib/polyfills/**/*.js',
-      './test/unit/collections/**/*.js'
+      './test/unit/collection.js'
     ], {read: false})
     .pipe(mocha({reporter: 'spec'}))
 
@@ -70,7 +70,7 @@ gulp.task('mocha-models', function() {
     .src([
       './test/helpers/cli/runner.js',
       './lib/polyfills/**/*.js',
-      './test/unit/models/**/*.js'
+      './test/unit/model.js'
     ], {read: false})
     .pipe(mocha({reporter: 'spec'}))
 

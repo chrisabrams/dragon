@@ -1,4 +1,4 @@
-import Dragon from '../../../src/dragon'
+import Dragon from '../../src/dragon'
 
 describe('Unit: Collection', function() {
 
@@ -166,7 +166,7 @@ describe('Unit: Collection', function() {
     expect(collectionArray).to.have.length(3)
 
     /* now the collection can be destructured */
-    var [modelFoo,modelFoobar,modelFoovar]=collection
+    var [modelFoo,modelFoobar,modelFoovar] = collection
     expect(modelFoo).to.be.a(Model)
     expect(modelFoobar).to.be.a(Model)
     expect(modelFoovar).to.be.a(Model)

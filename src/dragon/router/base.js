@@ -1,14 +1,16 @@
 'use strict';
 
-var EventsMixin = require('../events'),
-    Route       = require('./route'),
-    utils       = require('../utils')
+import eventsMixin from '../events'
+import mixin       from '../mixin'
+import Route       from './route'
+import utils       from '../utils'
 
 class DragonRouter {
 
   constructor(options = {}) {
 
     this.uid = utils.uniqueId(this)
+    this.mixin(eventsMixin)
 
     this._currentHandler = null
     this._currentUrl     = null
@@ -20,6 +22,7 @@ class DragonRouter {
 
     this.options = options
 
+    if(!this.options.routes) return console.error('Router needs routes')
     this.loadRoutes()
 
     document.addEventListener('click', this.onLinkClick.bind(this), false)
@@ -117,7 +120,7 @@ class DragonRouter {
 
         var params = route.extractParams(path)
 
-        this.trigger('match', route, params, options)
+        this.emit('match', route, params, options)
         matched = true
 
         break
@@ -176,8 +179,9 @@ class DragonRouter {
 
 }
 
-Object.assign(DragonRouter.prototype, EventsMixin)
+Object.assign(DragonRouter.prototype, {mixin})
 
 DragonRouter.prototype.disposed = false
 
-module.exports = DragonRouter
+export {Route}
+export default DragonRouter

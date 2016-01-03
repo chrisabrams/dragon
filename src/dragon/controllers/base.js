@@ -1,7 +1,7 @@
 'use strict';
 
-var composeStore = require('../lib/composeStore'),
-    utils        = require('../utils')
+import composeStore from '../lib/composeStore'
+import utils        from '../utils'
 
 class DragonController {
 
@@ -40,4 +40,4 @@ class DragonController {
 
 DragonController.prototype.disposed = false
 
-module.exports = DragonController
+export default DragonController
