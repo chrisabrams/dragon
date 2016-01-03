@@ -59,21 +59,12 @@ Utils.log = function() {
 
 /*
 Dragon.Utils.uniqueId
-
-Fork of Exoskeleton's uniqueId: https://github.com/paulmillr/exoskeleton/blob/master/exoskeleton.js
+what if we use the new primitive type symbols as a uid 
 */
-var idCounter = 0
 
 Utils.uniqueId = (_this) => {
 
-  ++idCounter
-
-  var id = `u${idCounter}`
-
-  //var uid = prefix ? prefix + id : id
-  var uid = id
-
-  return uid
+  return Symbol('uid')
 
 }
 

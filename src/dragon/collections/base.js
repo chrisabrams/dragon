@@ -13,8 +13,8 @@ class DragonBaseCollection {
 
     this.models = []
 
-    if(!(entries instanceof Array)) {
-      throw new Error('Collection entries must be an array')
+    if(!(entries[Symbol.iterator])) {
+      throw new Error('Collection entries must be an iterable')
     }
 
     if(!this.model || !(this.model instanceof Function)) {
@@ -29,10 +29,24 @@ class DragonBaseCollection {
 
   }
 
+
+  var collectionArray = 
+  [0,[{name:"reduce"},{name:"inject",alias:"reduce"},{name:"foldl",alias:"reduce"},
+      {name:"invoke"},{name:"reduceRight"},{name:"foldr",alias:"reduceRight"},
+      {name:"without"},{name:"difference"}],
+  [1,[{name:"toArray"},{name:"size"},{name:"shuffle"},{name:"isEmpty"},{name:"chain"}]],
+  [3,[{name:"forEach"},{name:"each"},{name:"map"},{name:"collect"},{name:"find"},
+      {name:"detect"},{name:"filter"},{name:"select"},{name:"reject"},{name:"every"},{name:"all"},
+      {name:"some"},{name:"any"},{name:"include"},{name:"includes"},{name:"contains"},{name:"max"},
+      {name:"min"},{name:"first"},{name:"head"},{name:"take"},{name:"initial"},{name:"rest"},
+      {name:"tail"},{name:"drop"},{name:"last"},{name:"indexOf"},{name:"lastIndexOf"},{name:"sample"},{name:"partition"},
+      {name:"groupBy"},{name:"countBy"},{name:"sortBy"},{name:"indexBy"},{name:"findIndex"},{name:"findLastIndex"}]]
+  ] , collectionMethods = new map(collectionArray);
+  
+ console.log(collectionsModels);
+
   add(entries) {
-
     this.ensureEntries(entries)
-
   }
 
   clear() {
@@ -48,17 +62,15 @@ class DragonBaseCollection {
   Should also consider concatting arrays as pushing arrays of 1000 or more can be very time consuming/lots of looping.
   Overall this function sucks but helps move the project forward atm.
   */
-  ensureEntries(entries) {
 
+  ensureEntries(entries) {
+    // we will suppport all kind of iterable  here !!
     // It is simpler to manage things by making a single item an array
-    if(!(entries instanceof Array)) {
+    if(!(entries[Symbol.iterator])) {
       entries = [entries]
     }
 
-    for(let i = 0, l = entries.length; i < l; i++) {
-
-      let entry = entries[i]
-
+    for(let entry of entries) {
       if(entry instanceof this.model) {
         this.models.push(entry)
       }
@@ -75,6 +87,18 @@ class DragonBaseCollection {
 
 
 
+  }
+
+  [Symbol.iterator](){
+    var collectionsModels = this.models,index = 0
+    return {
+      next: function next () {
+        if (index + 1 > collectionsModels.length) {
+          return { done: true };
+        }
+        return { value: collectionsModels[index++], done: false };
+      }
+    }
   }
 
   dispose() {
@@ -94,5 +118,6 @@ DragonBaseCollection.prototype.dispose = false
 DragonBaseCollection.prototype.model = Model
 
 DragonBaseCollection.prototype.url = ''
+
 
 module.exports = DragonBaseCollection

@@ -173,7 +173,8 @@ gulp.task('sandbox', function() {
 gulp.task('t', [
   //'mocha-cli',
   //'mocha-browser-run'
-  'mocha-models'
+  'mocha-models',
+  'mocha-collections' 
 ])
 
 /*.on('error', function(err) {
