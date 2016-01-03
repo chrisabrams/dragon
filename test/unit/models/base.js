@@ -1,7 +1,7 @@
-var Dragon = require('../../../src/dragon'), expect = require('expect.js')
+var Dragon = require('../../../src/dragon')
 
 /*
-TODO: Figure out why the object.observe 
+TODO: Figure out why the object.observe
 */
 
 describe('Unit: Models: Base', function() {
