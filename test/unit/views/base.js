@@ -61,4 +61,18 @@ describe('Unit: View', function() {
 
   })
 
+  it('should have a tagName <nav>', function(done) {
+
+    var view = new View({
+      container: '#app',
+      tagName: 'nav',
+      template: 'Hello World'
+    })
+
+    expect(view.tagName).to.equal('nav')
+
+    done()
+
+  })
+
 })
