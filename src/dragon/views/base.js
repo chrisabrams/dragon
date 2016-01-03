@@ -495,8 +495,14 @@ class DragonBaseView {
       this.idom = createContainer(this.el)
     }
 
-    this.el.innerHTML = this.template
-    if(this.model) this.idom.update(this.model.attr)
+    this.el.innerHTML = this.getTemplate()
+    if(this.model) {
+      this.idom.update(this.model.attr)
+    }
+
+    else if(this.collection) {
+      this.idom.update(this.collection.attr)
+    }
 
     console.log('View', this)
     this.emit('render')
