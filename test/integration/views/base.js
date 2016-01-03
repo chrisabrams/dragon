@@ -20,14 +20,24 @@ describe('Integration: View', function() {
 
   })
 
-  it.skip('should incrementally patch template DOM on model update', function(done) {
+  it('should incrementally patch template DOM on model update', function(done) {
+
+    var model = new Model({foo: 'bar'})
 
     var view = new View({
       container: '#app',
-      template: 'Hello World'
+      id: 'tiv-01',
+      model,
+      template: 'Hello ${foo}'
     })
 
-    done()
+    model.attr.foo = 'baz'
+
+    setTimeout(function() {
+      expect(view.el.innerHTML).to.equal('Hello baz')
+
+      done()
+    }, 10)
 
   })
 
