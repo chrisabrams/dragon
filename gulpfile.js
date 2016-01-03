@@ -1,19 +1,13 @@
 var babel          = require('gulp-babel'),
     chalk          = require('chalk'),
-    concat         = require('gulp-concat'),
     glob           = require('glob'),
     gulp           = require('gulp'),
     gutil          = require('gulp-util'),
     livereload     = require('gulp-livereload'),
-    mkdirp         = require('mkdirp'),
     mocha          = require('gulp-mocha'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
     nodemon        = require('gulp-nodemon'),
     path           = require('path'),
-    sequence       = require('run-sequence'),
-    size           = require('gulp-size'),
-    source         = require('vinyl-source-stream'),
-    watching       = require('paradigm-minimist-watching'),
     webpack        = require('webpack-stream')
 
 gulp.task('b', ['build'])
@@ -107,7 +101,7 @@ gulp.task('t', [
   //'mocha-cli',
   //'mocha-browser-run'
   'mocha-models',
-  'mocha-collections' 
+  'mocha-collections'
 ])
 
 gulp.task('watch', function () {

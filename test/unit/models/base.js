@@ -4,7 +4,7 @@ var Dragon = require('../../../src/dragon')
 TODO: Figure out why the object.observe
 */
 
-describe('Unit: Models: Base', function() {
+describe('Unit: Model', function() {
 
   it('should initialize', function(done) {
 

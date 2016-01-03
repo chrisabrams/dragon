@@ -1,6 +1,6 @@
-var Dragon = require('../../../src/dragon'), expect = require('expect.js')
+var Dragon = require('../../../src/dragon')
 
-describe('Unit: Collections: Base', function() {
+describe('Unit: Collection', function() {
 
   it('should initialize', function(done) {
 
@@ -152,7 +152,7 @@ describe('Unit: Collections: Base', function() {
     class Model      extends Dragon.Model {}
 
     var collection = new Collection()
-    
+
     collection.add([new Model({foo: 'bar'}), new Model({foobar : 'baz'}), new Model({foovar : 'varbaz'})])
 
     /* now our collection can be iterable for iterators like for ...of, ... spread operators,array.from */
