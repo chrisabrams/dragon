@@ -3,6 +3,9 @@ logs
 *.log
 .DS_Store
 
+#intellij
+.idea/
+
 # Runtime data
 pids
 *.pid
