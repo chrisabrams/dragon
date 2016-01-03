@@ -75,4 +75,26 @@ describe('Unit: View', function() {
 
   })
 
+  it.skip('should render a template containing a template helper', function(done) {
+
+    var view = new View({
+      container: '#app',
+      template: 'Hello World'
+    })
+
+    done()
+
+  })
+
+  it.skip('should render a template containing a template partial', function(done) {
+
+    var view = new View({
+      container: '#app',
+      template: 'Hello World'
+    })
+
+    done()
+
+  })
+
 })
