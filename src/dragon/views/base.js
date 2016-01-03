@@ -1,7 +1,8 @@
 'use strict';
 
 import {createContainer} from 'stardux'
-import EventsMixin       from '../events'
+import eventsMixin       from '../events'
+import mixin             from '../mixin'
 import utils             from '../utils'
 
 /*
@@ -12,6 +13,7 @@ class DragonBaseView {
   constructor(options = {}) {
 
     this.uid = utils.uniqueId(this)
+    this.mixin(eventsMixin)
 
     /*
     Defaults
@@ -35,6 +37,8 @@ class DragonBaseView {
     */
     this.attachPlacement = 'after'
 
+    this.bindDataOnInit = true
+
     /*
     Direct Options
     Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
@@ -43,11 +47,13 @@ class DragonBaseView {
       'attachOnInit',
       'attachPlacement',
       'collection',
-      //'container',
+      'container',
       'events',
+      'id',
       'listen',
       'model',
       'renderOnInit',
+      'tagName',
       'template'
     ]
 
@@ -87,18 +93,11 @@ class DragonBaseView {
     //this.ensureElement()
     //this.ensureContainer()
 
-    // We need a wrapping tag; too dangerous not to have one
-    this.el = document.createElement('div')
-
-    if(typeof this.options.container == 'string') {
-      this.$container = document.querySelectorAll(this.options.container)
-      this.container = createContainer(this.el)
-    }
-
-    else if(this.options.container instanceof createContainer) {
+    if(this.options.idom instanceof createContainer) {
       //this.$container =
       //TODO: figure out how to get $container from an already created container
-      this.container = this.options.container
+      this.idom = this.options.idom
+      this.attached = true // Since the idom container is being passed in, we assume it's been attached (although I guess its possible it hasn't been)
     }
 
     if(!this.attached && this.attachOnInit) {
@@ -110,6 +109,8 @@ class DragonBaseView {
       })
 
     }
+
+    if(this.bindDataOnInit && this.model) this.bindDataOnChange()
 
     this.render()
   }
@@ -163,9 +164,15 @@ class DragonBaseView {
 
     this.attached = true
 
-    this.trigger('addedToDOM')
+    this.emit('addedToDOM')
 
     return this
+
+  }
+
+  bindDataOnChange() {
+
+    this.model.on('change', this.render.bind(this))
 
   }
 
@@ -458,15 +465,39 @@ class DragonBaseView {
 
   render() {
 
-    if(!this.container) {
-      console.error('Container type not valid.')
+    /*
+    TODO: really both should exist, but gotta figure out how to get container from existing idom passed in
+    */
+    if(!this.container && !this.idom) {
+      console.error('Container type not valid.', this.uid)
       return this
     }
 
+    /*
+    Remember with Backbone you would call .render() to update the template?
+    If the template has been attached, then update the template with Incremental DOM
+    */
+    if(this.attached && this.model) {
+      this.idom.update(this.model.attr)
+      return this
+    }
+
+    // We need a wrapping tag; it's too dangerous to patch a template without one
+    if(!this.tagName) this.tagName = 'div'
+    this.el = document.createElement(this.tagName)
+
+    if(this.id) this.el.id = this.id
+
+    if(typeof this.container == 'string') {
+      this.$container = document.querySelectorAll(this.container)
+      this.idom = createContainer(this.el)
+    }
+
     this.el.innerHTML = this.template
+    if(this.model) this.idom.update(this.model.attr)
 
     console.log('View', this)
-    this.trigger('render')
+    this.emit('render')
 
     return this
 
@@ -609,7 +640,7 @@ class DragonBaseView {
 
 }
 
-Object.assign(DragonBaseView.prototype, EventsMixin)
+Object.assign(DragonBaseView.prototype, {mixin})
 
 /* Developer Notes
 The following properties & methods are assigned on the prototype to allow for easier overriding.

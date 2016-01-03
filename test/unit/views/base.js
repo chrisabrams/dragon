@@ -45,4 +45,56 @@ describe('Unit: View', function() {
 
   })
 
+  it('should manually attach to DOM', function(done) {
+
+    var view = new View({
+      attachOnInit: false,
+      container: '#app',
+      template: 'Hello World'
+    })
+
+    view.on('addedToDOM', function() {
+      done()
+    })
+
+    view.attach()
+
+  })
+
+  it('should have a tagName <nav>', function(done) {
+
+    var view = new View({
+      container: '#app',
+      tagName: 'nav',
+      template: 'Hello World'
+    })
+
+    expect(view.tagName).to.equal('nav')
+
+    done()
+
+  })
+
+  it.skip('should render a template containing a template helper', function(done) {
+
+    var view = new View({
+      container: '#app',
+      template: 'Hello World'
+    })
+
+    done()
+
+  })
+
+  it.skip('should render a template containing a template partial', function(done) {
+
+    var view = new View({
+      container: '#app',
+      template: 'Hello World'
+    })
+
+    done()
+
+  })
+
 })

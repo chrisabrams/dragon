@@ -1,12 +1,15 @@
 'use strict';
 
-var EventsMixin = require('../events'),
-    utils       = require('../utils')
+import eventsMixin       from '../events'
+import mixin             from '../mixin'
+import utils             from '../utils'
 
 class DragonBaseModel {
 
   constructor(attr = {}, options = {}) {
     this.uid = utils.uniqueId(this)
+    this.mixin(eventsMixin)
+
     this.attr = {};
     this.options = options
 
@@ -36,7 +39,7 @@ class DragonBaseModel {
     // Trigger changes on model
     Object.observe(this.attr, (changes) => {
 
-      this.trigger('change', changes)
+      this.emit('change', changes)
 
       /*
       TODO: consider making this a mixin and expanding to watch specific properties
@@ -58,9 +61,9 @@ class DragonBaseModel {
 
       })
 
-      if(add.length > 0)    this.trigger('add', add)
-      if(del.length > 0)    this.trigger('delete', del)
-      if(update.length > 0) this.trigger('update', update)
+      if(add.length > 0)    this.emit('add', add)
+      if(del.length > 0)    this.emit('delete', del)
+      if(update.length > 0) this.emit('update', update)
 
     })
 
@@ -96,6 +99,6 @@ DragonBaseModel.prototype.indisposable = false
 
 DragonBaseModel.prototype.url = ''
 
-Object.assign(DragonBaseModel.prototype, EventsMixin)
+Object.assign(DragonBaseModel.prototype, {mixin})
 
-module.exports = DragonBaseModel
+export default DragonBaseModel

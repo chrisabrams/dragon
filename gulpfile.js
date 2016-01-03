@@ -4,10 +4,11 @@ var babel          = require('gulp-babel'),
     glob           = require('glob'),
     gulp           = require('gulp'),
     gutil          = require('gulp-util'),
+    livereload     = require('gulp-livereload'),
     mkdirp         = require('mkdirp'),
     mocha          = require('gulp-mocha'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
-    nodemon        = require('nodemon'),
+    nodemon        = require('gulp-nodemon'),
     path           = require('path'),
     sequence       = require('run-sequence'),
     size           = require('gulp-size'),
@@ -108,20 +109,23 @@ gulp.task('t', [
   'mocha-models'
 ])
 
-gulp.task('test-watch', ['test-webpack'], function () {
+gulp.task('watch', function () {
 
   nodemon({
     //env: ,
+    ext: 'html',
     //nodeArgs: ['--debug'],
     script: 'test/helpers/browser/runner.js',
-    watch: ['./src/']
+    watch: ['./test/']
   })
   .on('start', function() {
 
     livereload.listen()
 
-    gulp.watch(path.join(__dirname, './src/**/*.js'), ['webpack'])
-    gulp.watch(path.join(__dirname, './src/**/*.js'), livereload.reload)
+    gulp.watch('src/**/*.js', ['test-webpack'])
+    gulp.watch('src/**/*.js', livereload.reload)
+    gulp.watch('test/integration/**/*.js', ['test-webpack'])
+    gulp.watch('test/unit/**/*.js', ['test-webpack'])
 
   })
   .on('restart', function () {
@@ -145,6 +149,8 @@ gulp.task('test-webpack', function() {
   .pipe(gulp.dest('./test/helpers/browser/js/'))
 
 })
+
+gulp.task('w', ['test-webpack', 'watch'])
 
 /*.on('error', function(err) {
   console.error(err)
