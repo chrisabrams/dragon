@@ -1,6 +1,6 @@
 'use strict';
 
-var utils = require('../utils')
+import utils from '../utils'
 
 class DragonDispatcher {
 
@@ -56,4 +56,4 @@ class DragonDispatcher {
 
 DragonDispatcher.prototype.disposed = false
 
-module.exports = DragonDispatcher
+export default DragonDispatcher

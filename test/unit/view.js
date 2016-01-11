@@ -1,5 +1,5 @@
 import {createContainer} from 'stardux'
-import View              from '../../../src/dragon/views/base'
+import View              from '../../src/dragon/views/base'
 
 describe('Unit: View', function() {
 
@@ -58,6 +58,34 @@ describe('Unit: View', function() {
     })
 
     view.attach()
+
+  })
+
+  it('should have an id', function(done) {
+
+    var view = new View({
+      container: '#app',
+      id: 'foo',
+      template: 'Hello World'
+    })
+
+    expect(view.id).to.equal('foo')
+
+    done()
+
+  })
+
+  it('should have class(es)', function(done) {
+
+    var view = new View({
+      container: '#app',
+      class: 'du',
+      template: 'Hello World'
+    })
+
+    expect(view.class).to.equal('du')
+
+    done()
 
   })
 

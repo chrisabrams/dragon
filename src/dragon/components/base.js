@@ -1,6 +1,6 @@
 'use strict';
 
-var utils = require('../utils')
+import utils from '../utils'
 
 class DragonComponent {
 
@@ -25,4 +25,4 @@ class DragonComponent {
 
 DragonComponent.prototype.disposed = false
 
-module.exports = DragonComponent
+export default DragonComponent

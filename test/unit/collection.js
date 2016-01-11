@@ -1,6 +1,6 @@
-var Dragon = require('../../../src/dragon')
+import Dragon from '../../src/dragon'
 
-describe('Unit: Collections: Base', function() {
+describe('Unit: Collection', function() {
 
   it('should initialize', function(done) {
 
@@ -12,7 +12,7 @@ describe('Unit: Collections: Base', function() {
     expect(collection.model).to.be.a('function') // Remember, this is the Model class, not the instance
     expect(collection.models).to.be.an('array')
     expect(collection.models.length).to.equal(0)
-    expect(collection.uid).to.be.a('string')
+    expect(collection.uid).to.be.a('symbol')
     expect(collection.url).to.be.a('string')
 
     done()
@@ -142,6 +142,37 @@ describe('Unit: Collections: Base', function() {
 
     expect(collection.models.length).to.equal(1)
 
+    done()
+
+  })
+
+  it('should be an iterable', function(done) {
+
+    class Collection extends Dragon.Collection {}
+    class Model      extends Dragon.Model {}
+
+    var collection = new Collection()
+
+    collection.add([new Model({foo: 'bar'}), new Model({foobar : 'baz'}), new Model({foovar : 'varbaz'})])
+
+    /* now our collection can be iterable for iterators like for ...of, ... spread operators,array.from */
+    for(var singleModel of collection){
+      expect(singleModel).to.be.a(Model)
+    }
+
+    /* collection to Array */
+    var collectionArray = Array.from(collection)
+    expect(collectionArray).to.be.an(Array)
+    expect(collectionArray).to.have.length(3)
+
+    /* now the collection can be destructured */
+    var [modelFoo,modelFoobar,modelFoovar] = collection
+    expect(modelFoo).to.be.a(Model)
+    expect(modelFoobar).to.be.a(Model)
+    expect(modelFoovar).to.be.a(Model)
+
+    /* we can use the spread operator  */
+    expect([...collection]).to.eql(collectionArray)
     done()
 
   })

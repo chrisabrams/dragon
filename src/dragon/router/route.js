@@ -194,4 +194,4 @@ class DragonRoute {
 
 }
 
-module.exports = DragonRoute
+export default DragonRoute

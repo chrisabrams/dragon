@@ -6,6 +6,9 @@ Hypothesis: What if Backbone were created today, with ES 6&7, Virtual DOM, etc?
 ## Hypothesis of project
 What if Backbone were to be created today? What would the project look like? With ECMAScript 6 & 7, HTML5 pushState, Virtual DOM / Incremental DOM / etc., new ways of data-binding, etc., front-end development has evolved. This project sets out to see what such an evolution would look like from scratch.
 
+## Change log
+See the [change log](https://github.com/chrisabrams/dragon/blob/0.2/CHANGELOG.md).
+
 ## Changes from Backbone to Dragon
 
 ### General Changes
