@@ -11,6 +11,7 @@ import '../lib/polyfills/Array.from'
 
 import Application from './dragon/application/base'
 import Collection  from './dragon/collections/base'
+import Component   from './dragon/components/base'
 import Controller  from './dragon/controllers/base'
 import Dispatcher  from './dragon/router/dispatcher'
 import Events      from './dragon/events'
@@ -26,10 +27,9 @@ var Dragon = {
   //mediator       : require('./dragon/mediator/mediator'),
   //Layout         : require('./dragon/views/layout'),
   //SyncMachine    : require('./dragon/models/syncMachine'),
-  //Component      : require('./dragon/components/base'),
-  //ComponentAPI   : require('./dragon/components/api'),
   Application,
   Collection,
+  Component,
   Controller,
   Dispatcher,
   Model,
@@ -40,6 +40,7 @@ var Dragon = {
 
 export {Application}
 export {Collection}
+export {Component}
 export {Controller}
 export {Dispatcher}
 export {Events}

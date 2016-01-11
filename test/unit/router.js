@@ -1,5 +1,4 @@
-import Controller  from '../../src/dragon/controllers/base'
-import Router      from '../../src/dragon/router/base'
+import Router from '../../src/dragon/router/base'
 
 describe('Unit: Router', function() {
 
@@ -8,7 +7,7 @@ describe('Unit: Router', function() {
     var router = new Router({routes: (router) => {
 
       router.get('/auth/create', {
-        controller: Controller, // for this unit test, it doesnt matter what this is
+        controller: 'user',
         action: 'create'
       })
 

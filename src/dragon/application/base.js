@@ -15,14 +15,15 @@ class DragonApplication {
 
     this.options = options
 
-    if(!this.options.routes) return console.error('Application requires routes', this.options)
+    if(!this.options.router.routes) return console.error('Application requires routes', this.options)
 
     this.router = new Router({
-      routes: this.options.routes
+      routes: this.options.router.routes
     })
 
     var dispatcher = this.dispatcher = new Dispatcher({
-      app: this
+      app: this,
+      getController: options.dispatcher.getController
     })
 
     this.router.on('match', function routeMatchCallback(route, params, options) {

@@ -27,14 +27,25 @@ class DragonDispatcher {
       params: params
     }
 
-    var controller = new options.controller()
+    var controller = null
 
-    /*
-    TODO: Find a better way to pass app instance to controller
-    */
-    controller.app = this.app
+    if(options.Controller) {
+      controller = new options.Controller()
+      controller[options.action](req)
+    }
 
-    controller[options.action](req)
+    else {
+      var segs = route.pattern.split('/')
+
+      var controllerName = segs[1],
+          actionName     = segs[2]
+      console.log('controllerName', controllerName)
+      console.log('actionName', actionName)
+      var Controller = this.options.getController(controllerName)
+      controller = new Controller()
+      console.log('controller', controller)
+      controller[actionName](req)
+    }
 
     this.currentController = controller
 
