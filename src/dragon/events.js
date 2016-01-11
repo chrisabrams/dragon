@@ -1,6 +1,6 @@
 'use strict';
 
-import EventEmitter from 'wolfy87-eventemitter'
+import EventEmitter from 'chrisabrams-eventemitter'
 
 var eventEmitter = new EventEmitter()
 

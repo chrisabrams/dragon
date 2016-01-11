@@ -5,14 +5,16 @@ describe('Unit: Application', function() {
 
   it('should initialize', function(done) {
 
-    var application = new Application({routes: (router) => {
+    var application = new Application({
+      routes: (router) => {
 
-      router.get('/auth/create', {
-        controller: Controller, // for this unit test, it doesnt matter what this is
-        action: 'create'
-      })
+        router.get('/auth/create', {
+          controller: 'user',
+          action: 'create'
+        })
 
-    }})
+      }
+    })
 
     expect(application).to.be.an('object')
     expect(application.router).to.be.an('object')

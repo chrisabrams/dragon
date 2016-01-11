@@ -8,7 +8,6 @@ import utils       from '../utils'
 class DragonRouter {
 
   constructor(options = {}) {
-
     this.uid = utils.uniqueId(this)
     this.mixin(eventsMixin)
 
@@ -88,10 +87,7 @@ class DragonRouter {
 
     if(el.nodeName == 'A') {
 
-      var href = el.getAttribute('href'),
-          rel  = el.getAttribute('rel')
-
-      if(!href || href == '' || href.charAt(0) == '#' || (rel && rel == 'external') || href.indexOf('//') > -1) return
+      if(this.isIgnoredLink(el)) return
 
       /*if(external) {
         window.open(href)
@@ -182,6 +178,17 @@ class DragonRouter {
 Object.assign(DragonRouter.prototype, {mixin})
 
 DragonRouter.prototype.disposed = false
+
+DragonRouter.prototype.isIgnoredLink = function isIgnoredLink(el) {
+
+  var href = el.getAttribute('href'),
+      rel  = el.getAttribute('rel')
+
+  if(!href || href == '' || href.charAt(0) == '#' || (rel && rel == 'external') || href.indexOf('//') > -1) return true
+
+  return false
+
+}
 
 export {Route}
 export default DragonRouter

@@ -61,14 +61,6 @@ class DragonBaseView {
 
     this.disposed = false
 
-    /*
-    @property template
-    @type ????
-    @default null
-    @desc Template for the view
-    */
-    this.template = null
-
     this.options = {}
 
     Object.keys(options).forEach( (option) => {
@@ -116,6 +108,8 @@ class DragonBaseView {
 
     this.render()
   }
+
+  addedToDOM() {}
 
   /*
   @method attach
@@ -167,6 +161,7 @@ class DragonBaseView {
     this.attached = true
 
     this.emit('addedToDOM')
+    this.onAddedToDOM()
 
     return this
 
@@ -496,6 +491,7 @@ class DragonBaseView {
     }
 
     this.el.innerHTML = this.getTemplate()
+
     if(this.model) {
       this.idom.update(this.model.attr)
     }
