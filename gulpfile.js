@@ -69,7 +69,6 @@ gulp.task('mocha-models', function() {
   return gulp
     .src([
       './test/helpers/cli/runner.js',
-      './lib/polyfills/**/*.js',
       './test/unit/model.js'
     ], {read: false})
     .pipe(mocha({reporter: 'spec'}))
