@@ -1,6 +1,5 @@
 'use strict';
 
-import eventsMixin       from '../events'
 import mixin             from '../mixin'
 import utils             from '../utils'
 
@@ -8,7 +7,6 @@ class DragonBaseModel {
 
   constructor(attr = {}, options = {}) {
     this.uid = utils.uniqueId(this)
-    this.mixin(eventsMixin)
 
     this.attr = {};
     this.options = options
@@ -168,7 +166,7 @@ class DragonBaseModel {
       result[obj[props[index]]] = props[index];
     }
     return result;
-  }
+  };
 
   isArrayLike = function(collection) {
     var length = collection[length];
