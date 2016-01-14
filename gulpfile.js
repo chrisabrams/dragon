@@ -69,7 +69,6 @@ gulp.task('mocha-models', function() {
   return gulp
     .src([
       './test/helpers/cli/runner.js',
-      './lib/polyfills/**/*.js',
       './test/unit/model.js'
     ], {read: false})
     .pipe(mocha({reporter: 'spec'}))
@@ -108,13 +107,12 @@ gulp.task('watch', function () {
 
   nodemon({
     //env: ,
-    ext: 'html',
+    ext: 'js',
     //nodeArgs: ['--debug'],
     script: 'test/helpers/browser/runner.js',
     watch: ['./test/']
   })
   .on('start', function() {
-
     livereload.listen()
 
     gulp.watch('src/**/*.js', ['test-webpack'])
