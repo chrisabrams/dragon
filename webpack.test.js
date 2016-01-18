@@ -27,7 +27,7 @@ var config = {
       {
         test: /\.js$/,
         loader: 'babel',
-        exclude: [/bower_components/, /node_modules\/(?!dragon*)/ ],
+        exclude: [/bower_components/, /node_modules\/(?!chrisabrams-*)/ ],
         query: {
           presets : ['es2015', 'stage-0'],
         }

@@ -3,13 +3,17 @@
 import eventsMixin       from '../events'
 import mixin             from '../mixin'
 import utils             from '../utils'
+import EventEmitter from 'chrisabrams-eventemitter'
 
 class DragonBaseModel {
 
   constructor(attr = {}, options = {}) {
+    var eventEmitter = new EventEmitter()
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
     this.uid = utils.uniqueId(this)
-    this.mixin(eventsMixin)
-
     this.attr = {};
     this.options = options
 
@@ -39,7 +43,7 @@ class DragonBaseModel {
     // Trigger changes on model
     Object.observe(this.attr, (changes) => {
 
-      this.emit('change', changes)
+     this.emit('change', changes)
 
       /*
       TODO: consider making this a mixin and expanding to watch specific properties
@@ -168,7 +172,7 @@ class DragonBaseModel {
       result[obj[props[index]]] = props[index];
     }
     return result;
-  }
+  };
 
   isArrayLike = function(collection) {
     var length = collection[length];
