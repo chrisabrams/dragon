@@ -1,15 +1,18 @@
 'use strict';
 
-import eventsMixin       from '../events'
 import mixin             from '../mixin'
 import utils             from '../utils'
+import EventEmitter from 'chrisabrams-eventemitter'
 
 class DragonBaseModel {
 
   constructor(attr = {}, options = {}) {
     this.uid = utils.uniqueId(this)
-    this.mixin(eventsMixin)
-
+    var eventEmitter = new EventEmitter()
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
     this.attr = {};
     this.options = options
 
@@ -168,7 +171,7 @@ class DragonBaseModel {
       result[obj[props[index]]] = props[index];
     }
     return result;
-  }
+  };
 
   isArrayLike = function(collection) {
     var length = collection[length];
