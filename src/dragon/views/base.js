@@ -4,6 +4,7 @@ import {createContainer} from 'stardux'
 import eventsMixin       from '../events'
 import mixin             from '../mixin'
 import utils             from '../utils'
+import EventEmitter from 'chrisabrams-eventemitter'
 
 /*
 @class DragonBaseView
@@ -13,7 +14,11 @@ class DragonBaseView {
   constructor(options = {}) {
 
     this.uid = utils.uniqueId(this)
-    this.mixin(eventsMixin)
+    var eventEmitter = new EventEmitter()
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
     /*
     Defaults
