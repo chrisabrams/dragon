@@ -196,7 +196,8 @@ class DragonBaseView {
 
   bindDataOnChange() {
 
-    this.model.on('change', this.render.bind(this))
+    if(this.model)      this.model.on('change', this.render.bind(this))
+    if(this.collection) this.collection.on('change', this.render.bind(this))
 
   }
 
@@ -545,7 +546,6 @@ class DragonBaseView {
   */
 
   render() {
-
     /*
     TODO: really both should exist, but gotta figure out how to get container from existing idom passed in
     */
@@ -563,6 +563,11 @@ class DragonBaseView {
       return this
     }
 
+    if(this.attached && this.collection) {
+      this.idom.update({collection: this.collection.getData()})
+      return this
+    }
+
     // We need a wrapping tag; it's too dangerous to patch a template without one
     if(!this.tagName) this.tagName = 'div'
     this.el = document.createElement(this.tagName)
@@ -570,7 +575,7 @@ class DragonBaseView {
     if(this.id) this.el.id = this.id
     if(this.class) this.el.className = this.class
 
-    var Container = stardux.Container
+    //var Container = stardux.Container
     this.idom = createContainer(this.el, {}, this.reducer.bind(this))
 
     this.el.innerHTML = this.getTemplate()
@@ -580,7 +585,7 @@ class DragonBaseView {
     }
 
     else if(this.collection) {
-      this.idom.update(this.collection.attr)
+      this.idom.update({collection: this.collection.getData()})
     }
 
     this.emit('render')

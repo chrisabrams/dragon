@@ -12,14 +12,18 @@ class DragonBaseCollection {
     this.mixin(eventsMixin)
 
     this.disposed = false
+    this.Model    = Model
+    this.models   = []
+    this.url      = options.url || this.url || ''
 
-    this.models = []
-
-    if(!(entries[Symbol.iterator])) {
+    /*
+    TODO: this check is flawed
+    */
+    if(entries.length > 0 && !(entries[Symbol.iterator])) {
       throw new Error('Collection entries must be an iterable')
     }
 
-    if(!this.model || !(this.model instanceof Function)) {
+    if(!this.Model || !(this.Model instanceof Function)) {
       throw new Error('Collection requires a valid Model Class')
     }
 
@@ -28,37 +32,14 @@ class DragonBaseCollection {
     }
 
     this.ensureEntries(entries)
-
   }
-
-
-  /*
-  //TODO: I have no idea what this is or why it's here
-
-  var collectionArray =
-  [0,[{name:"reduce"},{name:"inject",alias:"reduce"},{name:"foldl",alias:"reduce"},
-      {name:"invoke"},{name:"reduceRight"},{name:"foldr",alias:"reduceRight"},
-      {name:"without"},{name:"difference"}],
-  [1,[{name:"toArray"},{name:"size"},{name:"shuffle"},{name:"isEmpty"},{name:"chain"}]],
-  [3,[{name:"forEach"},{name:"each"},{name:"map"},{name:"collect"},{name:"find"},
-      {name:"detect"},{name:"filter"},{name:"select"},{name:"reject"},{name:"every"},{name:"all"},
-      {name:"some"},{name:"any"},{name:"include"},{name:"includes"},{name:"contains"},{name:"max"},
-      {name:"min"},{name:"first"},{name:"head"},{name:"take"},{name:"initial"},{name:"rest"},
-      {name:"tail"},{name:"drop"},{name:"last"},{name:"indexOf"},{name:"lastIndexOf"},{name:"sample"},{name:"partition"},
-      {name:"groupBy"},{name:"countBy"},{name:"sortBy"},{name:"indexBy"},{name:"findIndex"},{name:"findLastIndex"}]]
-  ] , collectionMethods = new map(collectionArray);
-
-  console.log(collectionsModels);
-  */
 
   add(entries) {
     this.ensureEntries(entries)
   }
 
   clear() {
-
     this.models = []
-
   }
 
   /*
@@ -70,6 +51,12 @@ class DragonBaseCollection {
   */
 
   ensureEntries(entries) {
+
+    /*
+    TODO: figure out how to clean this up
+    */
+    if(!entries || !entries.length || entries.length == 0) return
+
     // we will suppport all kind of iterable  here !!
     // It is simpler to manage things by making a single item an array
     if(!(entries[Symbol.iterator])) {
@@ -77,26 +64,41 @@ class DragonBaseCollection {
     }
 
     for(let entry of entries) {
-      if(entry instanceof this.model) {
+      if(entry instanceof this.Model) {
         this.models.push(entry)
       }
 
       else {
-        this.models.push(new this.model(entry))
+        this.models.push(new this.Model(entry))
       }
 
     }
 
+    this.emit('change')
+
+  }
+
+  /*
+  TODO: not really sure what to call this function
+  */
+  getData() {
+    var data = []
+
+    this.models.forEach( (model) => {
+      data.push(model.attr)
+    })
+
+    return data
   }
 
   toJSON() {
-
-
-
+    return this.models.map( (model) => model.toJSON())
   }
 
   [Symbol.iterator](){
-    var collectionsModels = this.models,index = 0
+    var collectionsModels = this.models,
+        index = 0
+
     return {
       next: function next () {
         if (index + 1 > collectionsModels.length) {
@@ -120,9 +122,5 @@ class DragonBaseCollection {
 }
 
 Object.assign(DragonBaseCollection.prototype, {mixin})
-
-DragonBaseCollection.prototype.model = Model
-
-DragonBaseCollection.prototype.url = ''
 
 module.exports = DragonBaseCollection
