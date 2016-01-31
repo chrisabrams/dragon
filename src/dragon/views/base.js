@@ -1,9 +1,21 @@
 'use strict';
 
 import {createContainer} from 'stardux'
-import eventsMixin       from '../events'
+import {Parser, Template} from 'starplate'
+import EventEmitter      from '../events'
 import mixin             from '../mixin'
 import utils             from '../utils'
+var stardux = require('stardux')
+
+// Thanks: http://stackoverflow.com/questions/7238177/detect-htmlcollection-nodelist-in-javascript
+function isNodeList(nodes) {
+  var stringRepr = Object.prototype.toString.call(nodes)
+
+  return typeof nodes === 'object' &&
+    /^\[object (HTMLCollection|NodeList|Object)\]$/.test(stringRepr) &&
+    (typeof nodes.length === 'number') &&
+    (nodes.length === 0 || (typeof nodes[0] === "object" && nodes[0].nodeType > 0))
+}
 
 /*
 @class DragonBaseView
@@ -13,7 +25,14 @@ class DragonBaseView {
   constructor(options = {}) {
 
     this.uid = utils.uniqueId(this)
-    this.mixin(eventsMixin)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
     /*
     Defaults
@@ -54,6 +73,7 @@ class DragonBaseView {
       'id',
       'listen',
       'model',
+      'reducer',
       'renderOnInit',
       'tagName',
       'template'
@@ -61,31 +81,16 @@ class DragonBaseView {
 
     this.disposed = false
 
-    this.options = {}
+    this.assignOptions(options)
 
-    Object.keys(options).forEach( (option) => {
-
-      if(this.directOptions.indexOf(option) > -1) {
-
-        this[option] = options[option]
-
-      }
-
-      else {
-
-        this.options[option] = options[option]
-
-      }
-
-    })
-
+    this._childContainers = {}
     this._events    = []
     this._listeners = []
 
     //this.setProperties()
 
     //this.ensureElement()
-    //this.ensureContainer()
+    this.ensureContainer()
 
     if(this.options.idom instanceof createContainer) {
       //this.$container =
@@ -117,6 +122,28 @@ class DragonBaseView {
   @return this
   @desc Attaches the view to the DOM
   */
+
+  assignOptions(options = {}) {
+
+    this.options = options
+
+    Object.keys(this.options).forEach( (option) => {
+
+      if(this.directOptions && this.directOptions.indexOf(option) > -1) {
+
+        this[option] = options[option]
+
+      }
+
+      else {
+
+        this.options[option] = options[option]
+
+      }
+
+    })
+
+  }
 
   attach() {
 
@@ -161,7 +188,7 @@ class DragonBaseView {
     this.attached = true
 
     this.emit('addedToDOM')
-    this.onAddedToDOM()
+    if(this.onAddedToDOM) this.onAddedToDOM()
 
     return this
 
@@ -194,6 +221,19 @@ class DragonBaseView {
 
       default:
 
+    }
+
+  }
+
+  childContainer(name, selector, reducer) {
+
+    if(!selector) {
+      return this._childContainers[name]
+    }
+
+    var $el = this.$(selector)
+    if($el) {
+      this._childContainers[name] = createContainer($el, {}, reducer)
     }
 
   }
@@ -231,13 +271,24 @@ class DragonBaseView {
     */
     if(!this.$container) {
 
-      console.error(('DEBUG: Detach Error: this.$container is not defined'))
+      console.error('DEBUG: Detach Error: this.$container is not defined')
       //return
     }
 
     Array.prototype.forEach.call(this.$container, (container) => {
 
-      var els = container.querySelectorAll(this.el)
+      /*
+      TODO: not happy with this
+      */
+      var identifier = this.el.tagName.toLowerCase()
+      if(this.el.id) {
+        identifier = `#${this.el.id}`
+      }
+      else if(this.el.className) {
+        identifier = '.' + this.el.className.replace(' ', ' .')
+      }
+
+      var els = container.querySelectorAll(identifier)
 
       Array.prototype.forEach.call(els, (el) => {
 
@@ -248,7 +299,7 @@ class DragonBaseView {
     })
 
     this.detached = true
-    this.trigger('detach')
+    this.emit('detach')
 
     /*Array.prototype.forEach.call(this.$el, function(el) {
 
@@ -278,10 +329,13 @@ class DragonBaseView {
 
       this.unBindEvents()
       this.unBindListens()
+
+      this.on('detach', () => {
+        utils.dispose(this)
+
+      })
+
       this.detach()
-
-      utils.dispose(this)
-
     }
 
   }
@@ -290,11 +344,17 @@ class DragonBaseView {
 
     if(this.container) {
 
-      this.$container = this.$(this.container)
+      if(this.container instanceof Node) {
+        this.$container = [this.container]
+      }
 
-      if(this.$container.length == 0) console.error('No container(s) found.')
+      else if(typeof this.container == 'string') {
+        this.$container = this.$(this.container)
+      }
 
     }
+
+    if(!this.container || !this.$container || this.$container.length == 0) console.error('No container(s) found.', this, this.container)
 
   }
 
@@ -393,7 +453,7 @@ class DragonBaseView {
 
     }
 
-    selector = this.$(selector)
+    if(typeof selector == 'string') selector = this.$(selector)
 
     this._events.push([action, selector, handler])
 
@@ -406,6 +466,30 @@ class DragonBaseView {
         this.bindEvent(action, selector, handler)
       })
     }
+
+  }
+
+  delegateEvent(action, $el, selector, handler) {
+    var _this = this
+
+    if(typeof $el == 'string') $el = document.querySelectorAll($el)
+
+    var handlerWrap = function(e) {
+      var t = e.target
+      while (t && t !== this) {
+        if (t.matches(selector)) handler.call(_this, e)
+        t = t.parentNode
+      }
+    }
+
+    this._events.push([action, $el, handlerWrap])
+
+    Array.prototype.forEach.call($el, (el) => {
+
+      el.addEventListener(action, handlerWrap)
+
+    })
+
 
   }
 
@@ -484,11 +568,10 @@ class DragonBaseView {
     this.el = document.createElement(this.tagName)
 
     if(this.id) this.el.id = this.id
+    if(this.class) this.el.className = this.class
 
-    if(typeof this.container == 'string') {
-      this.$container = document.querySelectorAll(this.container)
-      this.idom = createContainer(this.el)
-    }
+    var Container = stardux.Container
+    this.idom = createContainer(this.el, {}, this.reducer.bind(this))
 
     this.el.innerHTML = this.getTemplate()
 
@@ -500,7 +583,6 @@ class DragonBaseView {
       this.idom.update(this.collection.attr)
     }
 
-    console.log('View', this)
     this.emit('render')
 
     return this
@@ -607,6 +689,10 @@ class DragonBaseView {
 
     })
 
+  }
+
+  state(action) {
+    this.idom.update({current: action})
   }
 
   unBindEvents() {

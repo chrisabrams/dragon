@@ -30,11 +30,16 @@ Utils.dispose = function(_this, options = {}) {
   Object.keys(_this).forEach( (property) => {
 
     /*
-    Sometimes a property is passed in from a parent, and parent would be happy to not have property deleted by child
+    Sometimes a property is passed in from a parent, and the parent doesn't want
+    to lose it just because the child disappeared.
     */
     if(options.ignore && options.ignoreProperties.indexOf(property) > -1) return
 
     if(_this && _this[property] && typeof _this[property].dispose == 'function') {
+
+      /*_this[property].dispose(function() {
+        delete _this[property]
+      })*/
 
       _this[property].dispose()
 
@@ -59,7 +64,7 @@ Utils.log = function() {
 
 /*
 Dragon.Utils.uniqueId
-what if we use the new primitive type symbols as a uid 
+what if we use the new primitive type symbols as a uid
 */
 
 Utils.uniqueId = (_this) => {

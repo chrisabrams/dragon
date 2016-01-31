@@ -38,12 +38,11 @@ class DragonDispatcher {
       var segs = route.pattern.split('/')
 
       var controllerName = segs[1],
-          actionName     = segs[2]
-      console.log('controllerName', controllerName)
-      console.log('actionName', actionName)
+          actionName     = options.action || segs[2]
+
       var Controller = this.options.getController(controllerName)
       controller = new Controller()
-      console.log('controller', controller)
+
       controller[actionName](req)
     }
 

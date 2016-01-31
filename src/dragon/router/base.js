@@ -1,6 +1,6 @@
 'use strict';
 
-import eventsMixin from '../events'
+import EventEmitter from '../events'
 import mixin       from '../mixin'
 import Route       from './route'
 import utils       from '../utils'
@@ -9,7 +9,14 @@ class DragonRouter {
 
   constructor(options = {}) {
     this.uid = utils.uniqueId(this)
-    this.mixin(eventsMixin)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
     this._currentHandler = null
     this._currentUrl     = null
@@ -95,7 +102,7 @@ class DragonRouter {
 
       e.preventDefault()
 
-      this.navigate(href)
+      this.navigate(el.href)
 
     }
 

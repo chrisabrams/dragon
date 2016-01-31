@@ -11,7 +11,11 @@ class DragonController {
 
   compose(key, val, options = {}) {
 
-    if(arguments.length == 1) return composeStore[key]
+    if(arguments.length == 1 || typeof composeStore[key] == 'object') {
+      var composition = composeStore[key]
+
+      return composition
+    }
 
     /*
     TODO: Figure out how updating/replacing a composition would work.

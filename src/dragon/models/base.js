@@ -1,6 +1,6 @@
 'use strict';
 
-import eventsMixin       from '../events'
+import EventEmitter      from '../events'
 import mixin             from '../mixin'
 import utils             from '../utils'
 
@@ -8,7 +8,14 @@ class DragonBaseModel {
 
   constructor(attr = {}, options = {}) {
     this.uid = utils.uniqueId(this)
-    this.mixin(eventsMixin)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
     this.attr = {};
     this.options = options
@@ -16,10 +23,6 @@ class DragonBaseModel {
     Object.assign(this.attr, this.defaults, attr)
 
     this.observeAttributes()
-  }
-
-  initialize() {
-
   }
 
   /*
@@ -101,11 +104,11 @@ class DragonBaseModel {
   }
 
   // Internal pick helper function to determine if `obj` has key `key`.
- keyInObj (value, key, obj) {
+  keyInObj(value, key, obj) {
     return key in obj;
-  };
+  }
 
-// Return a copy of the object only containing the whitelisted properties.
+  // Return a copy of the object only containing the whitelisted properties.
   pick(...keys) {
     var obj=this.attr,result = {}, iteratee = keys[0];
     if (obj == null) return result;
@@ -125,7 +128,7 @@ class DragonBaseModel {
   }
 
   // Return a copy of the object without the blacklisted properties.
-  omit (...keys) {
+  omit(...keys) {
     var obj=this.attr,iteratee = keys[0], context;
     if (typeof iteratee === 'function') {
       iteratee = iteratee;
@@ -158,7 +161,7 @@ class DragonBaseModel {
   }
 
   // Invert the keys and values of an object. The values must be serializable.
-  invert = function(obj = this.attr) {
+  invert(obj = this.attr) {
     var result = {},
     index = -1,
     props = this.keys(obj),
@@ -170,15 +173,20 @@ class DragonBaseModel {
     return result;
   }
 
-  isArrayLike = function(collection) {
+  isArrayLike(collection) {
     var length = collection[length];
     return typeof length == 'number' && length >= 0 && length <= (Math.pow(2, 53) - 1);
-  }; 
+  };
 
   isEmpty(value = this.attr) {
     if (value == null) return true;
     if (isArrayLike(value) && (_.isArray(value) || _.isString(value) || _.isArguments(value))) return value.length === 0;
     return this.keys(value).length === 0;
+  }
+
+  set(o) {
+    this.attr = Object.assign({}, this.attr, o)
+    this.emit('change') //TODO: figure out why this is needed
   }
 }
 
