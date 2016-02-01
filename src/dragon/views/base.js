@@ -58,27 +58,6 @@ class DragonBaseView {
 
     this.bindDataOnInit = true
 
-    /*
-    Direct Options
-    Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
-    */
-    this.directOptions = [
-      'attachOnInit',
-      'attachPlacement',
-      'bindDataOnInit',
-      'class', // why did CSS use this?
-      'collection',
-      'container',
-      'events',
-      'id',
-      'listen',
-      'model',
-      'reducer',
-      'renderOnInit',
-      'tagName',
-      'template'
-    ]
-
     this.disposed = false
 
     this.assignOptions(options)
@@ -758,5 +737,26 @@ DragonBaseView.prototype.$ = function(selector) {
   return doc.querySelectorAll.call(doc, selector)
 
 }
+
+/*
+Direct Options
+Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
+*/
+DragonBaseView.prototype.directOptions = [
+  'attachOnInit',
+  'attachPlacement',
+  'bindDataOnInit',
+  'class', // why did CSS use this?
+  'collection',
+  'container',
+  'events',
+  'id',
+  'listen',
+  'model',
+  'reducer',
+  'renderOnInit',
+  'tagName',
+  'template'
+]
 
 export default DragonBaseView

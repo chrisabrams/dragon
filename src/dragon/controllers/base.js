@@ -9,7 +9,7 @@ class DragonController {
     this.uid = utils.uniqueId(this)
   }
 
-  compose(key, val, options = {}) {
+  compose(key, Val, options = {}) {
 
     if(arguments.length == 1 || typeof composeStore[key] == 'object') {
       var composition = composeStore[key]
@@ -22,7 +22,7 @@ class DragonController {
     */
     if(!composeStore[key] || options.update) {
 
-      composeStore[key] = val
+      composeStore[key] = new Val(options)
 
     }
 
