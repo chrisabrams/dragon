@@ -69,7 +69,7 @@ class DragonBaseCollection {
       }
 
       else {
-        this.models.push(new this.Model(entry))
+        this.models.push(new this.Model(entry, {store: null}))
       }
 
     }
