@@ -1,6 +1,7 @@
 'use strict';
 
-import utils from '../utils'
+import Router from './base'
+import utils  from '../utils'
 
 class DragonDispatcher {
 
@@ -27,11 +28,15 @@ class DragonDispatcher {
       params: params
     }
 
+    var res = {
+      navigate: Router.navigate
+    }
+
     var controller = null
 
     if(options.Controller) {
       controller = new options.Controller()
-      controller[options.action](req)
+      controller[options.action](req, res, this.next)
     }
 
     else {
@@ -43,10 +48,14 @@ class DragonDispatcher {
       var Controller = this.options.getController(controllerName)
       controller = new Controller()
 
-      controller[actionName](req)
+      controller[actionName](req, res, this.next)
     }
 
     this.currentController = controller
+
+  }
+
+  next() {
 
   }
 
