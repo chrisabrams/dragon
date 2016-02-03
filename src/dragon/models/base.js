@@ -17,7 +17,7 @@ class DragonBaseModel {
     this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
     this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
-    this.attr = {};
+    this.attr = {}
     this.options = options
 
     Object.assign(this.attr, this.defaults, attr)
