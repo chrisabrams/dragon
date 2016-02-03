@@ -12,7 +12,7 @@ class DragonBaseCollection {
     this.mixin(eventsMixin)
 
     this.disposed = false
-    this.Model    = Model
+    this.Model    = options.Model || Model
     this.models   = []
     this.url      = options.url || this.url || ''
 
@@ -69,7 +69,7 @@ class DragonBaseCollection {
       }
 
       else {
-        this.models.push(new this.Model(entry, {store: null}))
+        this.models.push(new this.Model(entry, {storeAutoLoad: false}))
       }
 
     }
