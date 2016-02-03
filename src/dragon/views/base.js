@@ -88,7 +88,13 @@ class DragonBaseView {
 
     }
 
-    if(this.bindDataOnInit && this.model) this.bindDataOnChange()
+    if(this.bindDataOnInit && (
+      this.model ||
+      this.models ||
+      this.collection
+    )) {
+      this.bindDataOnChange()
+    }
 
     this.render()
   }
@@ -175,8 +181,16 @@ class DragonBaseView {
 
   bindDataOnChange() {
 
-    if(this.model)      this.model.on('change', this.render.bind(this))
-    if(this.collection) this.collection.on('change', this.render.bind(this))
+    if(this.model && this.model.on)      this.model.on('change', this.render.bind(this))
+    if(this.collection && this.collection.on) this.collection.on('change', this.render.bind(this))
+
+    if(this.models) {
+      for(var k in this.models) {
+        this.models[k].on('change', () => {
+          this.render.call(this)
+        })
+      }
+    }
 
   }
 
@@ -230,6 +244,43 @@ class DragonBaseView {
     })
 
   }*/
+
+  delegateEvent(action, $el, selector, handler) {
+    var _this = this
+
+    if(typeof $el == 'string') $el = document.querySelectorAll($el)
+
+    var handlerWrap = function(e) {
+      var t = e.target
+      while (t && t !== this) {
+        if (t.matches(selector)) {
+          var index = null
+
+          if(t.tagName == 'LI') {
+            var c = t.parentNode.childNodes
+            for(var i = 0, l = c.length; i < l; i++) {
+              if(c[i] == t) {
+                index = i
+                break
+              }
+            }
+          }
+
+          handler.call(_this, e, index)
+        }
+        t = t.parentNode
+      }
+    }
+
+    this._events.push([action, $el, handlerWrap])
+
+    Array.prototype.forEach.call($el, (el) => {
+
+      el.addEventListener(action, handlerWrap)
+
+    })
+
+  }
 
   /*
   @method detach
@@ -449,30 +500,6 @@ class DragonBaseView {
 
   }
 
-  delegateEvent(action, $el, selector, handler) {
-    var _this = this
-
-    if(typeof $el == 'string') $el = document.querySelectorAll($el)
-
-    var handlerWrap = function(e) {
-      var t = e.target
-      while (t && t !== this) {
-        if (t.matches(selector)) handler.call(_this, e)
-        t = t.parentNode
-      }
-    }
-
-    this._events.push([action, $el, handlerWrap])
-
-    Array.prototype.forEach.call($el, (el) => {
-
-      el.addEventListener(action, handlerWrap)
-
-    })
-
-
-  }
-
   getTagName(template) {
 
     var el = document.createElement('div')
@@ -547,6 +574,17 @@ class DragonBaseView {
       return this
     }
 
+    if(this.attached && this.models) {
+
+      var obj = {}
+      for(var k in this.models) {
+        obj[k] = this.models[k].attr
+      }
+
+      this.idom.update(obj)
+      return this
+    }
+
     // We need a wrapping tag; it's too dangerous to patch a template without one
     if(!this.tagName) this.tagName = 'div'
     this.el = document.createElement(this.tagName)
@@ -565,6 +603,15 @@ class DragonBaseView {
 
     else if(this.collection) {
       this.idom.update({collection: this.collection.getData()})
+    }
+
+    else if(this.models) {
+      var obj = {}
+      for(var k in this.models) {
+        obj[k] = this.models[k].attr
+      }
+
+      this.idom.update(obj)
     }
 
     this.emit('render')
@@ -753,6 +800,7 @@ DragonBaseView.prototype.directOptions = [
   'id',
   'listen',
   'model',
+  'models',
   'reducer',
   'renderOnInit',
   'tagName',
