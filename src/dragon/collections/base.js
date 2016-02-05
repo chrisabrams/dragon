@@ -1,15 +1,22 @@
 'use strict';
 
-import eventsMixin from '../events'
-import mixin       from '../mixin'
-import Model       from '../models/base'
-import utils       from '../utils'
+import EventEmitter from '../events'
+import mixin        from '../mixin'
+import Model        from '../models/base'
+import utils        from '../utils'
 
 class DragonBaseCollection {
 
   constructor(entries = [], options = {}) {
     this.uid = utils.uniqueId(this)
-    this.mixin(eventsMixin)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
     this.disposed = false
     this.Model    = options.Model || Model
@@ -55,7 +62,12 @@ class DragonBaseCollection {
     /*
     TODO: figure out how to clean this up
     */
-    if(!entries || !entries.length || entries.length == 0) return
+    if(
+      typeof entries == 'null' ||
+      typeof entries == 'undefined' ||
+      (!entries.length && typeof entries == 'object' && Object.keys(entries).length == 0) ||
+      (entries.length && entries.length == 0)
+    ) return
 
     // we will suppport all kind of iterable  here !!
     // It is simpler to manage things by making a single item an array
@@ -64,6 +76,7 @@ class DragonBaseCollection {
     }
 
     for(let entry of entries) {
+
       if(entry instanceof this.Model) {
         this.models.push(entry)
       }
@@ -89,6 +102,18 @@ class DragonBaseCollection {
     })
 
     return data
+  }
+
+  move(fromIndex, toIndex, options = {}) {
+    this.models.splice(toIndex, 0, this.models.splice(fromIndex, 1)[0])
+  }
+
+  remove(index, options = {}) {
+    var changeEvent = (typeof options.changeEvent == 'boolen') ? options.changeEvent : true
+
+    this.models.splice(index, 1)
+
+    if(changeEvent) this.emit('change')
   }
 
   toJSON() {
