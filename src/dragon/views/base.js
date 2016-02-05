@@ -181,12 +181,21 @@ class DragonBaseView {
 
   bindDataOnChange() {
 
-    if(this.model && this.model.on)      this.model.on('change', this.render.bind(this))
+    if(this.model && this.model.on)           this.model.on('change', this.render.bind(this))
     if(this.collection && this.collection.on) this.collection.on('change', this.render.bind(this))
 
     if(this.models) {
-      for(var k in this.models) {
-        this.models[k].on('change', () => {
+      for(var j in this.models) {
+        this.models[j].on('change', () => {
+          this.render.call(this)
+        })
+      }
+    }
+
+    if(this.collections) {
+
+      for(var k in this.collections) {
+        this.collections[k].on('change', () => {
           this.render.call(this)
         })
       }
@@ -195,6 +204,8 @@ class DragonBaseView {
   }
 
   bindEvent() {
+
+    if(typeof arguments[2] == 'undefined') throw new Error(`Event "${arguments[0]}" on ${this.constructor.name} requires callback`)
 
     var action  = arguments[0],
         handler = arguments[arguments.length - 1].bind(this)
@@ -249,6 +260,14 @@ class DragonBaseView {
     var _this = this
 
     if(typeof $el == 'string') $el = document.querySelectorAll($el)
+
+    if(typeof $el == 'object' && $el.$ref) {
+      $el = $el.$ref
+    }
+
+    if(typeof selector == 'object' && selector.selector) {
+      selector = selector.selector
+    }
 
     var handlerWrap = function(e) {
       var t = e.target
@@ -444,6 +463,30 @@ class DragonBaseView {
         selector,
         _this   = this
 
+    switch(arguments.length) {
+
+      case 2:
+
+        selector = this.el
+
+        break
+
+      case 3:
+
+        selector = arguments[1]
+
+        break
+
+      default:
+
+    }
+
+    if(typeof selector == 'string') selector = this.$(selector)
+
+    if(typeof selector == 'object' && selector.$ref) {
+      selector = selector.$ref
+    }
+
     switch(action) {
 
       case 'enter':
@@ -465,26 +508,6 @@ class DragonBaseView {
       default:
 
     }
-
-    switch(arguments.length) {
-
-      case 2:
-
-        selector = this.el
-
-        break
-
-      case 3:
-
-        selector = arguments[1]
-
-        break
-
-      default:
-
-    }
-
-    if(typeof selector == 'string') selector = this.$(selector)
 
     this._events.push([action, selector, handler])
 
@@ -523,6 +546,44 @@ class DragonBaseView {
 
   }
 
+  getIDOMData() {
+
+    var pkg = {}
+
+    // Property naming ensues
+    if(this.models || this.collections) {
+
+      if(this.models) {
+        for(var j in this.models) {
+          pkg[j] = this.models[j].attr
+        }
+      }
+
+      if(this.collections) {
+        for(var k in this.collections) {
+          pkg[k] = this.collections[k].getData()
+        }
+      }
+
+    }
+
+    // Classic Backbone
+    else {
+
+      if(this.model) {
+        pkg = Object.assign({}, this.model.attr)
+      }
+
+      else if(this.collection) {
+        pkg = Object.assign({}, {collection: this.collection.getData()})
+      }
+
+    }
+
+    return pkg
+
+  }
+
   listen() {
 
     var ev      = arguments[0],
@@ -544,6 +605,12 @@ class DragonBaseView {
 
   }
 
+  refreshIDOM() {
+    var pkg = this.getIDOMData()
+
+    this.idom.update(Object.assign({}, pkg))
+  }
+
   /*
   @method render
   @type Function
@@ -552,6 +619,11 @@ class DragonBaseView {
   */
 
   render() {
+    /*
+    TODO: Debug incremental dom and see if it is firing more times than
+    necessary
+    */
+    //console.log('render called', this.attached, this.id)
     /*
     TODO: really both should exist, but gotta figure out how to get container from existing idom passed in
     */
@@ -564,29 +636,23 @@ class DragonBaseView {
     Remember with Backbone you would call .render() to update the template?
     If the template has been attached, then update the template with Incremental DOM
     */
-    if(this.attached && this.model) {
-      this.idom.update(this.model.attr)
+    if(this.attached) {
+      this.refreshIDOM()
       return this
     }
 
-    if(this.attached && this.collection) {
-      this.idom.update({collection: this.collection.getData()})
-      return this
-    }
+    /*
+    TODO: What is going on that is re-defining el? Is it a race condition with
+    an update the container, which triggers multiple updates within milliseconds?
 
-    if(this.attached && this.models) {
-
-      var obj = {}
-      for(var k in this.models) {
-        obj[k] = this.models[k].attr
-      }
-
-      this.idom.update(obj)
-      return this
-    }
+    If this.el is attempted to be re-assigned, an error will be thrown about not
+    re-assigning a read-only property.
+    */
+    if(this.el) return
 
     // We need a wrapping tag; it's too dangerous to patch a template without one
     if(!this.tagName) this.tagName = 'div'
+
     this.el = document.createElement(this.tagName)
 
     if(this.id) this.el.id = this.id
@@ -597,22 +663,7 @@ class DragonBaseView {
 
     this.el.innerHTML = this.getTemplate()
 
-    if(this.model) {
-      this.idom.update(this.model.attr)
-    }
-
-    else if(this.collection) {
-      this.idom.update({collection: this.collection.getData()})
-    }
-
-    else if(this.models) {
-      var obj = {}
-      for(var k in this.models) {
-        obj[k] = this.models[k].attr
-      }
-
-      this.idom.update(obj)
-    }
+    this.refreshIDOM()
 
     this.emit('render')
 
@@ -795,6 +846,7 @@ DragonBaseView.prototype.directOptions = [
   'bindDataOnInit',
   'class', // why did CSS use this?
   'collection',
+  'collections',
   'container',
   'events',
   'id',
