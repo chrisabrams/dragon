@@ -21,14 +21,8 @@ class DragonBaseCollection {
     this.disposed = false
     this.Model    = options.Model || Model
     this.models   = []
+    this.options  = options
     this.url      = options.url || this.url || ''
-
-    /*
-    TODO: this check is flawed
-    */
-    if(entries.length > 0 && !(entries[Symbol.iterator])) {
-      throw new Error('Collection entries must be an iterable')
-    }
 
     if(!this.Model || !(this.Model instanceof Function)) {
       throw new Error('Collection requires a valid Model Class')
@@ -65,8 +59,7 @@ class DragonBaseCollection {
     if(
       typeof entries == 'null' ||
       typeof entries == 'undefined' ||
-      (!entries.length && typeof entries == 'object' && Object.keys(entries).length == 0) ||
-      (entries.length && entries.length == 0)
+      (!entries.length && typeof entries == 'object' && Object.keys(entries).length == 0)
     ) return
 
     // we will suppport all kind of iterable  here !!
@@ -109,7 +102,7 @@ class DragonBaseCollection {
   }
 
   remove(index, options = {}) {
-    var changeEvent = (typeof options.changeEvent == 'boolen') ? options.changeEvent : true
+    var changeEvent = (typeof options.changeEvent == 'boolean') ? options.changeEvent : true
 
     this.models.splice(index, 1)
 
