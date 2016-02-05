@@ -17,12 +17,17 @@ class DragonBaseModel {
     this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
     this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
-    this.attr = {}
     this.options = options
 
-    Object.assign(this.attr, this.defaults, attr)
+    Object.defineProperty(this, 'attr', {
+      configurable: false,
+      enumerable: true,
+      writable: true
+    })
 
-    this.observeAttributes()
+    this.attr = Object.assign({}, this.defaults, attr)
+
+    //this.observeAttributes()
   }
 
   /*
@@ -31,6 +36,7 @@ class DragonBaseModel {
   clear() {
 
     this.attr = {}
+    this.emit('change')
 
   }
 
@@ -40,35 +46,37 @@ class DragonBaseModel {
   observeAttributes() {
 
     // Trigger changes on model
-    Object.observe(this.attr, (changes) => {
+    //Object.observe(this.attr, this.observeHandler.bind(this))
 
-      this.emit('change', changes)
+  }
 
-      /*
-      TODO: consider making this a mixin and expanding to watch specific properties
-      */
+  observeHandler(changes) {
 
-      var add    = [],
-          del    = [],
-          update = []
+    //this.emit('change', changes)
 
-      changes.forEach( (change) => {
+    /*
+    TODO: consider making this a mixin and expanding to watch specific properties
+    */
 
-        switch(change.type) {
+    var add    = [],
+        del    = [],
+        update = []
 
-          case 'add'    : add.push(change); break;
-          case 'delete' : del.push(change); break;
-          case 'update' : update.push(change); break;
+    changes.forEach( (change) => {
 
-        }
+      switch(change.type) {
 
-      })
+        case 'add'    : add.push(change); break;
+        case 'delete' : del.push(change); break;
+        case 'update' : update.push(change); break;
 
-      if(add.length > 0)    this.emit('add', add)
-      if(del.length > 0)    this.emit('delete', del)
-      if(update.length > 0) this.emit('update', update)
+      }
 
     })
+
+    if(add.length > 0)    this.emit('add', add)
+    if(del.length > 0)    this.emit('delete', del)
+    if(update.length > 0) this.emit('update', update)
 
   }
 
@@ -185,8 +193,30 @@ class DragonBaseModel {
   }
 
   set(o) {
-    this.attr = Object.assign({}, this.attr, o)
-    this.emit('change') //TODO: figure out why this is needed
+    /*Object.defineProperty(this, 'attr', {
+      configurable: false,
+      enumerable: true,
+      writable: true
+    })*/
+
+    var keysChanged = []
+    Object.keys(o).forEach((key) => {
+
+      this.attr[key] = o[key]
+      keysChanged.push(key)
+
+    })
+
+    //this.unobserveAttributes()
+    //this.attr = Object.assign({}, this.attr, o)
+    //this.observeAttributes()
+    this.emit('change', keysChanged)
+  }
+
+  unobserveAttributes() {
+    //delete this.attr
+
+    //Object.unobserve(this.attr, this.observeHandler.bind(this))
   }
 }
 
