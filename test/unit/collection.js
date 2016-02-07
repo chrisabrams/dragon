@@ -9,7 +9,7 @@ describe('Unit: Collection', function() {
     var collection = new Collection()
 
     expect(collection).to.be.an('object')
-    expect(collection.model).to.be.a('function') // Remember, this is the Model class, not the instance
+    expect(collection.Model).to.be.a('function') // Remember, this is the Model class, not the instance
     expect(collection.models).to.be.an('array')
     expect(collection.models.length).to.equal(0)
     expect(collection.uid).to.be.a('symbol')
@@ -111,6 +111,14 @@ describe('Unit: Collection', function() {
 
     done()
 
+  })
+
+  it('should initialize only with options set', function(done) {
+
+    class Collection extends Dragon.Collection {}
+    var collection = new Collection(null,{optionTest:"test"})
+    expect(collection).to.be.an('object')
+    done()
   })
 
   it('should clear all models on collection', function(done) {
