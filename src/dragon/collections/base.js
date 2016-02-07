@@ -19,12 +19,12 @@ class DragonBaseCollection {
     this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
     this.disposed = false
-    this.Model    = options.Model || Model
+    this.model    = options.Model || Model
     this.models   = []
     this.options  = options
     this.url      = options.url || this.url || ''
 
-    if(!this.Model || !(this.Model instanceof Function)) {
+    if(!this.model || !(this.model instanceof Function)) {
       throw new Error('Collection requires a valid Model Class')
     }
 
@@ -32,9 +32,16 @@ class DragonBaseCollection {
       throw new Error('Collection requires a valid url')
     }
 
-    this.ensureEntries(entries)
+      this.ensureEntries(entries)
   }
-
+  pushToCollection(entry){
+    if(entry instanceof this.model){
+      this.models.push(entry)
+    }
+    else{
+      this.models.push(new this.model(entry,{storeAutoLoad:false}))
+    }
+  }
   add(entries) {
     this.ensureEntries(entries)
   }
@@ -55,13 +62,19 @@ class DragonBaseCollection {
 
     /*
     TODO: figure out how to clean this up
+    this will check if null  or and empty array how is predefined
     */
-    if(
-      typeof entries == 'null' ||
-      typeof entries == 'undefined' ||
-      (!entries.length && typeof entries == 'object' && Object.keys(entries).length == 0)
-    ) return
+    if( entries === null ||(Array.isArray(entries) && !entries.length)){
+      console.log("this is where we are in collections")
+      return
+    }
 
+    //if user pass an empty object we will create an empty model instance
+    if(typeof entries === 'object'){
+      this.pushToCollection(entries)
+      return
+    }
+    
     // we will suppport all kind of iterable  here !!
     // It is simpler to manage things by making a single item an array
     if(!(entries[Symbol.iterator])) {
@@ -69,15 +82,7 @@ class DragonBaseCollection {
     }
 
     for(let entry of entries) {
-
-      if(entry instanceof this.Model) {
-        this.models.push(entry)
-      }
-
-      else {
-        this.models.push(new this.Model(entry, {storeAutoLoad: false}))
-      }
-
+      this.pushToCollection(entry)
     }
 
     this.emit('change')

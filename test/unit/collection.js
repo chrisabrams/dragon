@@ -113,6 +113,14 @@ describe('Unit: Collection', function() {
 
   })
 
+  it('should initialize only with options set', function(done) {
+
+    class Collection extends Dragon.Collection {}
+    var collection = new Collection(null,{optionTest:"test"})
+    expect(collection).to.be.an('object')
+    done()
+  })
+
   it('should clear all models on collection', function(done) {
 
     class Collection extends Dragon.Collection {}
