@@ -1,6 +1,6 @@
 'use strict';
 
-import {createContainer} from 'stardux'
+import {createContainer,Container} from 'stardux'
 import {Parser, Template} from 'starplate'
 import EventEmitter      from '../events'
 import mixin             from '../mixin'
@@ -70,11 +70,15 @@ class DragonBaseView {
 
     //this.ensureElement()
     this.ensureContainer()
-
-    if(this.options.idom instanceof createContainer) {
+    if(this.options.idom instanceof Container) {
+      this.idom = this.options.idom
+      if(!this.attached && this.attachOnInit){
+        this.el =  this.idom.domElement   
+        this.refreshIDOM()
+        this.attach()
+      }
       //this.$container =
       //TODO: figure out how to get $container from an already created container
-      this.idom = this.options.idom
       this.attached = true // Since the idom container is being passed in, we assume it's been attached (although I guess its possible it hasn't been)
     }
 
@@ -91,7 +95,8 @@ class DragonBaseView {
     if(this.bindDataOnInit && (
       this.model ||
       this.models ||
-      this.collection
+      this.collection ||
+      this.collections
     )) {
       this.bindDataOnChange()
     }
@@ -659,7 +664,7 @@ class DragonBaseView {
     if(this.class) this.el.className = this.class
 
     //var Container = stardux.Container
-    this.idom = createContainer(this.el, {}, this.reducer.bind(this))
+    this.idom = this.reducer ? createContainer(this.el, {}, this.reducer.bind(this)) : createContainer(this.el,{})
 
     this.el.innerHTML = this.getTemplate()
 

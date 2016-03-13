@@ -1,7 +1,26 @@
 import Model from '../../../src/dragon/models/base'
 import View  from '../../../src/dragon/views/base'
+import {createContainer} from 'stardux'
 
 describe('Integration: View', function() {
+
+  it('should attach an idom container passed in on initialization',function(done){
+    var model = new Model({foo: 'bar'}),
+      el    = document.createElement("div")
+      el.id = 'element'
+      el.innerHTML = "Hello ${foo}"
+
+      var idom  = createContainer(el)
+      var view = new View({
+        container :'#app',
+        idom,
+        model
+      })
+      var attached = document.querySelector(`#app #element`)
+      console.log(expect)
+      expect(attached).to.be.an('object');
+      done();
+  });
 
   it('should render a template with data from a model', function(done) {
 
@@ -13,7 +32,6 @@ describe('Integration: View', function() {
       model,
       template: 'Hello ${foo}'
     })
-
     expect(view.el.innerHTML).to.equal('Hello bar')
 
     done()
@@ -40,6 +58,7 @@ describe('Integration: View', function() {
     }, 10)
 
   })
+
 
   it.skip('should render a template with data from a collection', function(done) {
 
@@ -80,3 +99,4 @@ describe('Integration: View', function() {
   })
 
 })
+
