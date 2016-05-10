@@ -6,7 +6,6 @@ import '../lib/polyfills/element.remove'
 import '../lib/polyfills/node.prependchild'
 import '../lib/polyfills/nodelist.queryselectorall'
 import '../lib/polyfills/nodelist.remove'
-import '../lib/polyfills/Object.assign'
 import '../lib/polyfills/Array.from'
 
 import Application    from './dragon/application/base'
