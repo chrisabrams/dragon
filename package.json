@@ -2,7 +2,7 @@
   "name": "dragon.js",
   "version": "0.2.0",
   "description": "Single Page Apps with ES6/7",
-  "main": "src/dragon.js",
+  "main": "dist/dragon.js",
   "bin": {
     "dragon.js": "./bin/dragon"
   },
