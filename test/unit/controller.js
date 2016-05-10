@@ -1,6 +1,6 @@
-var Dragon = require('../../../src/dragon')
+var Dragon = require('../../src/dragon')
 
-describe('Unit: Controller: Base', function() {
+describe('Unit: Controller', function() {
 
   it('should initialize', function(done) {
 
@@ -11,3 +11,5 @@ describe('Unit: Controller: Base', function() {
     done()
 
   })
+
+})

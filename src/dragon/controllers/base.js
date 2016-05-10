@@ -1,7 +1,7 @@
 'use strict';
 
-var composeStore = require('../lib/composeStore'),
-    utils        = require('../utils')
+import composeStore from '../lib/composeStore'
+import utils        from '../utils'
 
 class DragonController {
 
@@ -9,16 +9,20 @@ class DragonController {
     this.uid = utils.uniqueId(this)
   }
 
-  compose(key, val, options = {}) {
+  compose(key, Val, options = {}) {
 
-    if(arguments.length == 1) return composeStore[key]
+    if(arguments.length == 1 || typeof composeStore[key] == 'object') {
+      var composition = composeStore[key]
+
+      return composition
+    }
 
     /*
     TODO: Figure out how updating/replacing a composition would work.
     */
     if(!composeStore[key] || options.update) {
 
-      composeStore[key] = val
+      composeStore[key] = new Val(options)
 
     }
 
@@ -40,4 +44,4 @@ class DragonController {
 
 DragonController.prototype.disposed = false
 
-module.exports = DragonController
+export default DragonController

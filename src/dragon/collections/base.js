@@ -1,23 +1,30 @@
 'use strict';
 
-var EventsMixin         = require('../events'),
-    Model               = require('../models/base'),
-    utils               = require('../utils')
+import EventEmitter from '../events'
+import mixin        from '../mixin'
+import Model        from '../models/base'
+import utils        from '../utils'
 
 class DragonBaseCollection {
 
   constructor(entries = [], options = {}) {
     this.uid = utils.uniqueId(this)
 
-    Object.assign(this, EventsMixin)
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
 
-    this.models = []
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
-    if(!(entries instanceof Array)) {
-      throw new Error('Collection entries must be an array')
-    }
+    this.disposed = false
+    this.Model    = options.Model || Model
+    this.models   = []
+    this.options  = options
+    this.url      = options.url || this.url || ''
 
-    if(!this.model || !(this.model instanceof Function)) {
+    if(!this.Model || !(this.Model instanceof Function)) {
       throw new Error('Collection requires a valid Model Class')
     }
 
@@ -26,19 +33,14 @@ class DragonBaseCollection {
     }
 
     this.ensureEntries(entries)
-
   }
 
-  add(entries) {
-
-    this.ensureEntries(entries)
-
+  add(entries, options = {}) {
+    this.ensureEntries(entries, options)
   }
 
   clear() {
-
     this.models = []
-
   }
 
   /*
@@ -48,33 +50,125 @@ class DragonBaseCollection {
   Should also consider concatting arrays as pushing arrays of 1000 or more can be very time consuming/lots of looping.
   Overall this function sucks but helps move the project forward atm.
   */
-  ensureEntries(entries) {
 
+  ensureEntries(entries, options = {}) {
+
+    /*
+    TODO: figure out how to clean this up
+    */
+    if(
+      typeof entries == 'null' ||
+      typeof entries == 'undefined' ||
+      (!entries.length && typeof entries == 'object' && Object.keys(entries).length == 0)
+    ) return
+
+    // we will suppport all kind of iterable  here !!
     // It is simpler to manage things by making a single item an array
-    if(!(entries instanceof Array)) {
+    if(!(entries[Symbol.iterator])) {
       entries = [entries]
     }
 
-    for(let i = 0, l = entries.length; i < l; i++) {
+    if(options.at) options.at--
+    for(let entry of entries) {
+      var model = null
 
-      let entry = entries[i]
-
-      if(entry instanceof this.model) {
-        this.models.push(entry)
+      /*
+      TODO: should create a collection that supports multiple types of  models
+      */
+      if(entry instanceof this.Model) {
+        model = entry
+        this.models.push(model)
       }
 
       else {
-        this.models.push(new this.model(entry))
+
+        /*
+        TODO:
+        somehow the first item in this.models gets duplicated to the end, and then new items that were added are added :/
+        */
+        // If collection has entry, merge the results
+        if(entry.id) {
+
+          var index = null
+          var existingModel = this.models.filter( (item, i) => {
+            if(item.attr.id == entry.id) {
+              index = i
+              return item
+            }
+          })
+
+          if(existingModel.length > 0 && index) {
+            model = Object.assign(this.models[index], entry)
+          }
+        }
+
+        // Create a new entry
+        if(!model) {
+          model = new this.Model(entry, {storeAutoLoad: false})
+
+          if(options.at) {
+            options.at++
+            this.models.splice(options.at, 0, entry)
+            //this.models.splice.apply(this.models, [optoins.at, 0].concat([model]))
+          }
+
+          else {
+            this.models.push(model)
+          }
+
+        }
+
       }
 
+      this.emit('change', model, this.models.length - 1)
     }
 
   }
 
+  /*
+  TODO: not really sure what to call this function
+  */
+  getData() {
+    var data = []
+
+    this.models.forEach( (model) => {
+      data.push(model.getData())
+    })
+
+    return data
+  }
+
+  move(fromIndex, toIndex, options = {}) {
+    this.models.splice(toIndex, 0, this.models.splice(fromIndex, 1)[0])
+  }
+
+  remove(index, options = {}) {
+    var changeEvent = (typeof options.changeEvent == 'boolean') ? options.changeEvent : true
+
+    this.models.splice(index, 1)
+
+    if(changeEvent) {
+      this.emit('change')
+      this.emit('removed')
+    }
+  }
+
   toJSON() {
+    return this.models.map( (model) => model.toJSON())
+  }
 
+  [Symbol.iterator](){
+    var collectionsModels = this.models,
+        index = 0
 
-
+    return {
+      next: function next () {
+        if (index + 1 > collectionsModels.length) {
+          return { done: true };
+        }
+        return { value: collectionsModels[index++], done: false };
+      }
+    }
   }
 
   dispose() {
@@ -89,10 +183,6 @@ class DragonBaseCollection {
 
 }
 
-DragonBaseCollection.prototype.dispose = false
-
-DragonBaseCollection.prototype.model = Model
-
-DragonBaseCollection.prototype.url = ''
+Object.assign(DragonBaseCollection.prototype, {mixin})
 
 module.exports = DragonBaseCollection

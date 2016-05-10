@@ -1,14 +1,22 @@
 'use strict';
 
-var EventsMixin = require('../events'),
-    Route       = require('./route'),
-    utils       = require('../utils')
+import EventEmitter from '../events'
+import mixin       from '../mixin'
+import Route       from './route'
+import utils       from '../utils'
 
 class DragonRouter {
 
   constructor(options = {}) {
-
     this.uid = utils.uniqueId(this)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
     this._currentHandler = null
     this._currentUrl     = null
@@ -20,6 +28,7 @@ class DragonRouter {
 
     this.options = options
 
+    if(!this.options.routes) return console.error('Router needs routes')
     this.loadRoutes()
 
     document.addEventListener('click', this.onLinkClick.bind(this), false)
@@ -85,10 +94,7 @@ class DragonRouter {
 
     if(el.nodeName == 'A') {
 
-      var href = el.getAttribute('href'),
-          rel  = el.getAttribute('rel')
-
-      if(!href || href == '' || href.charAt(0) == '#' || (rel && rel == 'external') || href.indexOf('//') > -1) return
+      if(this.isIgnoredLink(el)) return
 
       /*if(external) {
         window.open(href)
@@ -96,7 +102,7 @@ class DragonRouter {
 
       e.preventDefault()
 
-      this.navigate(href)
+      this.navigate(el.href)
 
     }
 
@@ -117,7 +123,7 @@ class DragonRouter {
 
         var params = route.extractParams(path)
 
-        this.trigger('match', route, params, options)
+        this.emit('match', route, params, options)
         matched = true
 
         break
@@ -176,8 +182,20 @@ class DragonRouter {
 
 }
 
-Object.assign(DragonRouter.prototype, EventsMixin)
+Object.assign(DragonRouter.prototype, {mixin})
 
 DragonRouter.prototype.disposed = false
 
-module.exports = DragonRouter
+DragonRouter.prototype.isIgnoredLink = function isIgnoredLink(el) {
+
+  var href = el.getAttribute('href'),
+      rel  = el.getAttribute('rel')
+
+  if(!href || href == '' || href.charAt(0) == '#' || (rel && rel == 'external') || href.indexOf('//') > -1) return true
+
+  return false
+
+}
+
+export {Route}
+export default DragonRouter

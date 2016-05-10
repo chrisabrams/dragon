@@ -1,32 +1,60 @@
 'use strict';
 
-require('../lib/polyfills/Array.from')
-require('../lib/polyfills/element.remove')
-require('../lib/polyfills/node.prependchild')
-require('../lib/polyfills/nodelist.queryselectorall')
-require('../lib/polyfills/nodelist.remove')
-require('../lib/polyfills/Object.assign')
-require('object.observe')
+// Polyfills
+// TODO: which of these are still needed?
+import '../lib/polyfills/element.remove'
+import '../lib/polyfills/node.prependchild'
+import '../lib/polyfills/nodelist.queryselectorall'
+import '../lib/polyfills/nodelist.remove'
+import '../lib/polyfills/Object.assign'
+import '../lib/polyfills/Array.from'
+
+import Application    from './dragon/application/base'
+import Collection     from './dragon/collections/base'
+import CollectionView from './dragon/views/collection-view'
+import Component      from './dragon/components/base'
+import Controller     from './dragon/controllers/base'
+import Dispatcher     from './dragon/router/dispatcher'
+import EventEmitter   from './dragon/events'
+import Mediator       from './dragon/mediator'
+import Model          from './dragon/models/base'
+import Router         from './dragon/router/base'
+import Store          from './dragon/models/store'
+import Utils          from './dragon/utils'
+import View           from './dragon/views/base'
 
 var Dragon = {
-  //CollectionView : require('./dragon/views/collectionView'),
   //Composer       : require('./dragon/composition/composer'),
   //Composition    : require('./dragon/composition/composition'),
-  //Dispatcher     : require('./dragon/router/dispatcher'),
-  //EventBroker    : require('./dragon/lib/eventBroker'),
   //mediator       : require('./dragon/mediator/mediator'),
   //Layout         : require('./dragon/views/layout'),
   //SyncMachine    : require('./dragon/models/syncMachine'),
-  Application    : require('./dragon/application/base'),
-  Collection     : require('./dragon/collections/base'),
-  Component      : require('./dragon/components/base'),
-  //ComponentAPI   : require('./dragon/components/api'),
-  Controller     : require('./dragon/controllers/base'),
-  Events         : require('./dragon/events'),
-  Model          : require('./dragon/models/base'),
-  Router         : require('./dragon/router/base'),
-  Utils          : require('./dragon/utils'),
-  View           : require('./dragon/views/base')
+  Application,
+  Collection,
+  CollectionView,
+  Component,
+  Controller,
+  Dispatcher,
+  EventEmitter,
+  Mediator,
+  Model,
+  Router,
+  Store,
+  Utils,
+  View
 }
 
-module.exports = Dragon
+export {Application}
+export {Collection}
+export {CollectionView}
+export {Component}
+export {Controller}
+export {Dispatcher}
+export {EventEmitter}
+export {Mediator}
+export {Model}
+export {Router}
+export {Store}
+export {Utils}
+export {View}
+export default Dragon

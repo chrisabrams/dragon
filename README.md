@@ -4,7 +4,10 @@ Dragon
 Hypothesis: What if Backbone were created today, with ES 6&7, Virtual DOM, etc?
 
 ## Hypothesis of project
-What if Backbone were to be created today? What would the project look like? With ECMAScript 6 & 7, HTML5 pushState, Virtual DOM, new ways of data-binding, etc., front-end development has evolved. This project sets out to see what such an evolution would look like from scratch.
+What if Backbone were to be created today? What would the project look like? With ECMAScript 6 & 7, HTML5 pushState, Virtual DOM / Incremental DOM / etc., new ways of data-binding, etc., front-end development has evolved. This project sets out to see what such an evolution would look like from scratch.
+
+## Change log
+See the [change log](https://github.com/chrisabrams/dragon/blob/0.2/CHANGELOG.md).
 
 ## Changes from Backbone to Dragon
 
@@ -27,7 +30,8 @@ What if Backbone were to be created today? What would the project look like? Wit
 - Currently previous/changed properties/methods are not implemented as they can be found in the changes array. Open to re-implementation.
 
 ### Views
-- No more wrapping tags; views' DOM is 100% from template or attaching to existing DOM element(s)
+- Use Incremental DOM for quick patching of DOM changes. This makes a wrapping tag required.
+- Templates now managed by Starplates
 
 ### Router
 The router is inspired from Chaplin.
@@ -69,3 +73,6 @@ The dispatcher is inspired from Chaplin.
   - beforeEnter('someOtherView')
 - View States (beforeRender, afterRender, etc..)
 - Visibility (would mainly be useful with media query states)
+
+### Other
+- Redux integration

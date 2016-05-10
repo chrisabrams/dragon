@@ -32,3 +32,4 @@ node_modules
 .lock-wscript
 
 test/helpers/browser/js/spec.js
+test/helpers/browser/js/vendor.js

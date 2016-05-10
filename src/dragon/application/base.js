@@ -1,25 +1,32 @@
 'use strict';
 
-var Dispatcher = require('../router/dispatcher'),
-    Router     = require('../router/base'),
-    utils      = require('../utils')
+import Dispatcher from '../router/dispatcher'
+import mixin      from '../mixin'
+import Router     from '../router/base'
+import utils      from '../utils'
 
 class DragonApplication {
 
-  constructor(options) {
+  constructor(options = {}) {
     this.uid = utils.uniqueId(this)
+    //this.mixin(eventsMixin)
+
+    this.disposed = false
 
     this.options = options
 
+    if(!this.options.router.routes) return console.error('Application requires routes', this.options)
+
     this.router = new Router({
-      routes: this.options.routes
+      routes: this.options.router.routes
     })
 
     var dispatcher = this.dispatcher = new Dispatcher({
-      app: this
+      app: this,
+      getController: options.dispatcher.getController
     })
 
-    this.router.on('match', function(route, params, options) {
+    this.router.on('match', function routeMatchCallback(route, params, options) {
 
       dispatcher.dispatch(route, params, options)
 
@@ -45,6 +52,6 @@ class DragonApplication {
 
 }
 
-DragonApplication.prototype.disposed = false
+Object.assign(DragonApplication.prototype, {mixin})
 
-module.exports = DragonApplication
+export default DragonApplication

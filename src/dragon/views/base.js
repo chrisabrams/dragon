@@ -1,19 +1,21 @@
 'use strict';
 
-var EventsMixin         = require('../events'),
-    utils               = require('../utils')
+import {createContainer} from 'stardux'
+import {Parser, Template} from 'starplate'
+import EventEmitter      from '../events'
+import mixin             from '../mixin'
+import utils             from '../utils'
+var stardux = require('stardux')
 
-var createElement       = require('virtual-dom/create-element'),
-    diff                = require('virtual-dom/diff'),
-    extractFromTemplate = require('./helpers/extractFromTemplate'),
-    patch               = require('virtual-dom/patch'),
-    VNode               = require('virtual-dom/vnode/vnode'),
-    VText               = require('virtual-dom/vnode/vtext')
+// Thanks: http://stackoverflow.com/questions/7238177/detect-htmlcollection-nodelist-in-javascript
+function isNodeList(nodes) {
+  var stringRepr = Object.prototype.toString.call(nodes)
 
-var convertHTML = require('html-to-vdom')({
-  VNode: VNode,
-  VText: VText
-})
+  return typeof nodes === 'object' &&
+    /^\[object (HTMLCollection|NodeList|Object)\]$/.test(stringRepr) &&
+    (typeof nodes.length === 'number') &&
+    (nodes.length === 0 || (typeof nodes[0] === "object" && nodes[0].nodeType > 0))
+}
 
 /*
 @class DragonBaseView
@@ -23,6 +25,14 @@ class DragonBaseView {
   constructor(options = {}) {
 
     this.uid = utils.uniqueId(this)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
     /*
     Defaults
@@ -46,45 +56,81 @@ class DragonBaseView {
     */
     this.attachPlacement = 'after'
 
-    /*
-    Direct Options
-    Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
-    */
-    this.directOptions = [
-      'attachOnInit',
-      'attachPlacement',
-      'collection',
-      'container',
-      'events',
-      'listen',
-      'model',
-      'renderOnInit',
-      'template'
-    ]
+    this.bindDataOnInit = true
 
     this.disposed = false
 
-    /*
-    @property renderOnInit
-    @type Boolean
-    @default true
-    @desc Whether to render the view on initialization
-    */
     this.renderOnInit = true
 
-    /*
-    @property template
-    @type ????
-    @default null
-    @desc Template for the view
-    */
-    this.template = null
+    this._childContainers = {}
+    this._events    = []
+    this._listeners = []
+    this._partials  = {}
+    this._views     = {}
 
-    this.options = {}
+    this.assignOptions(options)
 
-    Object.keys(options).forEach( (option) => {
+    //this.setProperties()
 
-      if(this.directOptions.indexOf(option) > -1) {
+    //this.ensureElement()
+    this.ensureContainer()
+
+    if(this.options.idom instanceof createContainer) {
+      //this.$container =
+      //TODO: figure out how to get $container from an already created container
+      this.idom = this.options.idom
+      this.attached = true // Since the idom container is being passed in, we assume it's been attached (although I guess its possible it hasn't been)
+    }
+
+    if(!this.attached && this.attachOnInit) {
+
+      this.once('render', () => {
+
+        this.attach()
+
+      })
+
+    }
+
+    if(this.bindDataOnInit && (
+      this.model ||
+      this.models ||
+      this.collection
+    )) {
+      this.bindDataOnChange()
+    }
+
+    if(this.renderOnInit) this.render()
+
+  }
+
+  addedToDOM() {
+    // Intended to be over-written
+  }
+
+  /*
+  @method attach
+  @type Function
+  @return this
+  @desc Attaches the view to the DOM
+  */
+
+  assignOptions(options = {}) {
+
+    // Object.assign is used so that options passed into parent constructor are not lost when child is disposed
+    this.options = Object.assign({}, options)
+
+    if(this.options.partials) {
+
+      Object.keys(this.options.partials).forEach( (key) => {
+        this.partial(key, this.options.partials[key])
+      })
+      //delete this.options.partials
+    }
+
+    Object.keys(this.options).forEach( (option) => {
+
+      if(this.directOptions && this.directOptions.indexOf(option) > -1) {
 
         this[option] = options[option]
 
@@ -98,44 +144,7 @@ class DragonBaseView {
 
     })
 
-    this._events    = []
-    this._listeners = []
-
-    this.setProperties()
-
   }
-
-  initialize() {
-
-    this.ensureElement()
-    this.ensureContainer()
-
-    //If the view is not binded to the DOM and is set to render on initialization
-    if(!this.attached && this.renderOnInit) {
-
-      //If the view is set to attach on initialization
-      if(this.attachOnInit) {
-
-        this.once('render', () => {
-
-          this.attach()
-
-        })
-
-      }
-
-      this.render()
-
-    }
-
-  }
-
-  /*
-  @method attach
-  @type Function
-  @return this
-  @desc Attaches the view to the DOM
-  */
 
   attach() {
 
@@ -155,10 +164,11 @@ class DragonBaseView {
         switch(this.attachPlacement) {
 
           // Attach before all other children in container
-          case 'first': $container['prependChild'](this._vel); break;
+          case 'first'   : $container['prependChild'](this.el); break;
+          case 'prepend' : $container['prependChild'](this.el); break;
 
           // Attach normally, after all children in container
-          default: $container['appendChild'](this._vel)
+          default: $container['appendChild'](this.el)
 
         }
 
@@ -172,19 +182,45 @@ class DragonBaseView {
 
     }
 
-    if(!this.$el) {
+    /*if(!this.$el) {
       this.setElement()
-    }
+    }*/
 
     this.attached = true
 
-    this.trigger('addedToDOM')
+    this.emit('addedToDOM')
+    if(this.onAddedToDOM) this.onAddedToDOM()
 
     return this
 
   }
 
+  bindDataOnChange() {
+
+    if(this.model && this.model.on)           this.model.on('change', this.render.bind(this))
+    if(this.collection && this.collection.on) this.collection.on('change', this.render.bind(this))
+
+    if(this.models) {
+      Object.keys(this.models).forEach( (key) => {
+        this.models[key].on('change', () => {
+          this.render.call(this)
+        })
+      })
+    }
+
+    if(this.collections) {
+      Object.keys(this.collections).forEach( (key) => {
+        this.collections[key].on('change', () => {
+          this.render.call(this)
+        })
+      })
+    }
+
+  }
+
   bindEvent() {
+
+    if(typeof arguments[2] == 'undefined') throw new Error(`Event "${arguments[0]}" on ${this.constructor.name} requires callback`)
 
     var action  = arguments[0],
         handler = arguments[arguments.length - 1].bind(this)
@@ -209,6 +245,37 @@ class DragonBaseView {
 
   }
 
+  bindEvents() {
+
+    this._events.forEach( (item) => {
+
+      var action    = item[0],
+          $selector = item[1], // TODO: scope this locally
+          listener  = item[2]
+
+      Array.prototype.forEach.call($selector, (selector) => {
+
+        selector.addEventListener(action, listener, false)
+
+      })
+
+    })
+
+  }
+
+  childContainer(name, selector, reducer) {
+
+    if(!selector) {
+      return this._childContainers[name]
+    }
+
+    var $el = this.$(selector)
+    if($el) {
+      this._childContainers[name] = createContainer($el, {}, reducer)
+    }
+
+  }
+
   /*bindListens() {
 
     this.listen.forEach( (item) => {
@@ -221,6 +288,51 @@ class DragonBaseView {
     })
 
   }*/
+
+  delegateEvent(action, $el, selector, handler) {
+    var _this = this
+
+    if(typeof $el == 'string') $el = document.querySelectorAll($el)
+
+    if(typeof $el == 'object' && $el.$ref) {
+      $el = $el.$ref
+    }
+
+    if(typeof selector == 'object' && selector.selector) {
+      selector = selector.selector
+    }
+
+    var handlerWrap = function(e) {
+      var t = e.target
+      while (t && t !== this) {
+        if (t.matches(selector)) {
+          var index = null
+
+          if(t.tagName == 'LI') {
+            var c = t.parentNode.childNodes
+            for(var i = 0, l = c.length; i < l; i++) {
+              if(c[i] == t) {
+                index = i
+                break
+              }
+            }
+          }
+
+          handler.call(_this, e, index)
+        }
+        t = t.parentNode
+      }
+    }
+
+    this._events.push([action, $el, handlerWrap])
+
+    Array.prototype.forEach.call($el, (el) => {
+
+      el.addEventListener(action, handlerWrap)
+
+    })
+
+  }
 
   /*
   @method detach
@@ -242,13 +354,24 @@ class DragonBaseView {
     */
     if(!this.$container) {
 
-      console.error(('DEBUG: Detach Error: this.$container is not defined'))
+      console.error('DEBUG: Detach Error: this.$container is not defined')
       //return
     }
 
     Array.prototype.forEach.call(this.$container, (container) => {
 
-      var els = container.querySelectorAll(this.el)
+      /*
+      TODO: not happy with this
+      */
+      var identifier = this.el.tagName.toLowerCase()
+      if(this.el.id) {
+        identifier = `#${this.el.id}`
+      }
+      else if(this.el.className) {
+        identifier = '.' + this.el.className.replace(' ', ' .')
+      }
+
+      var els = container.querySelectorAll(identifier)
 
       Array.prototype.forEach.call(els, (el) => {
 
@@ -259,7 +382,7 @@ class DragonBaseView {
     })
 
     this.detached = true
-    this.trigger('detach')
+    this.emit('detach')
 
     /*Array.prototype.forEach.call(this.$el, function(el) {
 
@@ -281,7 +404,7 @@ class DragonBaseView {
   /*
   @method detach
   @type Function
-  @desc Completely disposes of the view, it's DOM, events, etc.
+  @desc Completely disposes of the view, any sub views, it's DOM, events, etc.
   */
   dispose() {
 
@@ -289,10 +412,17 @@ class DragonBaseView {
 
       this.unBindEvents()
       this.unBindListens()
+
+      Object.keys(this._views).forEach( (key) => {
+        var view = this._views[key]
+        view.dispose()
+      })
+
+      this.on('detach', () => {
+        utils.dispose(this)
+      })
+
       this.detach()
-
-      utils.dispose(this)
-
     }
 
   }
@@ -301,43 +431,31 @@ class DragonBaseView {
 
     if(this.container) {
 
-      this.$container = this.$(this.container)
+      if(this.container instanceof Node) {
+        this.$container = [this.container]
+      }
 
-      if(this.$container.length == 0) console.error('No container(s) found.')
+      else if(typeof this.container == 'string') {
+        this.$container = this.$(this.container)
+      }
 
+    }
+
+    if(this.renderOnInit) {
+      if(!this.container || !this.$container || this.$container.length == 0) console.error('No container(s) found.', this, this.container)
     }
 
   }
 
   ensureElement() {
 
-    if(this.el) {
+    // We need a wrapping tag; it's too dangerous to patch a template without one
+    if(!this.tagName) this.tagName = 'div'
 
-      var _$el = this.$(this.el)
+    this.el = document.createElement(this.tagName)
 
-      // Binding to an existing DOM
-      if(_$el.length > 0) {
-
-        this.$el = _$el
-        this.attached = true
-
-        return
-
-      }
-      else{
-        console.error('Target element not found.');
-        return
-      }
-    }
-
-    // Attach new DOM
-    if(!this.el && !this.container) {
-      console.error('A view must have a container.')
-    }
-
-    if(!this.el && !this.template) {
-      console.error('A view must have a template.')
-    }
+    if(this.id) this.el.id = this.id
+    if(this.class) this.el.className = this.class
 
   }
 
@@ -364,6 +482,30 @@ class DragonBaseView {
         selector,
         _this   = this
 
+    switch(arguments.length) {
+
+      case 2:
+
+        selector = this.el
+
+        break
+
+      case 3:
+
+        selector = arguments[1]
+
+        break
+
+      default:
+
+    }
+
+    if(typeof selector == 'string') selector = this.$(selector)
+
+    if(typeof selector == 'object' && selector.$ref) {
+      selector = selector.$ref
+    }
+
     switch(action) {
 
       case 'enter':
@@ -385,26 +527,6 @@ class DragonBaseView {
       default:
 
     }
-
-    switch(arguments.length) {
-
-      case 2:
-
-        selector = this.el
-
-        break
-
-      case 3:
-
-        selector = arguments[1]
-
-        break
-
-      default:
-
-    }
-
-    selector = this.$(selector)
 
     this._events.push([action, selector, handler])
 
@@ -439,15 +561,45 @@ class DragonBaseView {
   */
   getTemplate() {
 
-    var model = {
-      attr: {}
+    return this.template
+
+  }
+
+  getIDOMData() {
+
+    var pkg = {}
+
+    // Property naming ensues
+    if(this.models || this.collections) {
+
+      if(this.models) {
+        for(var j in this.models) {
+          pkg[j] = this.models[j].attr
+        }
+      }
+
+      if(this.collections) {
+        for(var k in this.collections) {
+          pkg[k] = this.collections[k].getData()
+        }
+      }
+
     }
 
-    if(this.model && typeof this.model == 'object') {
-      model = this.model
+    // Classic Backbone
+    else {
+
+      if(this.model) {
+        pkg = Object.assign({}, this.model.attr)
+      }
+
+      else if(this.collection) {
+        pkg = Object.assign({}, {collection: this.collection.getData()})
+      }
+
     }
 
-    return this.template(model.attr)
+    return pkg
 
   }
 
@@ -472,6 +624,27 @@ class DragonBaseView {
 
   }
 
+  partial(name, html) {
+    if(html) {
+      this._partials[name] = new Template(html)
+    }
+
+    return this._partials[name]
+  }
+
+  rebindEvents() {
+
+    this.unBindEvents()
+    this.bindEvents()
+
+  }
+
+  refreshIDOM() {
+    var pkg = this.getIDOMData()
+
+    this.idom.update(Object.assign({}, pkg))
+  }
+
   /*
   @method render
   @type Function
@@ -481,39 +654,53 @@ class DragonBaseView {
 
   render() {
 
-    var template = this.getTemplate()
-
-    if(!this.tagName) {
-
-      this.tagName = this.getTagName(template)
-
+    /*
+    TODO: Debug incremental dom and see if it is firing more times than
+    necessary
+    */
+    //console.log('render called', this.attached, this.id)
+    /*
+    TODO: really both should exist, but gotta figure out how to get container from existing idom passed in
+    */
+    if(!this.container && !this.idom) {
+      console.error('Container type not valid.', this.uid)
+      return this
     }
 
-    if(!this.vel) {
-
-      this.vel  = convertHTML(template)
-
-      /*
-      While newer versions of VDOM support multiple outer tags, we're gonna stick with one outer tag
-      */
-      if(this.vel instanceof Array) this.vel = this.vel[0]
-
-      this.vel.tagName = this.tagName
-      this._vel = createElement(this.vel)
-
+    /*
+    Remember with Backbone you would call .render() to update the template?
+    If the template has been attached, then update the template with Incremental DOM
+    */
+    if(this.attached) {
+      this.refreshIDOM()
+      //console.log('DEBUG: am i already attached?', this.constructor.name)
+      return this
     }
 
-    var vel     = convertHTML(template)
-    var patches = diff(this.vel, vel)
+    /*
+    TODO: What is going on that is re-defining el? Is it a race condition with
+    an update the container, which triggers multiple updates within milliseconds?
 
-    this._vel   = patch(this._vel, patches)
-    this.vel    = vel
+    If this.el is attempted to be re-assigned, an error will be thrown about not
+    re-assigning a read-only property.
+    */
+    if(this.el) {
+      //console.log('DEBUG: el is already assigned on', this.constructor.name)
+      return
+    }
+    else {
+      // Ideally this gets called in constructor, but see above
+      this.ensureElement()
+    }
 
-    var extraction = extractFromTemplate(template)
+    //var Container = stardux.Container
+    this.idom = createContainer(this.el, {}, this.reducer.bind(this))
 
-    this.setAttributes(extraction.attributes)
+    this.el.innerHTML = this.getTemplate()
 
-    this.trigger('render')
+    this.refreshIDOM()
+
+    this.emit('render')
 
     return this
 
@@ -621,6 +808,10 @@ class DragonBaseView {
 
   }
 
+  state(action) {
+    this.idom.update({current: action})
+  }
+
   unBindEvents() {
 
     this._events.forEach( (item) => {
@@ -637,7 +828,7 @@ class DragonBaseView {
 
     })
 
-    this._events = []
+    //this._events = []
 
   }
 
@@ -654,9 +845,22 @@ class DragonBaseView {
 
   }
 
+  /*
+  Keep track of sub-views
+  */
+  view(name, view) {
+
+    if(arguments.length == 1) {
+      return this._views[name]
+    } else {
+      this._views[name] = view
+    }
+
+  }
+
 }
 
-Object.assign(DragonBaseView.prototype, EventsMixin)
+Object.assign(DragonBaseView.prototype, {mixin})
 
 /* Developer Notes
 The following properties & methods are assigned on the prototype to allow for easier overriding.
@@ -680,4 +884,30 @@ DragonBaseView.prototype.$ = function(selector) {
 
 }
 
-module.exports = DragonBaseView
+/*
+Direct Options
+Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
+*/
+DragonBaseView.prototype.directOptions = [
+  'attachOnInit',
+  'attachPlacement',
+  'bindDataOnInit',
+  'class', // why did CSS use this?
+  'collection',
+  'collections',
+  'component',
+  'container',
+  'events',
+  'id',
+  'listen',
+  'mediator',
+  'model',
+  'models',
+  'reducer',
+  'renderOnInit',
+  'tagName',
+  'template',
+  'View'
+]
+
+export default DragonBaseView

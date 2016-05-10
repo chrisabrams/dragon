@@ -1,6 +1,7 @@
 'use strict';
 
-var utils = require('../utils')
+import Router from './base'
+import utils  from '../utils'
 
 class DragonDispatcher {
 
@@ -27,16 +28,34 @@ class DragonDispatcher {
       params: params
     }
 
-    var controller = new options.controller()
+    var res = {
+      navigate: Router.navigate
+    }
 
-    /*
-    TODO: Find a better way to pass app instance to controller
-    */
-    controller.app = this.app
+    var controller = null
 
-    controller[options.action](req)
+    if(options.Controller) {
+      controller = new options.Controller()
+      controller[options.action](req, res, this.next)
+    }
+
+    else {
+      var segs = route.pattern.split('/')
+
+      var controllerName = segs[1],
+          actionName     = options.action || segs[2]
+
+      var Controller = this.options.getController(controllerName)
+      controller = new Controller()
+
+      controller[actionName](req, res, this.next)
+    }
 
     this.currentController = controller
+
+  }
+
+  next() {
 
   }
 
@@ -56,4 +75,4 @@ class DragonDispatcher {
 
 DragonDispatcher.prototype.disposed = false
 
-module.exports = DragonDispatcher
+export default DragonDispatcher
