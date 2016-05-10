@@ -60,11 +60,15 @@ class DragonBaseView {
 
     this.disposed = false
 
-    this.assignOptions(options)
+    this.renderOnInit = true
 
     this._childContainers = {}
     this._events    = []
     this._listeners = []
+    this._partials  = {}
+    this._views     = {}
+
+    this.assignOptions(options)
 
     //this.setProperties()
 
@@ -96,10 +100,13 @@ class DragonBaseView {
       this.bindDataOnChange()
     }
 
-    this.render()
+    if(this.renderOnInit) this.render()
+
   }
 
-  addedToDOM() {}
+  addedToDOM() {
+    // Intended to be over-written
+  }
 
   /*
   @method attach
@@ -110,7 +117,16 @@ class DragonBaseView {
 
   assignOptions(options = {}) {
 
-    this.options = options
+    // Object.assign is used so that options passed into parent constructor are not lost when child is disposed
+    this.options = Object.assign({}, options)
+
+    if(this.options.partials) {
+
+      Object.keys(this.options.partials).forEach( (key) => {
+        this.partial(key, this.options.partials[key])
+      })
+      //delete this.options.partials
+    }
 
     Object.keys(this.options).forEach( (option) => {
 
@@ -185,20 +201,19 @@ class DragonBaseView {
     if(this.collection && this.collection.on) this.collection.on('change', this.render.bind(this))
 
     if(this.models) {
-      for(var j in this.models) {
-        this.models[j].on('change', () => {
+      Object.keys(this.models).forEach( (key) => {
+        this.models[key].on('change', () => {
           this.render.call(this)
         })
-      }
+      })
     }
 
     if(this.collections) {
-
-      for(var k in this.collections) {
-        this.collections[k].on('change', () => {
+      Object.keys(this.collections).forEach( (key) => {
+        this.collections[key].on('change', () => {
           this.render.call(this)
         })
-      }
+      })
     }
 
   }
@@ -227,6 +242,24 @@ class DragonBaseView {
       default:
 
     }
+
+  }
+
+  bindEvents() {
+
+    this._events.forEach( (item) => {
+
+      var action    = item[0],
+          $selector = item[1], // TODO: scope this locally
+          listener  = item[2]
+
+      Array.prototype.forEach.call($selector, (selector) => {
+
+        selector.addEventListener(action, listener, false)
+
+      })
+
+    })
 
   }
 
@@ -371,7 +404,7 @@ class DragonBaseView {
   /*
   @method detach
   @type Function
-  @desc Completely disposes of the view, it's DOM, events, etc.
+  @desc Completely disposes of the view, any sub views, it's DOM, events, etc.
   */
   dispose() {
 
@@ -380,9 +413,13 @@ class DragonBaseView {
       this.unBindEvents()
       this.unBindListens()
 
+      Object.keys(this._views).forEach( (key) => {
+        var view = this._views[key]
+        view.dispose()
+      })
+
       this.on('detach', () => {
         utils.dispose(this)
-
       })
 
       this.detach()
@@ -404,39 +441,21 @@ class DragonBaseView {
 
     }
 
-    if(!this.container || !this.$container || this.$container.length == 0) console.error('No container(s) found.', this, this.container)
+    if(this.renderOnInit) {
+      if(!this.container || !this.$container || this.$container.length == 0) console.error('No container(s) found.', this, this.container)
+    }
 
   }
 
   ensureElement() {
 
-    if(this.el) {
+    // We need a wrapping tag; it's too dangerous to patch a template without one
+    if(!this.tagName) this.tagName = 'div'
 
-      var _$el = this.$(this.el)
+    this.el = document.createElement(this.tagName)
 
-      // Binding to an existing DOM
-      if(_$el.length > 0) {
-
-        this.$el = _$el
-        this.attached = true
-
-        return
-
-      }
-      else{
-        console.error('Target element not found.');
-        return
-      }
-    }
-
-    // Attach new DOM
-    if(!this.el && !this.container) {
-      console.error('A view must have a container.')
-    }
-
-    if(!this.el && !this.template) {
-      console.error('A view must have a template.')
-    }
+    if(this.id) this.el.id = this.id
+    if(this.class) this.el.className = this.class
 
   }
 
@@ -605,6 +624,21 @@ class DragonBaseView {
 
   }
 
+  partial(name, html) {
+    if(html) {
+      this._partials[name] = new Template(html)
+    }
+
+    return this._partials[name]
+  }
+
+  rebindEvents() {
+
+    this.unBindEvents()
+    this.bindEvents()
+
+  }
+
   refreshIDOM() {
     var pkg = this.getIDOMData()
 
@@ -619,6 +653,7 @@ class DragonBaseView {
   */
 
   render() {
+
     /*
     TODO: Debug incremental dom and see if it is firing more times than
     necessary
@@ -638,6 +673,7 @@ class DragonBaseView {
     */
     if(this.attached) {
       this.refreshIDOM()
+      //console.log('DEBUG: am i already attached?', this.constructor.name)
       return this
     }
 
@@ -648,15 +684,14 @@ class DragonBaseView {
     If this.el is attempted to be re-assigned, an error will be thrown about not
     re-assigning a read-only property.
     */
-    if(this.el) return
-
-    // We need a wrapping tag; it's too dangerous to patch a template without one
-    if(!this.tagName) this.tagName = 'div'
-
-    this.el = document.createElement(this.tagName)
-
-    if(this.id) this.el.id = this.id
-    if(this.class) this.el.className = this.class
+    if(this.el) {
+      //console.log('DEBUG: el is already assigned on', this.constructor.name)
+      return
+    }
+    else {
+      // Ideally this gets called in constructor, but see above
+      this.ensureElement()
+    }
 
     //var Container = stardux.Container
     this.idom = createContainer(this.el, {}, this.reducer.bind(this))
@@ -793,7 +828,7 @@ class DragonBaseView {
 
     })
 
-    this._events = []
+    //this._events = []
 
   }
 
@@ -807,6 +842,19 @@ class DragonBaseView {
       this.off(ev, handler)
 
     })
+
+  }
+
+  /*
+  Keep track of sub-views
+  */
+  view(name, view) {
+
+    if(arguments.length == 1) {
+      return this._views[name]
+    } else {
+      this._views[name] = view
+    }
 
   }
 
@@ -847,16 +895,19 @@ DragonBaseView.prototype.directOptions = [
   'class', // why did CSS use this?
   'collection',
   'collections',
+  'component',
   'container',
   'events',
   'id',
   'listen',
+  'mediator',
   'model',
   'models',
   'reducer',
   'renderOnInit',
   'tagName',
-  'template'
+  'template',
+  'View'
 ]
 
 export default DragonBaseView

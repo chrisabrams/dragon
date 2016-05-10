@@ -40,6 +40,10 @@ class DragonBaseModel {
 
   }
 
+  getData() {
+    return Object.assign({}, this.attr)
+  }
+
   /*
   TODO: add an an unobserve option
   */

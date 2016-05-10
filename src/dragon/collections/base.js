@@ -35,8 +35,8 @@ class DragonBaseCollection {
     this.ensureEntries(entries)
   }
 
-  add(entries) {
-    this.ensureEntries(entries)
+  add(entries, options = {}) {
+    this.ensureEntries(entries, options)
   }
 
   clear() {
@@ -51,7 +51,7 @@ class DragonBaseCollection {
   Overall this function sucks but helps move the project forward atm.
   */
 
-  ensureEntries(entries) {
+  ensureEntries(entries, options = {}) {
 
     /*
     TODO: figure out how to clean this up
@@ -68,19 +68,60 @@ class DragonBaseCollection {
       entries = [entries]
     }
 
+    if(options.at) options.at--
     for(let entry of entries) {
+      var model = null
 
+      /*
+      TODO: should create a collection that supports multiple types of  models
+      */
       if(entry instanceof this.Model) {
-        this.models.push(entry)
+        model = entry
+        this.models.push(model)
       }
 
       else {
-        this.models.push(new this.Model(entry, {storeAutoLoad: false}))
+
+        /*
+        TODO:
+        somehow the first item in this.models gets duplicated to the end, and then new items that were added are added :/
+        */
+        // If collection has entry, merge the results
+        if(entry.id) {
+
+          var index = null
+          var existingModel = this.models.filter( (item, i) => {
+            if(item.attr.id == entry.id) {
+              index = i
+              return item
+            }
+          })
+
+          if(existingModel.length > 0 && index) {
+            model = Object.assign(this.models[index], entry)
+          }
+        }
+
+        // Create a new entry
+        if(!model) {
+          model = new this.Model(entry, {storeAutoLoad: false})
+
+          if(options.at) {
+            options.at++
+            this.models.splice(options.at, 0, entry)
+            //this.models.splice.apply(this.models, [optoins.at, 0].concat([model]))
+          }
+
+          else {
+            this.models.push(model)
+          }
+
+        }
+
       }
 
+      this.emit('change', model, this.models.length - 1)
     }
-
-    this.emit('change')
 
   }
 
@@ -91,7 +132,7 @@ class DragonBaseCollection {
     var data = []
 
     this.models.forEach( (model) => {
-      data.push(model.attr)
+      data.push(model.getData())
     })
 
     return data
@@ -106,7 +147,10 @@ class DragonBaseCollection {
 
     this.models.splice(index, 1)
 
-    if(changeEvent) this.emit('change')
+    if(changeEvent) {
+      this.emit('change')
+      this.emit('removed')
+    }
   }
 
   toJSON() {
