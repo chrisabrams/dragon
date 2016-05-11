@@ -95,7 +95,8 @@ class DragonBaseView {
     if(this.bindDataOnInit && (
       this.model ||
       this.models ||
-      this.collection
+      this.collection ||
+      this.collections
     )) {
       this.bindDataOnChange()
     }

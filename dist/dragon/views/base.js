@@ -133,7 +133,7 @@ var DragonBaseView = function () {
       });
     }
 
-    if (this.bindDataOnInit && (this.model || this.models || this.collection)) {
+    if (this.bindDataOnInit && (this.model || this.models || this.collection || this.collections)) {
       this.bindDataOnChange();
     }
 
