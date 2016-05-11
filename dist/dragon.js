@@ -16,8 +16,6 @@ require('../lib/polyfills/nodelist.queryselectorall');
 
 require('../lib/polyfills/nodelist.remove');
 
-require('../lib/polyfills/Object.assign');
-
 require('../lib/polyfills/Array.from');
 
 var _base = require('./dragon/application/base');
