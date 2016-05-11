@@ -2,7 +2,7 @@
   "name": "dragon.js",
   "version": "0.2.0",
   "description": "Single Page Apps with ES6/7",
-  "main": "dist/dragon.js",
+  "main": "src/dragon.js",
   "bin": {
     "dragon.js": "./bin/dragon"
   },
@@ -46,8 +46,8 @@
     "minimist": "^1.1.1",
     "paradigm-server-express": "0.0.13",
     "redux": "3.0.5",
-    "f12-stardux": "0.0.3",
-    "f12-starplate": "0.0.25"
+    "f12-stardux": "0.0.3-b",
+    "f12-starplate": "0.0.25-b"
   },
   "devDependencies": {
     "babel-cli": "^6.7.7",
