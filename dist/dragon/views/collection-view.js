@@ -38,7 +38,7 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _stardux = require('stardux');
+var _f12Stardux = require('f12-stardux');
 
 var _index = require('./index');
 
@@ -92,7 +92,7 @@ var CollectionView = function (_View) {
         this.ensureElement();
       }
 
-      this.idom = (0, _stardux.createContainer)(this.el, {}, this.reducer.bind(this));
+      this.idom = (0, _f12Stardux.createContainer)(this.el, {}, this.reducer.bind(this));
 
       this.el.innerHTML = this.getTemplate();
 

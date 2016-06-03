@@ -5,12 +5,13 @@
  *
  * @ignore
  */
-import {createContainer} from 'stardux'
+import {createContainer} from 'f12-stardux'
 import {Parser, Template} from 'starplate'
 import EventEmitter      from '../events'
 import mixin             from '../mixin'
 import utils             from '../utils'
-var stardux = require('stardux')
+
+var stardux = require('f12-stardux')
 
 // Thanks: http://stackoverflow.com/questions/7238177/detect-htmlcollection-nodelist-in-javascript
 function isNodeList(nodes) {

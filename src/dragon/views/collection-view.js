@@ -5,7 +5,7 @@
  *
  * @ignore
  */
-import {createContainer} from 'stardux'
+import {createContainer} from 'f12-stardux'
 import View              from './index'
 
 /**

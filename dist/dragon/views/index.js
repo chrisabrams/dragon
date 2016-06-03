@@ -34,7 +34,7 @@ var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _stardux = require('stardux');
+var _f12Stardux = require('f12-stardux');
 
 var _starplate = require('starplate');
 
@@ -52,7 +52,7 @@ var _utils2 = _interopRequireDefault(_utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stardux = require('stardux');
+var stardux = require('f12-stardux');
 
 // Thanks: http://stackoverflow.com/questions/7238177/detect-htmlcollection-nodelist-in-javascript
 function isNodeList(nodes) {
@@ -192,7 +192,7 @@ var View = function () {
     //this.ensureElement()
     this.ensureContainer();
 
-    if (this.options.idom instanceof _stardux.createContainer) {
+    if (this.options.idom instanceof _f12Stardux.createContainer) {
       //this.$container =
       //TODO: figure out how to get $container from an already created container
       this.idom = this.options.idom;
@@ -382,7 +382,7 @@ var View = function () {
 
       var $el = this.$(selector);
       if ($el) {
-        this._childContainers[name] = (0, _stardux.createContainer)($el, {}, reducer);
+        this._childContainers[name] = (0, _f12Stardux.createContainer)($el, {}, reducer);
       }
     }
 
@@ -789,7 +789,7 @@ var View = function () {
       }
 
       //var Container = stardux.Container
-      this.idom = (0, _stardux.createContainer)(this.el, {}, this.reducer.bind(this));
+      this.idom = (0, _f12Stardux.createContainer)(this.el, {}, this.reducer.bind(this));
 
       this.el.innerHTML = this.getTemplate();
 

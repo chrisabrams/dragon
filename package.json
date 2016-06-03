@@ -1,6 +1,6 @@
 {
   "name": "dragon.js",
-  "version": "0.2.1-a",
+  "version": "0.2.1-b",
   "description": "Single Page Apps with ES6/7",
   "main": "dist/dragon.js",
   "bin": {
