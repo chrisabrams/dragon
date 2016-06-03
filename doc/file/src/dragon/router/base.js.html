@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/dragon/router/base.js | dragon.js API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+<link data-ice="userStyle" rel="stylesheet" href="user/css/0-style.css">
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/chrisabrams/dragon" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Dragon">Dragon</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/events.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mixin">mixin</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/application</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/application/base.js~DragonApplication.html">DragonApplication</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/components/base.js~DragonComponent.html">DragonComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/controllers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/controllers/base.js~DragonController.html">DragonController</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/mediator</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/mediator/index.js~DragonMediator.html">DragonMediator</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/models</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/base.js~DragonBaseModel.html">DragonBaseModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/store.js~DragonStore.html">DragonStore</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/router</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/base.js~DragonRouter.html">DragonRouter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/dispatcher.js~DragonDispatcher.html">DragonDispatcher</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/route.js~DragonRoute.html">DragonRoute</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/views</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/base.js~DragonBaseView.html">DragonBaseView</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/collection-view.js~DragonCollectionView.html">DragonCollectionView</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/dragon/router/base.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
+
+import EventEmitter from &apos;../events&apos;
+import mixin       from &apos;../mixin&apos;
+import Route       from &apos;./route&apos;
+import utils       from &apos;../utils&apos;
+
+class DragonRouter {
+
+  constructor(options = {}) {
+    this.uid = utils.uniqueId(this)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
+
+    this._currentHandler = null
+    this._currentUrl     = null
+    this._debug          = options.debug || false
+    this._history        = window.history
+    this._location       = window.location
+    this._routes         = []
+    this._started        = false
+
+    this.options = options
+
+    if(!this.options.routes) return console.error(&apos;Router needs routes&apos;)
+    this.loadRoutes()
+
+    document.addEventListener(&apos;click&apos;, this.onLinkClick.bind(this), false)
+
+  }
+
+  back() {
+    window.history.back()
+  }
+
+  forward() {
+    window.history.forward()
+  }
+
+  getPath() {
+
+    //path.charAt(0) === &apos;/&apos; ? path.slice(1) : path;
+    return window.location.pathname
+
+  }
+
+  get(pattern, options = {}) {
+
+    var route = new Route(pattern)
+
+    this._routes.push({route, options})
+
+    /*let forwardPath = arguments[1]
+
+    // Forward route
+    if(typeof forwardPath == &apos;string&apos;) {
+
+      this.navigate(forwardPath)
+      return
+    }
+
+    return this.router.get(path, (req, next) =&gt; {
+
+      this.currentHandler = handler
+
+      handler.call(this.router, req, next)
+
+    })*/
+
+  }
+
+  loadRoutes() {
+
+    this.options.routes(this)
+
+  }
+
+  navigate(path, options = {}) {
+
+    this._history[options.replace ? &apos;replaceState&apos; : &apos;pushState&apos;]({}, document.title, path)
+    this.onUrlChange()
+
+  }
+
+  onLinkClick(e) {
+
+    var el = e.target
+
+    if(el.nodeName == &apos;A&apos;) {
+
+      if(this.isIgnoredLink(el)) return
+
+      /*if(external) {
+        window.open(href)
+      }*/
+
+      e.preventDefault()
+
+      this.navigate(el.href)
+
+    }
+
+  }
+
+  onUrlChange() {
+
+    var matched = false,
+        path    = this.getPath()
+
+    for(var i = 0, l = this._routes.length; i &lt; l; i++) {
+
+      var item    = this._routes[i],
+          options = item.options,
+          route   = item.route
+
+      if(route.regExp.test(path)) {
+
+        var params = route.extractParams(path)
+
+        this.emit(&apos;match&apos;, route, params, options)
+        matched = true
+
+        break
+      }
+
+    }
+
+  }
+
+  start(options = {}) {
+
+    if(this._started) return console.error(&apos;Router already started.&apos;)
+
+    this._started = true
+
+    this._usePushState = true
+
+    window.addEventListener(&apos;popstate&apos;, this.onUrlChange.bind(this), false)
+
+    /*
+    popstate doesn&apos;t fire on page load
+    */
+    this.onUrlChange()
+
+  }
+
+  stop() {
+
+    if(!this._started) return
+
+    window.removeEventListener(&apos;popstate&apos;, this.onUrlChange, false)
+
+    this._started = false
+
+  }
+
+  use() {
+
+
+
+  }
+
+  dispose() {
+
+    if(!this.disposed) {
+
+      this.stop()
+
+      document.removeEventListener(&apos;click&apos;, this.onLinkClick, false)
+
+      utils.dispose(this)
+
+    }
+
+  }
+
+}
+
+Object.assign(DragonRouter.prototype, {mixin})
+
+DragonRouter.prototype.disposed = false
+
+DragonRouter.prototype.isIgnoredLink = function isIgnoredLink(el) {
+
+  var href = el.getAttribute(&apos;href&apos;),
+      rel  = el.getAttribute(&apos;rel&apos;)
+
+  if(!href || href == &apos;&apos; || href.charAt(0) == &apos;#&apos; || (rel &amp;&amp; rel == &apos;external&apos;) || href.indexOf(&apos;//&apos;) &gt; -1) return true
+
+  return false
+
+}
+
+export {Route}
+export default DragonRouter
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.7)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+{
+  "coverage": "22.27%",
+  "expectCount": 202,
+  "actualCount": 45,
+  "files": {
+    "src/dragon/components/index.js": {
+      "expectCount": 15,
+      "actualCount": 2,
+      "undocumentLines": [
+        30,
+        41,
+        40,
+        48,
+        99,
+        42,
+        89,
+        35,
+        38,
+        36,
+        37,
+        88,
+        29
+      ]
+    },
+    "src/dragon/views/index.js": {
+      "expectCount": 48,
+      "actualCount": 10,
+      "undocumentLines": [
+        507,
+        831,
+        179,
+        190,
+        221,
+        792,
+        270,
+        293,
+        320,
+        338,
+        805,
+        364,
+        414,
+        456,
+        481,
+        527,
+        502,
+        522,
+        534,
+        640,
+        617,
+        634,
+        799,
+        152,
+        678,
+        193,
+        699,
+        707,
+        714,
+        727,
+        790,
+        825,
+        859,
+        883,
+        525,
+        887,
+        907,
+        923
+      ]
+    },
+    "src/dragon/application/index.js": {
+      "expectCount": 4,
+      "actualCount": 4,
+      "undocumentLines": []
+    },
+    "src/dragon/views/collection-view.js": {
+      "expectCount": 6,
+      "actualCount": 2,
+      "undocumentLines": [
+        50,
+        32,
+        64,
+        77
+      ]
+    },
+    "src/dragon/router/route.js": {
+      "expectCount": 19,
+      "actualCount": 1,
+      "undocumentLines": [
+        18,
+        17,
+        22,
+        15,
+        30,
+        55,
+        72,
+        24,
+        19,
+        106,
+        118,
+        20,
+        132,
+        142,
+        23,
+        148,
+        160,
+        185
+      ]
+    },
+    "src/dragon/controllers/index.js": {
+      "expectCount": 5,
+      "actualCount": 2,
+      "undocumentLines": [
+        30,
+        49,
+        27
+      ]
+    },
+    "src/dragon/router/dispatcher.js": {
+      "expectCount": 10,
+      "actualCount": 1,
+      "undocumentLines": [
+        27,
+        19,
+        29,
+        33,
+        75,
+        23,
+        71,
+        25,
+        21
+      ]
+    },
+    "src/dragon.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        28
+      ]
+    },
+    "src/dragon/events.js": {
+      "expectCount": 24,
+      "actualCount": 18,
+      "undocumentLines": [
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ]
+    },
+    "src/dragon/mediator/index.js": {
+      "expectCount": 6,
+      "actualCount": 2,
+      "undocumentLines": [
+        29,
+        32,
+        30,
+        31
+      ]
+    },
+    "src/dragon/models/index.js": {
+      "expectCount": 30,
+      "actualCount": 1,
+      "undocumentLines": [
+        45,
+        167,
+        53,
+        20,
+        31,
+        223,
+        33,
+        26,
+        60,
+        187,
+        199,
+        204,
+        130,
+        182,
+        67,
+        74,
+        29,
+        154,
+        27,
+        28,
+        37,
+        117,
+        135,
+        210,
+        107,
+        111,
+        21,
+        35,
+        178
+      ]
+    },
+    "src/dragon/router/index.js": {
+      "expectCount": 22,
+      "actualCount": 1,
+      "undocumentLines": [
+        51,
+        21,
+        40,
+        55,
+        27,
+        69,
+        73,
+        98,
+        105,
+        116,
+        122,
+        30,
+        28,
+        129,
+        149,
+        29,
+        42,
+        174,
+        189,
+        22,
+        199
+      ]
+    },
+    "src/dragon/models/store.js": {
+      "expectCount": 11,
+      "actualCount": 1,
+      "undocumentLines": [
+        18,
+        24,
+        34,
+        31,
+        27,
+        25,
+        26,
+        29,
+        44,
+        19
+      ]
+    },
+    "src/dragon/mixin.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    }
+  }
+}

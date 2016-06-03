@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/dragon/router/route.js | dragon.js API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+<link data-ice="userStyle" rel="stylesheet" href="user/css/0-style.css">
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/chrisabrams/dragon" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Dragon">Dragon</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/events.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mixin">mixin</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/application</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/application/index.js~Application.html">Application</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/components/index.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/controllers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/controllers/index.js~Controller.html">Controller</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/mediator</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/mediator/index.js~Mediator.html">Mediator</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/models</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/index.js~Model.html">Model</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/store.js~Store.html">Store</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/router</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/dispatcher.js~Dispatcher.html">Dispatcher</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/index.js~Router.html">Router</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/route.js~Route.html">Route</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/views</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/collection-view.js~CollectionView.html">CollectionView</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/index.js~View.html">View</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/dragon/router/route.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
+
+var escapeRegExp   = /[\-{}\[\]+?.,\\\^$|#\s]/g,
+    optionalRegExp = /\((.*?)\)/g,
+    paramRegExp    = /(?::|\*)(\w+)/g
+
+/**
+ * Route Class
+ *
+ * @public
+ * @class Route
+ */
+class Route {
+
+  constructor(pattern, Controller, action, options) {
+
+    this.action     = action
+    this.Controller = Controller
+    this.options    = options
+    this.pattern    = pattern
+
+    this.allParams      = []
+    this.requiredParams = []
+    this.optionalParams = []
+
+    this.createRegExp()
+
+  }
+
+  createRegExp() {
+
+    var pattern = this.pattern
+
+    pattern = pattern.replace(escapeRegExp, &apos;\\$&amp;&apos;)
+
+    this.replaceParams(pattern, (match, param) =&gt; {
+
+      return this.allParams.push(param)
+
+    })
+
+    pattern = pattern.replace(optionalRegExp, this.parseOptionalPortion)
+
+    pattern = this.replaceParams(pattern, (match, param) =&gt; {
+
+      this.requiredParams.push(param)
+      return this.paramCapturePattern(match)
+
+    })
+
+    return this.regExp = new RegExp(`^${pattern}(?=\\/*(?=\\?|$))`)
+
+  }
+
+  extractParams(path) {
+
+    var params  = {},
+        matches = this.regExp.exec(path)
+
+    var ref = matches.slice(1)
+
+    for (var i, index = i = 0, len = ref.length; i &lt; len; index = ++i) {
+      var match     = ref[index]
+      var paramName = this.allParams.length ? this.allParams[index] : index
+      params[paramName] = match
+    }
+
+    return params
+
+  }
+
+  normalizeParams(params) {
+
+    if(params instanceof Array) {
+
+      if(params.length &lt; this.requiredParams.length) return false
+
+      var paramsHash = {}
+
+      for (var paramIndex = i = 0, len = this.requiredParams.length; i &lt; len; paramIndex = ++i) {
+
+        var paramName = this.requiredParams[paramIndex]
+
+        paramsHash[paramName] = params[paramIndex]
+
+      }
+
+      if(!this.testConstraints(paramsHash)) return false
+
+      params = paramsHash
+
+    }
+
+    else {
+
+      params = params || {}
+
+      if(!this.testParams(params)) return false
+
+    }
+
+    return params
+
+  }
+
+  paramCapturePattern(param) {
+
+    if(param.charAt(0) == &apos;:&apos;) {
+      return &apos;([^\/\?]+)&apos;
+    }
+
+    else {
+      return &apos;(.*?)&apos;
+    }
+
+  }
+
+  parseOptionalPortion(match, optionalPortion) {
+
+    var portion = this.replaceParams(optionalPortion, (match, param) =&gt; {
+
+      this.optionalParams.push(param)
+
+      return this.paramCapturePattern(match)
+
+    })
+
+    return `(?:${portion})?`
+
+  }
+
+  removeTrailingSlash(path) {
+
+    if (path.slice(-1) === &apos;/&apos;) {
+      path.slice(0, -1);
+    }
+
+    return path
+
+  }
+
+  replaceParams(s, cb) {
+
+    return s.replace(paramRegExp, cb)
+
+  }
+
+  test(path) {
+
+    if(!this.regExp.test(path)) return false
+
+    if(this.options.constraints) {
+      return this.testConstraints(this.extractParams(path))
+    }
+
+    return true
+
+  }
+
+  testConstraints() {
+
+    var constraints = this.options.constraints
+
+    if(constraints) {
+
+      for(var name in constraints) {
+
+        if(!{}.hasOwnProperty.call(constraints, name)) continue
+
+        constraint = constraints[name]
+
+        if(!constraint.test(params[name])) {
+
+          return false
+
+        }
+      }
+
+    }
+
+    return true
+
+  }
+
+  testParams(params) {
+
+    for(var i = 0, len = this.requiredParams.length; i &lt; len; i++) {
+
+      paramName = this.requiredParams[i]
+
+      if(params[paramName] === void 0) {
+        return false
+      }
+
+    }
+
+    return this.testConstraints(params)
+
+  }
+
+}
+
+export default Route
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.7)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

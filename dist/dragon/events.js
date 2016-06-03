@@ -1,17 +1,17 @@
 'use strict';
 
-/*!
-* EventEmitter v4.3
-* Forked from Oliver Caldwell
-* @preserve
-*/
+/**
+ * EventEmitter v4.3.1
+ * Forked from Oliver Caldwell
+ * @ignore
+ */
 
 /**
-* Class for managing events.
-* Can be extended to provide event functionality in other classes.
-*
-* @class EventEmitter Manages event registering and emitting.
-*/
+ * Class for managing events.
+ * Can be extended to provide event functionality in other classes.
+ *
+ * @class EventEmitter Manages event registering and emitting.
+ */
 
 Object.defineProperty(exports, "__esModule", {
   value: true

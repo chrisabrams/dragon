@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/dragon/collections/index.js | dragon.js API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+<link data-ice="userStyle" rel="stylesheet" href="user/css/0-style.css">
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/chrisabrams/dragon" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Dragon">Dragon</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/events.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mixin">mixin</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/application</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/application/index.js~Application.html">Application</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/components/index.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/controllers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/controllers/index.js~Controller.html">Controller</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/mediator</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/mediator/index.js~Mediator.html">Mediator</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/models</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/index.js~Model.html">Model</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/store.js~Store.html">Store</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/router</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/dispatcher.js~Dispatcher.html">Dispatcher</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/index.js~Router.html">Router</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/route.js~Route.html">Route</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/views</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/collection-view.js~CollectionView.html">CollectionView</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/index.js~View.html">View</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/dragon/collections/index.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
+
+/**
+ * Module Dependencies
+ *
+ * @ignore
+ */
+import EventEmitter from &apos;../events&apos;
+import mixin        from &apos;../mixin&apos;
+import Model        from &apos;../models/index&apos;
+import utils        from &apos;../utils&apos;
+
+/**
+ * Collection Class
+ *
+ * @public
+ * @class Collection
+ */
+class Collection {
+
+  /**
+   * Collection constructor
+   *
+   * @public
+   * @constructor
+   * @param {Array} entries
+   * @param {Object} options
+   */
+  constructor(entries = [], options = {}) {
+    this.uid = utils.uniqueId(this)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
+
+    this.disposed = false
+    this.Model    = options.Model || Model
+    this.models   = []
+    this.options  = options
+    this.url      = options.url || this.url || &apos;&apos;
+
+    if(!this.Model || !(this.Model instanceof Function)) {
+      throw new Error(&apos;Collection requires a valid Model Class&apos;)
+    }
+
+    if(typeof this.url != &apos;string&apos;) {
+      throw new Error(&apos;Collection requires a valid url&apos;)
+    }
+
+    this.ensureEntries(entries)
+  }
+
+  add(entries, options = {}) {
+    this.ensureEntries(entries, options)
+  }
+
+  clear() {
+    this.models = []
+  }
+
+  /*
+  TODO: Clean this up, make checks stronger
+  Currently, a mixed array of objects and models could be passed; it&apos;s an odd scenario that would cause that to hapen thoug.
+  Tecnnically a model instance of a different model could be passed; need to check and prevent that.
+  Should also consider concatting arrays as pushing arrays of 1000 or more can be very time consuming/lots of looping.
+  Overall this function sucks but helps move the project forward atm.
+  */
+
+  ensureEntries(entries, options = {}) {
+
+    /*
+    TODO: figure out how to clean this up
+    */
+    if(
+      typeof entries == &apos;null&apos; ||
+      typeof entries == &apos;undefined&apos; ||
+      (!entries.length &amp;&amp; typeof entries == &apos;object&apos; &amp;&amp; Object.keys(entries).length == 0)
+    ) return
+
+    // we will suppport all kind of iterable  here !!
+    // It is simpler to manage things by making a single item an array
+    if(!(entries[Symbol.iterator])) {
+      entries = [entries]
+    }
+
+    if(options.at) options.at--
+    for(let entry of entries) {
+      var model = null
+
+      /*
+      TODO: should create a collection that supports multiple types of  models
+      */
+      if(entry instanceof this.Model) {
+        model = entry
+        this.models.push(model)
+      }
+
+      else {
+
+        /*
+        TODO:
+        somehow the first item in this.models gets duplicated to the end, and then new items that were added are added :/
+        */
+        // If collection has entry, merge the results
+        if(entry.id) {
+
+          var index = null
+          var existingModel = this.models.filter( (item, i) =&gt; {
+            if(item.attr.id == entry.id) {
+              index = i
+              return item
+            }
+          })
+
+          if(existingModel.length &gt; 0 &amp;&amp; index) {
+            model = Object.assign(this.models[index], entry)
+          }
+        }
+
+        // Create a new entry
+        if(!model) {
+          model = new this.Model(entry, {storeAutoLoad: false})
+
+          if(options.at) {
+            options.at++
+            this.models.splice(options.at, 0, entry)
+            //this.models.splice.apply(this.models, [optoins.at, 0].concat([model]))
+          }
+
+          else {
+            this.models.push(model)
+          }
+
+        }
+
+      }
+
+      this.emit(&apos;change&apos;, model, this.models.length - 1)
+    }
+
+  }
+
+  /*
+  TODO: not really sure what to call this function
+  */
+  getData() {
+    var data = []
+
+    this.models.forEach( (model) =&gt; {
+      data.push(model.getData())
+    })
+
+    return data
+  }
+
+  move(fromIndex, toIndex, options = {}) {
+    this.models.splice(toIndex, 0, this.models.splice(fromIndex, 1)[0])
+  }
+
+  remove(index, options = {}) {
+    var changeEvent = (typeof options.changeEvent == &apos;boolean&apos;) ? options.changeEvent : true
+
+    this.models.splice(index, 1)
+
+    if(changeEvent) {
+      this.emit(&apos;change&apos;)
+      this.emit(&apos;removed&apos;)
+    }
+  }
+
+  toJSON() {
+    return this.models.map( (model) =&gt; model.toJSON())
+  }
+
+  [Symbol.iterator](){
+    var collectionsModels = this.models,
+        index = 0
+
+    return {
+      next: function next () {
+        if (index + 1 &gt; collectionsModels.length) {
+          return { done: true };
+        }
+        return { value: collectionsModels[index++], done: false };
+      }
+    }
+  }
+
+  /**
+   * Dispose of the application
+   *
+   * @example
+   *   application.dispose()
+   *
+   * @public
+   */
+  dispose() {
+
+    if(!this.disposed) {
+
+      utils.dispose(this)
+
+    }
+
+  }
+
+}
+
+Object.assign(Collection.prototype, {mixin})
+
+module.exports = Collection
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.7)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

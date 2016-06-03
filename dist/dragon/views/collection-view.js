@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * Module Dependencies
+ *
+ * @ignore
+ */
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -34,24 +40,40 @@ var _inherits3 = _interopRequireDefault(_inherits2);
 
 var _stardux = require('stardux');
 
-var _base = require('./base');
+var _index = require('./index');
 
-var _base2 = _interopRequireDefault(_base);
+var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DragonCollectionView = function (_View) {
-  (0, _inherits3.default)(DragonCollectionView, _View);
+/**
+ * CollectionView Class
+ *
+ * @public
+ * @class CollectionView
+ */
 
-  function DragonCollectionView() {
+var CollectionView = function (_View) {
+  (0, _inherits3.default)(CollectionView, _View);
+
+
+  /**
+   * CollectionView constructor
+   *
+   * @public
+   * @constructor
+   * @param {Object} options
+   */
+
+  function CollectionView() {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    (0, _classCallCheck3.default)(this, DragonCollectionView);
-    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(DragonCollectionView).call(this, (0, _assign2.default)({}, {
-      View: options.View || _base2.default
+    (0, _classCallCheck3.default)(this, CollectionView);
+    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(CollectionView).call(this, (0, _assign2.default)({}, {
+      View: options.View || _index2.default
     }, options)));
   }
 
-  (0, _createClass3.default)(DragonCollectionView, [{
+  (0, _createClass3.default)(CollectionView, [{
     key: 'render',
     value: function render() {
 
@@ -104,8 +126,8 @@ var DragonCollectionView = function (_View) {
       }));
     }
   }]);
-  return DragonCollectionView;
-}(_base2.default);
+  return CollectionView;
+}(_index2.default);
 
-exports.default = DragonCollectionView;
+exports.default = CollectionView;
 //# sourceMappingURL=collection-view.js.map

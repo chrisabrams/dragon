@@ -1,7 +1,10 @@
 'use strict';
 
-// Polyfills
-// TODO: which of these are still needed?
+/**
+ * Polyfills
+ *
+ * @ignore
+ */
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -18,25 +21,25 @@ require('../lib/polyfills/nodelist.remove');
 
 require('../lib/polyfills/Array.from');
 
-var _base = require('./dragon/application/base');
+var _application = require('./dragon/application');
 
-var _base2 = _interopRequireDefault(_base);
+var _application2 = _interopRequireDefault(_application);
 
-var _base3 = require('./dragon/collections/base');
+var _collections = require('./dragon/collections');
 
-var _base4 = _interopRequireDefault(_base3);
+var _collections2 = _interopRequireDefault(_collections);
 
 var _collectionView = require('./dragon/views/collection-view');
 
 var _collectionView2 = _interopRequireDefault(_collectionView);
 
-var _base5 = require('./dragon/components/base');
+var _components = require('./dragon/components');
 
-var _base6 = _interopRequireDefault(_base5);
+var _components2 = _interopRequireDefault(_components);
 
-var _base7 = require('./dragon/controllers/base');
+var _controllers = require('./dragon/controllers');
 
-var _base8 = _interopRequireDefault(_base7);
+var _controllers2 = _interopRequireDefault(_controllers);
 
 var _dispatcher = require('./dragon/router/dispatcher');
 
@@ -50,13 +53,13 @@ var _mediator = require('./dragon/mediator');
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
-var _base9 = require('./dragon/models/base');
+var _models = require('./dragon/models');
 
-var _base10 = _interopRequireDefault(_base9);
+var _models2 = _interopRequireDefault(_models);
 
-var _base11 = require('./dragon/router/base');
+var _router = require('./dragon/router');
 
-var _base12 = _interopRequireDefault(_base11);
+var _router2 = _interopRequireDefault(_router);
 
 var _store = require('./dragon/models/store');
 
@@ -66,9 +69,9 @@ var _utils = require('./dragon/utils');
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _base13 = require('./dragon/views/base');
+var _views = require('./dragon/views');
 
-var _base14 = _interopRequireDefault(_base13);
+var _views2 = _interopRequireDefault(_views);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -78,33 +81,33 @@ var Dragon = {
   //mediator       : require('./dragon/mediator/mediator'),
   //Layout         : require('./dragon/views/layout'),
   //SyncMachine    : require('./dragon/models/syncMachine'),
-  Application: _base2.default,
-  Collection: _base4.default,
+  Application: _application2.default,
+  Collection: _collections2.default,
   CollectionView: _collectionView2.default,
-  Component: _base6.default,
-  Controller: _base8.default,
+  Component: _components2.default,
+  Controller: _controllers2.default,
   Dispatcher: _dispatcher2.default,
   EventEmitter: _events2.default,
   Mediator: _mediator2.default,
-  Model: _base10.default,
-  Router: _base12.default,
+  Model: _models2.default,
+  Router: _router2.default,
   Store: _store2.default,
   Utils: _utils2.default,
-  View: _base14.default
+  View: _views2.default
 };
 
-exports.Application = _base2.default;
-exports.Collection = _base4.default;
+exports.Application = _application2.default;
+exports.Collection = _collections2.default;
 exports.CollectionView = _collectionView2.default;
-exports.Component = _base6.default;
-exports.Controller = _base8.default;
+exports.Component = _components2.default;
+exports.Controller = _controllers2.default;
 exports.Dispatcher = _dispatcher2.default;
 exports.EventEmitter = _events2.default;
 exports.Mediator = _mediator2.default;
-exports.Model = _base10.default;
-exports.Router = _base12.default;
+exports.Model = _models2.default;
+exports.Router = _router2.default;
 exports.Store = _store2.default;
 exports.Utils = _utils2.default;
-exports.View = _base14.default;
+exports.View = _views2.default;
 exports.default = Dragon;
 //# sourceMappingURL=dragon.js.map

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/dragon/views/index.js | dragon.js API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+<link data-ice="userStyle" rel="stylesheet" href="user/css/0-style.css">
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/chrisabrams/dragon" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Dragon">Dragon</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/events.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mixin">mixin</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/application</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/application/index.js~Application.html">Application</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/components/index.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/controllers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/controllers/index.js~Controller.html">Controller</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/mediator</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/mediator/index.js~Mediator.html">Mediator</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/models</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/index.js~Model.html">Model</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/store.js~Store.html">Store</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/router</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/dispatcher.js~Dispatcher.html">Dispatcher</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/index.js~Router.html">Router</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/route.js~Route.html">Route</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/views</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/collection-view.js~CollectionView.html">CollectionView</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/index.js~View.html">View</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/dragon/views/index.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
+
+/**
+ * Module Dependencies
+ *
+ * @ignore
+ */
+import {createContainer} from &apos;stardux&apos;
+import {Parser, Template} from &apos;starplate&apos;
+import EventEmitter      from &apos;../events&apos;
+import mixin             from &apos;../mixin&apos;
+import utils             from &apos;../utils&apos;
+var stardux = require(&apos;stardux&apos;)
+
+// Thanks: http://stackoverflow.com/questions/7238177/detect-htmlcollection-nodelist-in-javascript
+function isNodeList(nodes) {
+  var stringRepr = Object.prototype.toString.call(nodes)
+
+  return typeof nodes === &apos;object&apos; &amp;&amp;
+    /^\[object (HTMLCollection|NodeList|Object)\]$/.test(stringRepr) &amp;&amp;
+    (typeof nodes.length === &apos;number&apos;) &amp;&amp;
+    (nodes.length === 0 || (typeof nodes[0] === &quot;object&quot; &amp;&amp; nodes[0].nodeType &gt; 0))
+}
+
+/**
+ * View Class
+ *
+ * @public
+ * @class View
+ */
+class View {
+
+  /**
+   * View constructor
+   *
+   * @public
+   * @constructor
+   * @param {Object} options
+   */
+  constructor(options = {}) {
+
+    /**
+     * View UID
+     *
+     * @private
+     * @type {String}
+     */
+    this.uid = utils.uniqueId(this)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    /**
+     * Event Emitter&apos;s emit method.
+     * @type {Function}
+     * @extend {EventEmitter}
+     */
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    /**
+     * Event Emitter&apos;s on method.
+     * @type {Function}
+     * @extend {EventEmitter}
+     */
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    /**
+     * Event Emitter&apos;s once method.
+     * @type {Function}
+     * @extend {EventEmitter}
+     */
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    /**
+     * Event Emitter&apos;s off method.
+     * @type {Function}
+     * @extend {EventEmitter}
+     */
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
+
+    /**
+     * Whether the view attached to the DOM
+     * @type {Boolean}
+     * @private
+     */
+    this.attached = false
+
+    /**
+     * Whether to attach the view on initialization
+     * @type {Boolean}
+     */
+    this.attachOnInit = true
+
+    /**
+     * Determines where the view is attached into the container
+     * @type {String}
+     */
+    this.attachPlacement = &apos;after&apos;
+
+    /**
+     * Whether to bind data from Incremental DOM to the view on initialization.
+     * @type {Boolean}
+     */
+    this.bindDataOnInit = true
+
+    /**
+     * Whether the view has been disposed of.
+     * @type {Boolean}
+     * @private
+     */
+    this.disposed = false
+
+    /**
+     * Whether to render the view&apos;s template(s) on initialization
+     * @type {Boolean}
+     */
+    this.renderOnInit = true
+
+    //this._childContainers = {}
+    /**
+     * Events attached to the view
+     * @type {Array}
+     * @private
+     */
+    this._events    = []
+    /**
+     * Listeners attached to the view
+     * @type {Array}
+     * @private
+     */
+    this._listeners = []
+    /**
+     * Partial templates available to use in the reducer
+     * @type {Object}
+     * @private
+     */
+    this._partials  = {}
+    /**
+     * Sub views attached to the view
+     * @type {Object}
+     * @private
+     */
+    this._views     = {}
+
+    this.assignOptions(options)
+
+    //this.setProperties()
+
+    //this.ensureElement()
+    this.ensureContainer()
+
+    if(this.options.idom instanceof createContainer) {
+      //this.$container =
+      //TODO: figure out how to get $container from an already created container
+      this.idom = this.options.idom
+      this.attached = true // Since the idom container is being passed in, we assume it&apos;s been attached (although I guess its possible it hasn&apos;t been)
+    }
+
+    if(!this.attached &amp;&amp; this.attachOnInit) {
+
+      this.once(&apos;render&apos;, () =&gt; {
+
+        this.attach()
+
+      })
+
+    }
+
+    if(this.bindDataOnInit &amp;&amp; (
+      this.model ||
+      this.models ||
+      this.collection ||
+      this.collections
+    )) {
+      this.bindDataOnChange()
+    }
+
+    if(this.renderOnInit) this.render()
+
+  }
+
+  addedToDOM() {
+    // Intended to be over-written
+  }
+
+  /*
+  @method attach
+  @type Function
+  @return this
+  @desc Attaches the view to the DOM
+  */
+
+  assignOptions(options = {}) {
+
+    // Object.assign is used so that options passed into parent constructor are not lost when child is disposed
+    this.options = Object.assign({}, options)
+
+    if(this.options.partials) {
+
+      Object.keys(this.options.partials).forEach( (key) =&gt; {
+        this.partial(key, this.options.partials[key])
+      })
+      //delete this.options.partials
+    }
+
+    Object.keys(this.options).forEach( (option) =&gt; {
+
+      if(this.directOptions &amp;&amp; this.directOptions.indexOf(option) &gt; -1) {
+
+        this[option] = options[option]
+
+      }
+
+      else {
+
+        this.options[option] = options[option]
+
+      }
+
+    })
+
+  }
+
+  attach() {
+
+    try {
+
+      /*
+      Can&apos;t use .forEach() on NodeLists
+      Tempting to use NodeList.prototype.forEach = Array.prototype.forEach but that&apos;s a no no
+      See for basic info: https://developer.mozilla.org/en-US/docs/Web/API/NodeList
+      See this guy (which I ignore) for a super long list of reasons: http://toddmotto.com/ditch-the-array-foreach-call-nodelist-hack/
+      */
+
+      Array.prototype.forEach.call(this.$container, ($container) =&gt; {
+
+        var placement;
+
+        switch(this.attachPlacement) {
+
+          // Attach before all other children in container
+          case &apos;first&apos;   : $container[&apos;prependChild&apos;](this.el); break;
+          case &apos;prepend&apos; : $container[&apos;prependChild&apos;](this.el); break;
+
+          // Attach normally, after all children in container
+          default: $container[&apos;appendChild&apos;](this.el)
+
+        }
+
+      })
+
+    }
+
+    catch(e) {
+
+      console.error(e)
+
+    }
+
+    /*if(!this.$el) {
+      this.setElement()
+    }*/
+
+    this.attached = true
+
+    this.emit(&apos;addedToDOM&apos;)
+    if(this.onAddedToDOM) this.onAddedToDOM()
+
+    return this
+
+  }
+
+  bindDataOnChange() {
+
+    if(this.model &amp;&amp; this.model.on)           this.model.on(&apos;change&apos;, this.render.bind(this))
+    if(this.collection &amp;&amp; this.collection.on) this.collection.on(&apos;change&apos;, this.render.bind(this))
+
+    if(this.models) {
+      Object.keys(this.models).forEach( (key) =&gt; {
+        this.models[key].on(&apos;change&apos;, () =&gt; {
+          this.render.call(this)
+        })
+      })
+    }
+
+    if(this.collections) {
+      Object.keys(this.collections).forEach( (key) =&gt; {
+        this.collections[key].on(&apos;change&apos;, () =&gt; {
+          this.render.call(this)
+        })
+      })
+    }
+
+  }
+
+  bindEvent() {
+
+    if(typeof arguments[2] == &apos;undefined&apos;) throw new Error(`Event &quot;${arguments[0]}&quot; on ${this.constructor.name} requires callback`)
+
+    var action  = arguments[0],
+        handler = arguments[arguments.length - 1].bind(this)
+
+    switch(arguments.length) {
+
+      case 3:
+
+        var $selector = arguments[1]
+
+        Array.prototype.forEach.call($selector, (selector) =&gt; {
+
+          selector.addEventListener(action, handler, false)
+
+        })
+
+        break;
+
+      default:
+
+    }
+
+  }
+
+  bindEvents() {
+
+    this._events.forEach( (item) =&gt; {
+
+      var action    = item[0],
+          $selector = item[1], // TODO: scope this locally
+          listener  = item[2]
+
+      Array.prototype.forEach.call($selector, (selector) =&gt; {
+
+        selector.addEventListener(action, listener, false)
+
+      })
+
+    })
+
+  }
+
+  childContainer(name, selector, reducer) {
+
+    if(!selector) {
+      return this._childContainers[name]
+    }
+
+    var $el = this.$(selector)
+    if($el) {
+      this._childContainers[name] = createContainer($el, {}, reducer)
+    }
+
+  }
+
+  /*bindListens() {
+
+    this.listen.forEach( (item) =&gt; {
+
+      var eventName = item[0],
+          handler   = item[1]
+
+      this.on(eventName, handler)
+
+    })
+
+  }*/
+
+  delegateEvent(action, $el, selector, handler) {
+    var _this = this
+
+    if(typeof $el == &apos;string&apos;) $el = document.querySelectorAll($el)
+
+    if(typeof $el == &apos;object&apos; &amp;&amp; $el.$ref) {
+      $el = $el.$ref
+    }
+
+    if(typeof selector == &apos;object&apos; &amp;&amp; selector.selector) {
+      selector = selector.selector
+    }
+
+    var handlerWrap = function(e) {
+      var t = e.target
+      while (t &amp;&amp; t !== this) {
+        if (t.matches(selector)) {
+          var index = null
+
+          if(t.tagName == &apos;LI&apos;) {
+            var c = t.parentNode.childNodes
+            for(var i = 0, l = c.length; i &lt; l; i++) {
+              if(c[i] == t) {
+                index = i
+                break
+              }
+            }
+          }
+
+          handler.call(_this, e, index)
+        }
+        t = t.parentNode
+      }
+    }
+
+    this._events.push([action, $el, handlerWrap])
+
+    Array.prototype.forEach.call($el, (el) =&gt; {
+
+      el.addEventListener(action, handlerWrap)
+
+    })
+
+  }
+
+  /*
+  @method detach
+  @type Function
+  @desc Detachs the view from the DOM
+  */
+  detach() {
+    //console.log(&quot;DEBUG: Detaching: Container&quot;, this.$container)
+    //console.log(&quot;DEBUG: Detaching: El&quot;, this.$el)
+
+    if(this.detached) {
+      console.error(&apos;Cannot detach view as it has already been detached&apos;)
+      return
+    }
+
+    /*
+    TODO:
+    This is a weird error; if you put a return here, then it will not detach, but the error makes it sound like there is no DOM node to detach.
+    */
+    if(!this.$container) {
+
+      console.error(&apos;DEBUG: Detach Error: this.$container is not defined&apos;)
+      //return
+    }
+
+    Array.prototype.forEach.call(this.$container, (container) =&gt; {
+
+      /*
+      TODO: not happy with this
+      */
+      var identifier = this.el.tagName.toLowerCase()
+      if(this.el.id) {
+        identifier = `#${this.el.id}`
+      }
+      else if(this.el.className) {
+        identifier = &apos;.&apos; + this.el.className.replace(&apos; &apos;, &apos; .&apos;)
+      }
+
+      var els = container.querySelectorAll(identifier)
+
+      Array.prototype.forEach.call(els, (el) =&gt; {
+
+        container.removeChild(el)
+
+      })
+
+    })
+
+    this.detached = true
+    this.emit(&apos;detach&apos;)
+
+    /*Array.prototype.forEach.call(this.$el, function(el) {
+
+      container.removeChild
+
+      // I&apos;ve always thought this is a funny way to remove Nodes from the DOM :O
+      console.log(&quot;el&quot;, el)
+
+      console.log(&quot;parent&quot;, el.parentNode)
+
+      //TODO: Fix the angryness from multiple copies of same ID - yes the developer *shouldnt* do that, but this should still communicate that instead of just freaking out
+
+      el.parentNode.removeChild(el)
+
+    })*/
+
+  }
+
+  /*
+  @method detach
+  @type Function
+  @desc Completely disposes of the view, any sub views, it&apos;s DOM, events, etc.
+  */
+  dispose() {
+
+    if(!this.disposed) {
+
+      this.unBindEvents()
+      this.unBindListens()
+
+      Object.keys(this._views).forEach( (key) =&gt; {
+        var view = this._views[key]
+        view.dispose()
+      })
+
+      this.on(&apos;detach&apos;, () =&gt; {
+        utils.dispose(this)
+      })
+
+      this.detach()
+    }
+
+  }
+
+  ensureContainer() {
+
+    if(this.container) {
+
+      if(this.container instanceof Node) {
+        this.$container = [this.container]
+      }
+
+      else if(typeof this.container == &apos;string&apos;) {
+        this.$container = this.$(this.container)
+      }
+
+    }
+
+    if(this.renderOnInit) {
+      if(!this.container || !this.$container || this.$container.length == 0) console.error(&apos;No container(s) found.&apos;, this, this.container)
+    }
+
+  }
+
+  ensureElement() {
+
+    // We need a wrapping tag; it&apos;s too dangerous to patch a template without one
+    if(!this.tagName) this.tagName = &apos;div&apos;
+
+    this.el = document.createElement(this.tagName)
+
+    if(this.id) this.el.id = this.id
+    if(this.class) this.el.className = this.class
+
+  }
+
+  event() {
+
+    if(!this.attached) {
+      this.on(&apos;addedToDOM&apos;, () =&gt; {
+
+        this._event.apply(this, arguments)
+
+      })
+    }
+
+    else {
+      this._event.apply(this, arguments)
+    }
+
+  }
+
+  _event(action) {
+
+    var handler = arguments[arguments.length - 1],
+        origHandler = arguments[arguments.length - 1],
+        selector,
+        _this   = this
+
+    switch(arguments.length) {
+
+      case 2:
+
+        selector = this.el
+
+        break
+
+      case 3:
+
+        selector = arguments[1]
+
+        break
+
+      default:
+
+    }
+
+    if(typeof selector == &apos;string&apos;) selector = this.$(selector)
+
+    if(typeof selector == &apos;object&apos; &amp;&amp; selector.$ref) {
+      selector = selector.$ref
+    }
+
+    switch(action) {
+
+      case &apos;enter&apos;:
+
+        action = &apos;keydown&apos;
+
+        handler = function(e) {
+
+          if(e.keyCode == 13) {
+            e.preventDefault()
+            origHandler.call(_this, e)
+
+          }
+
+        }
+
+        break
+
+      default:
+
+    }
+
+    this._events.push([action, selector, handler])
+
+    if(this.attached) {
+      this.bindEvent(action, selector, handler)
+    }
+
+    else {
+      this.on(&apos;addedToDOM&apos;, () =&gt; {
+        this.bindEvent(action, selector, handler)
+      })
+    }
+
+  }
+
+  getTagName(template) {
+
+    var el = document.createElement(&apos;div&apos;)
+    el.innerHTML = template
+
+    return el.firstElementChild.tagName.toLowerCase()
+
+  }
+
+  /*
+  @method getTemplate
+  @type Function
+  @returns String
+  @desc Gets the template for the view
+
+  @notes This function can do whatever the developer desires. Mixins, such as Handlebars Mixin, will take overwrite this. The developer should feel comfortable overwriting this.
+  */
+  getTemplate() {
+
+    return this.template
+
+  }
+
+  getIDOMData() {
+
+    var pkg = {}
+
+    // Property naming ensues
+    if(this.models || this.collections) {
+
+      if(this.models) {
+        for(var j in this.models) {
+          pkg[j] = this.models[j].attr
+        }
+      }
+
+      if(this.collections) {
+        for(var k in this.collections) {
+          pkg[k] = this.collections[k].getData()
+        }
+      }
+
+    }
+
+    // Classic Backbone
+    else {
+
+      if(this.model) {
+        pkg = Object.assign({}, this.model.attr)
+      }
+
+      else if(this.collection) {
+        pkg = Object.assign({}, {collection: this.collection.getData()})
+      }
+
+    }
+
+    return pkg
+
+  }
+
+  listen() {
+
+    var ev      = arguments[0],
+        handler = arguments[1]
+
+    switch(arguments.length) {
+
+      case 2:
+
+        this.on(ev, handler.bind(this))
+
+        break;
+
+      default:
+
+    }
+
+    this._listeners.push(ev, handler)
+
+  }
+
+  partial(name, html) {
+    if(html) {
+      this._partials[name] = new Template(html)
+    }
+
+    return this._partials[name]
+  }
+
+  rebindEvents() {
+
+    this.unBindEvents()
+    this.bindEvents()
+
+  }
+
+  refreshIDOM() {
+    var pkg = this.getIDOMData()
+
+    this.idom.update(Object.assign({}, pkg))
+  }
+
+  /*
+  @method render
+  @type Function
+  @return this
+  @desc Renders the view
+  */
+
+  render() {
+
+    /*
+    TODO: Debug incremental dom and see if it is firing more times than
+    necessary
+    */
+    //console.log(&apos;render called&apos;, this.attached, this.id)
+    /*
+    TODO: really both should exist, but gotta figure out how to get container from existing idom passed in
+    */
+    if(!this.container &amp;&amp; !this.idom) {
+      console.error(&apos;Container type not valid.&apos;, this.uid)
+      return this
+    }
+
+    /*
+    Remember with Backbone you would call .render() to update the template?
+    If the template has been attached, then update the template with Incremental DOM
+    */
+    if(this.attached) {
+      this.refreshIDOM()
+      //console.log(&apos;DEBUG: am i already attached?&apos;, this.constructor.name)
+      return this
+    }
+
+    /*
+    TODO: What is going on that is re-defining el? Is it a race condition with
+    an update the container, which triggers multiple updates within milliseconds?
+
+    If this.el is attempted to be re-assigned, an error will be thrown about not
+    re-assigning a read-only property.
+    */
+    if(this.el) {
+      //console.log(&apos;DEBUG: el is already assigned on&apos;, this.constructor.name)
+      return
+    }
+    else {
+      // Ideally this gets called in constructor, but see above
+      this.ensureElement()
+    }
+
+    //var Container = stardux.Container
+    this.idom = createContainer(this.el, {}, this.reducer.bind(this))
+
+    this.el.innerHTML = this.getTemplate()
+
+    this.refreshIDOM()
+
+    this.emit(&apos;render&apos;)
+
+    return this
+
+  }
+
+  /*
+  @method setAttributes
+  @type Function
+  @returns Void
+  @desc Assigns attributes to view
+
+  @param attributes {Object}
+  */
+
+  setAttributes() {
+
+    this.attributes = {}
+
+    var el = document.createElement(&apos;div&apos;)
+    el.innerHTML = this.getTemplate()
+
+    if(el.firstChild.id) {
+
+      this.id = el.firstChild.id
+
+    }
+
+    if(el.firstChild.className) {
+
+      this.className = el.firstChild.className
+
+    }
+
+    var ignore = [
+      &apos;class&apos;,
+      &apos;id&apos;
+    ]
+
+    Array.from(el.firstChild.attributes).forEach( (item) =&gt; {
+
+      // If the attribute is not on the ignore list
+      if(ignore.indexOf(item.name) == -1) {
+        this.attributes[item.name] = item.value
+      }
+
+    })
+
+  }
+
+  setElement() {
+
+    if(this.id) {
+      var id   = `#${this.id}`
+
+      if(!this.el) this.el = id
+      this.$el = this.$(id)
+    }
+
+    else if(this.className) {
+
+      var splitClassName = this.className.split(&apos; &apos;)
+        var className = &apos;&apos;
+
+      for(let i = 0, l = splitClassName.length; i &lt; l; i++) {
+
+        className += `.${splitClassName[i]}`
+
+      }
+
+      if(!this.el) this.el = className
+      this.$el = this.$(className)
+    }
+
+    // TODO: only query within container
+    else {
+      var tagName = this.tagName
+
+      if(!this.el) this.el = tagName
+      this.$el = this.$(tagName)
+    }
+
+  }
+
+  setProperties() {
+
+    var allowedOptions = [
+      &apos;container&apos;,
+      &apos;el&apos;,
+      &apos;template&apos;
+    ]
+
+    var options = Object.assign(this.options)
+
+    Object.keys(options).forEach( (key) =&gt; {
+
+      // If the property is not on the ignore list
+      if(allowedOptions.indexOf(key) &gt; -1) {
+
+        this[key] = options[key]
+        delete this.options[key]
+
+      }
+
+    })
+
+  }
+
+  state(action) {
+    this.idom.update({current: action})
+  }
+
+  unBindEvents() {
+
+    this._events.forEach( (item) =&gt; {
+
+      var action    = item[0],
+          $selector = item[1], // TODO: scope this locally
+          listener  = item[2]
+
+      Array.prototype.forEach.call($selector, (selector) =&gt; {
+
+        selector.removeEventListener(action, listener, false)
+
+      })
+
+    })
+
+    //this._events = []
+
+  }
+
+  unBindListens() {
+
+    this._listeners.forEach( (item) =&gt; {
+
+      var ev      = item[0],
+          handler = item[1]
+
+      this.off(ev, handler)
+
+    })
+
+  }
+
+  /*
+  Keep track of sub-views
+  */
+  view(name, view) {
+
+    if(arguments.length == 1) {
+      return this._views[name]
+    } else {
+      this._views[name] = view
+    }
+
+  }
+
+}
+
+Object.assign(View.prototype, {mixin})
+
+/* Developer Notes
+The following properties &amp; methods are assigned on the prototype to allow for easier overriding.
+*/
+
+/*
+@property $
+@type Object
+@default native
+@desc $ query engine
+*/
+//DragonBaseView.prototype.$ = document.querySelectorAll.bind(document)
+View.prototype.$ = function(selector) {
+
+  var doc = null
+
+  if(typeof global == &apos;object&apos; &amp;&amp; global.document) doc = global.document
+  if(typeof window == &apos;object&apos; &amp;&amp; window.document) doc = window.document
+
+  return doc.querySelectorAll.call(doc, selector)
+
+}
+
+/**
+ * Direct Options. Some options are important enough that they should be directly on the view. Also offers consistency for overriding certain properties.
+ *
+ * @private
+ * @const
+ * @type {Array}
+ */
+View.prototype.directOptions = [
+  &apos;attachOnInit&apos;,
+  &apos;attachPlacement&apos;,
+  &apos;bindDataOnInit&apos;,
+  &apos;class&apos;, // why did CSS use this?
+  &apos;collection&apos;,
+  &apos;collections&apos;,
+  &apos;component&apos;,
+  &apos;container&apos;,
+  &apos;events&apos;,
+  &apos;id&apos;,
+  &apos;listen&apos;,
+  &apos;mediator&apos;,
+  &apos;model&apos;,
+  &apos;models&apos;,
+  &apos;reducer&apos;,
+  &apos;renderOnInit&apos;,
+  &apos;tagName&apos;,
+  &apos;template&apos;,
+  &apos;View&apos;
+]
+
+export default View
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.7)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

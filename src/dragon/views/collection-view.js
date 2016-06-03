@@ -1,8 +1,28 @@
+'use strict'
+
+/**
+ * Module Dependencies
+ *
+ * @ignore
+ */
 import {createContainer} from 'stardux'
-import View              from './base'
+import View              from './index'
 
-class DragonCollectionView extends View {
+/**
+ * CollectionView Class
+ *
+ * @public
+ * @class CollectionView
+ */
+class CollectionView extends View {
 
+  /**
+   * CollectionView constructor
+   *
+   * @public
+   * @constructor
+   * @param {Object} options
+   */
   constructor(options = {}) {
     super(Object.assign({}, {
       View: options.View || View
@@ -64,4 +84,4 @@ class DragonCollectionView extends View {
 
 }
 
-export default DragonCollectionView
+export default CollectionView

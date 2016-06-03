@@ -1,0 +1,19 @@
+{
+  "title": "dragon.js",
+  "package": "./package.json",
+  "index": "./manual/overview.md",
+  "source": "./src",
+  "destination": "./doc",
+  "plugins": [
+    {
+      "name": "esdoc-es7-plugin"
+    }
+  ],
+  "styles": ["./public/css/style.css"],
+
+  "test": {
+    "type": "mocha",
+    "source": "./test/unit",
+    "includes": ["./test/unit/test_container.js"]
+  }
+}

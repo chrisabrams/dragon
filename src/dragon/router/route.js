@@ -1,10 +1,16 @@
-'use strict';
+'use strict'
 
 var escapeRegExp   = /[\-{}\[\]+?.,\\\^$|#\s]/g,
     optionalRegExp = /\((.*?)\)/g,
     paramRegExp    = /(?::|\*)(\w+)/g
 
-class DragonRoute {
+/**
+ * Route Class
+ *
+ * @public
+ * @class Route
+ */
+class Route {
 
   constructor(pattern, Controller, action, options) {
 
@@ -194,4 +200,4 @@ class DragonRoute {
 
 }
 
-export default DragonRoute
+export default Route

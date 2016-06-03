@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * Module Dependencies
+ *
+ * @ignore
+ */
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -12,9 +18,9 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _base = require('./base');
+var _index = require('./index');
 
-var _base2 = _interopRequireDefault(_base);
+var _index2 = _interopRequireDefault(_index);
 
 var _utils = require('../utils');
 
@@ -22,13 +28,22 @@ var _utils2 = _interopRequireDefault(_utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DragonDispatcher = function () {
-  function DragonDispatcher() {
+/**
+ * Dispatcher Class
+ *
+ * @public
+ * @class Dispatcher
+ */
+
+var Dispatcher = function () {
+  function Dispatcher() {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    (0, _classCallCheck3.default)(this, DragonDispatcher);
+    (0, _classCallCheck3.default)(this, Dispatcher);
 
 
     this.uid = _utils2.default.uniqueId(this);
+
+    this.disposed = false;
 
     this.options = options;
 
@@ -37,7 +52,7 @@ var DragonDispatcher = function () {
     this.currentController = null;
   }
 
-  (0, _createClass3.default)(DragonDispatcher, [{
+  (0, _createClass3.default)(Dispatcher, [{
     key: 'dispatch',
     value: function dispatch(route, params) {
       var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -53,7 +68,7 @@ var DragonDispatcher = function () {
       };
 
       var res = {
-        navigate: _base2.default.navigate
+        navigate: _index2.default.navigate
       };
 
       var controller = null;
@@ -90,10 +105,8 @@ var DragonDispatcher = function () {
       }
     }
   }]);
-  return DragonDispatcher;
+  return Dispatcher;
 }();
 
-DragonDispatcher.prototype.disposed = false;
-
-exports.default = DragonDispatcher;
+exports.default = Dispatcher;
 //# sourceMappingURL=dispatcher.js.map

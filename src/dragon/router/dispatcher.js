@@ -1,13 +1,26 @@
-'use strict';
+'use strict'
 
-import Router from './base'
+/**
+ * Module Dependencies
+ *
+ * @ignore
+ */
+import Router from './index'
 import utils  from '../utils'
 
-class DragonDispatcher {
+/**
+ * Dispatcher Class
+ *
+ * @public
+ * @class Dispatcher
+ */
+class Dispatcher {
 
   constructor(options = {}) {
 
     this.uid = utils.uniqueId(this)
+
+    this.disposed = false
 
     this.options = options
 
@@ -73,6 +86,4 @@ class DragonDispatcher {
 
 }
 
-DragonDispatcher.prototype.disposed = false
-
-export default DragonDispatcher
+export default Dispatcher

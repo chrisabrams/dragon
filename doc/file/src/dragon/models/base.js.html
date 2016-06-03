@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/dragon/models/base.js | dragon.js API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+<link data-ice="userStyle" rel="stylesheet" href="user/css/0-style.css">
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/chrisabrams/dragon" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Dragon">Dragon</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/events.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mixin">mixin</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/application</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/application/base.js~DragonApplication.html">DragonApplication</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/components/base.js~DragonComponent.html">DragonComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/controllers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/controllers/base.js~DragonController.html">DragonController</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/mediator</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/mediator/index.js~DragonMediator.html">DragonMediator</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/models</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/base.js~DragonBaseModel.html">DragonBaseModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/models/store.js~DragonStore.html">DragonStore</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/router</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/base.js~DragonRouter.html">DragonRouter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/dispatcher.js~DragonDispatcher.html">DragonDispatcher</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/router/route.js~DragonRoute.html">DragonRoute</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">dragon/views</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/base.js~DragonBaseView.html">DragonBaseView</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dragon/views/collection-view.js~DragonCollectionView.html">DragonCollectionView</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/dragon/models/base.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
+
+import EventEmitter      from &apos;../events&apos;
+import mixin             from &apos;../mixin&apos;
+import utils             from &apos;../utils&apos;
+
+class DragonBaseModel {
+
+  constructor(attr = {}, options = {}) {
+    this.uid = utils.uniqueId(this)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
+
+    this.options = options
+
+    Object.defineProperty(this, &apos;attr&apos;, {
+      configurable: false,
+      enumerable: true,
+      writable: true
+    })
+
+    this.attr = Object.assign({}, this.defaults, attr)
+
+    //this.observeAttributes()
+  }
+
+  /*
+  TODO: not the full appr
+  */
+  clear() {
+
+    this.attr = {}
+    this.emit(&apos;change&apos;)
+
+  }
+
+  getData() {
+    return Object.assign({}, this.attr)
+  }
+
+  /*
+  TODO: add an an unobserve option
+  */
+  observeAttributes() {
+
+    // Trigger changes on model
+    //Object.observe(this.attr, this.observeHandler.bind(this))
+
+  }
+
+  observeHandler(changes) {
+
+    //this.emit(&apos;change&apos;, changes)
+
+    /*
+    TODO: consider making this a mixin and expanding to watch specific properties
+    */
+
+    var add    = [],
+        del    = [],
+        update = []
+
+    changes.forEach( (change) =&gt; {
+
+      switch(change.type) {
+
+        case &apos;add&apos;    : add.push(change); break;
+        case &apos;delete&apos; : del.push(change); break;
+        case &apos;update&apos; : update.push(change); break;
+
+      }
+
+    })
+
+    if(add.length &gt; 0)    this.emit(&apos;add&apos;, add)
+    if(del.length &gt; 0)    this.emit(&apos;delete&apos;, del)
+    if(update.length &gt; 0) this.emit(&apos;update&apos;, update)
+
+  }
+
+  /*
+  TODO: Undecided on appraoch for sync/fetch/save/etc.
+  */
+  sync() {
+
+  }
+
+  toJSON() {
+
+    return JSON.stringify(this.attr)
+
+  }
+
+  dispose(options = {}) {
+
+    utils.dispose(this, options)
+
+  }
+
+  pairs(object = this.attr) {
+    var index = -1,
+    props = this.keys(object),
+    length = props.length,
+    result = Array(length);
+    while (++index &lt; length) {
+      let key = props[index];
+      result[index] = [key, object[key]];
+    }
+    return result;
+  }
+
+  // Internal pick helper function to determine if `obj` has key `key`.
+  keyInObj(value, key, obj) {
+    return key in obj;
+  }
+
+  // Return a copy of the object only containing the whitelisted properties.
+  pick(...keys) {
+    var obj=this.attr,result = {}, iteratee = keys[0];
+    if (obj == null) return result;
+    if (typeof iteratee === &apos;function&apos;) {
+      if (keys.length &gt; 1) iteratee = iteratee; //TODO optimized callback for enable context
+      keys = this.keys(obj); //not working in inherited properties keys
+    } else {
+      iteratee = this.keyInObj;
+      obj = Object(obj);
+    }
+    for (var i = 0, length = keys.length; i &lt; length; i++) {
+      var key = keys[i];
+      var value = obj[key];
+      if (iteratee(value, key, obj)) result[key] = value;
+    }
+    return result;
+  }
+
+  // Return a copy of the object without the blacklisted properties.
+  omit(...keys) {
+    var obj=this.attr,iteratee = keys[0], context;
+    if (typeof iteratee === &apos;function&apos;) {
+      iteratee = iteratee;
+      if (keys.length &gt; 1) context = keys[1];
+    } else {
+      iteratee = function(value, key, obj) {
+        return keys.indexOf(key) == -1;
+      };
+    }
+    return this.pick(iteratee, context);
+  }
+
+  baseValues(object , props) {
+    var index = -1,
+    length = props.length,
+    result = Array(length);
+
+    while (++index &lt; length) {
+      result[index] = object[props[index]];
+    }
+    return result;
+  }
+
+  values(object = this.attr) {
+    return this.baseValues(object, this.keys(object));
+  }
+
+  keys(object = this.attr){
+    return Object.keys(object);
+  }
+
+  // Invert the keys and values of an object. The values must be serializable.
+  invert(obj = this.attr) {
+    var result = {},
+    index = -1,
+    props = this.keys(obj),
+    length = props.length;
+
+    while (++index &lt; length) {
+      result[obj[props[index]]] = props[index];
+    }
+    return result;
+  }
+
+  isArrayLike(collection) {
+    var length = collection[length];
+    return typeof length == &apos;number&apos; &amp;&amp; length &gt;= 0 &amp;&amp; length &lt;= (Math.pow(2, 53) - 1);
+  };
+
+  isEmpty(value = this.attr) {
+    if (value == null) return true;
+    if (isArrayLike(value) &amp;&amp; (_.isArray(value) || _.isString(value) || _.isArguments(value))) return value.length === 0;
+    return this.keys(value).length === 0;
+  }
+
+  set(o) {
+    /*Object.defineProperty(this, &apos;attr&apos;, {
+      configurable: false,
+      enumerable: true,
+      writable: true
+    })*/
+
+    var keysChanged = []
+    Object.keys(o).forEach((key) =&gt; {
+
+      this.attr[key] = o[key]
+      keysChanged.push(key)
+
+    })
+
+    //this.unobserveAttributes()
+    //this.attr = Object.assign({}, this.attr, o)
+    //this.observeAttributes()
+    this.emit(&apos;change&apos;, keysChanged)
+  }
+
+  unobserveAttributes() {
+    //delete this.attr
+
+    //Object.unobserve(this.attr, this.observeHandler.bind(this))
+  }
+}
+
+
+DragonBaseModel.prototype.defaults = {}
+
+DragonBaseModel.prototype.disposed = false
+
+DragonBaseModel.prototype.indisposable = false
+
+DragonBaseModel.prototype.url = &apos;&apos;
+
+Object.assign(DragonBaseModel.prototype, {mixin})
+
+export default DragonBaseModel
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.7)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

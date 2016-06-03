@@ -1,11 +1,33 @@
+/**
+ * Module Dependencies
+ *
+ * @ignore
+ */
 import EventEmitter from '../events'
 import mixin        from '../mixin'
 import utils        from '../utils'
 
-class DragonStore {
+/**
+ * Store Class
+ *
+ * @public
+ * @class Store
+ */
+class Store {
 
   constructor(options = {}) {
+    this.uid = utils.uniqueId(this)
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new EventEmitter()
+
+    this.emit  = eventEmitter.emitEvent.bind(eventEmitter)
+    this.on    = eventEmitter.addListener.bind(eventEmitter)
+    this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
+    this.off   = eventEmitter.removeListener.bind(eventEmitter)
+
     this.options = options
+
     this.name    = options.name
   }
 
@@ -27,13 +49,6 @@ class DragonStore {
 
 }
 
-Object.assign(DragonStore.prototype, {mixin})
+Object.assign(Store.prototype, {mixin})
 
-var eventEmitter = new EventEmitter()
-
-DragonStore.prototype.emit  = eventEmitter.emitEvent.bind(eventEmitter)
-DragonStore.prototype.on    = eventEmitter.addListener.bind(eventEmitter)
-DragonStore.prototype.once  = eventEmitter.addOnceListener.bind(eventEmitter)
-DragonStore.prototype.off   = eventEmitter.removeListener.bind(eventEmitter)
-
-export default DragonStore
+export default Store

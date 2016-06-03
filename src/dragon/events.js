@@ -1,17 +1,17 @@
-'use strict';
-
-/*!
-* EventEmitter v4.3
-* Forked from Oliver Caldwell
-* @preserve
-*/
+'use strict'
 
 /**
-* Class for managing events.
-* Can be extended to provide event functionality in other classes.
-*
-* @class EventEmitter Manages event registering and emitting.
-*/
+ * EventEmitter v4.3.1
+ * Forked from Oliver Caldwell
+ * @ignore
+ */
+
+/**
+ * Class for managing events.
+ * Can be extended to provide event functionality in other classes.
+ *
+ * @class EventEmitter Manages event registering and emitting.
+ */
 class EventEmitter {
 
   constructor() {

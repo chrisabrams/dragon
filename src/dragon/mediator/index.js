@@ -1,7 +1,27 @@
-import EventEmitter      from '../events'
+'use strict'
 
-class DragonMediator {
+/**
+ * Module Dependencies
+ *
+ * @ignore
+ */
+import EventEmitter from '../events'
 
+/**
+ * Mediator Class
+ *
+ * @public
+ * @class Mediator
+ */
+class Mediator {
+
+  /**
+   * Mediator constructor
+   *
+   * @public
+   * @constructor
+   * @param {Object} options
+   */
   constructor(options = {}) {
     // TODO: figure out how to mixin this
     var eventEmitter = new EventEmitter()
@@ -14,4 +34,4 @@ class DragonMediator {
 
 }
 
-export default DragonMediator
+export default Mediator

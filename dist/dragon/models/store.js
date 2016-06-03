@@ -34,16 +34,34 @@ var _utils2 = _interopRequireDefault(_utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DragonStore = function () {
-  function DragonStore() {
+/**
+ * Store Class
+ *
+ * @public
+ * @class Store
+ */
+
+var Store = function () {
+  function Store() {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    (0, _classCallCheck3.default)(this, DragonStore);
+    (0, _classCallCheck3.default)(this, Store);
+
+    this.uid = _utils2.default.uniqueId(this);
+
+    // TODO: figure out how to mixin this
+    var eventEmitter = new _events2.default();
+
+    this.emit = eventEmitter.emitEvent.bind(eventEmitter);
+    this.on = eventEmitter.addListener.bind(eventEmitter);
+    this.once = eventEmitter.addOnceListener.bind(eventEmitter);
+    this.off = eventEmitter.removeListener.bind(eventEmitter);
 
     this.options = options;
+
     this.name = options.name;
   }
 
-  (0, _createClass3.default)(DragonStore, [{
+  (0, _createClass3.default)(Store, [{
     key: 'get',
     value: function get() {
       var o = {};
@@ -63,17 +81,15 @@ var DragonStore = function () {
       this.emit('change', this.name);
     }
   }]);
-  return DragonStore;
-}();
+  return Store;
+}(); /**
+      * Module Dependencies
+      *
+      * @ignore
+      */
 
-(0, _assign2.default)(DragonStore.prototype, { mixin: _mixin2.default });
 
-var eventEmitter = new _events2.default();
+(0, _assign2.default)(Store.prototype, { mixin: _mixin2.default });
 
-DragonStore.prototype.emit = eventEmitter.emitEvent.bind(eventEmitter);
-DragonStore.prototype.on = eventEmitter.addListener.bind(eventEmitter);
-DragonStore.prototype.once = eventEmitter.addOnceListener.bind(eventEmitter);
-DragonStore.prototype.off = eventEmitter.removeListener.bind(eventEmitter);
-
-exports.default = DragonStore;
+exports.default = Store;
 //# sourceMappingURL=store.js.map

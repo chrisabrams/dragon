@@ -18,9 +18,16 @@ var escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g,
     optionalRegExp = /\((.*?)\)/g,
     paramRegExp = /(?::|\*)(\w+)/g;
 
-var DragonRoute = function () {
-  function DragonRoute(pattern, Controller, action, options) {
-    (0, _classCallCheck3.default)(this, DragonRoute);
+/**
+ * Route Class
+ *
+ * @public
+ * @class Route
+ */
+
+var Route = function () {
+  function Route(pattern, Controller, action, options) {
+    (0, _classCallCheck3.default)(this, Route);
 
 
     this.action = action;
@@ -35,7 +42,7 @@ var DragonRoute = function () {
     this.createRegExp();
   }
 
-  (0, _createClass3.default)(DragonRoute, [{
+  (0, _createClass3.default)(Route, [{
     key: 'createRegExp',
     value: function createRegExp() {
       var _this = this;
@@ -196,8 +203,8 @@ var DragonRoute = function () {
       return this.testConstraints(params);
     }
   }]);
-  return DragonRoute;
+  return Route;
 }();
 
-exports.default = DragonRoute;
+exports.default = Route;
 //# sourceMappingURL=route.js.map
