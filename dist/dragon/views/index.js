@@ -36,7 +36,7 @@ var _typeof3 = _interopRequireDefault(_typeof2);
 
 var _f12Stardux = require('f12-stardux');
 
-var _starplate = require('starplate');
+var _f12Starplate = require('f12-starplate');
 
 var _events = require('../events');
 
@@ -720,7 +720,7 @@ var View = function () {
     key: 'partial',
     value: function partial(name, html) {
       if (html) {
-        this._partials[name] = new _starplate.Template(html);
+        this._partials[name] = new _f12Starplate.Template(html);
       }
 
       return this._partials[name];

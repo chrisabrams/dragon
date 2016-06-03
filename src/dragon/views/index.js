@@ -5,11 +5,11 @@
  *
  * @ignore
  */
-import {createContainer} from 'f12-stardux'
-import {Parser, Template} from 'starplate'
-import EventEmitter      from '../events'
-import mixin             from '../mixin'
-import utils             from '../utils'
+import {createContainer}  from 'f12-stardux'
+import {Parser, Template} from 'f12-starplate'
+import EventEmitter       from '../events'
+import mixin              from '../mixin'
+import utils              from '../utils'
 
 var stardux = require('f12-stardux')
 
