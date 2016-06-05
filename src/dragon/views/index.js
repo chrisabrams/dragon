@@ -745,6 +745,7 @@ class View {
     */
     if(this.attached) {
       this.refreshIDOM()
+      this.emit('render')
       //console.log('DEBUG: am i already attached?', this.constructor.name)
       return this
     }
