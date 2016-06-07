@@ -9,7 +9,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.View = exports.Utils = exports.Store = exports.Router = exports.Model = exports.Mediator = exports.EventEmitter = exports.Dispatcher = exports.Controller = exports.Component = exports.CollectionView = exports.Collection = exports.Application = undefined;
+exports.View = exports.Utils = exports.Store = exports.Router = exports.Model = exports.Mediator = exports.EventSourceMediator = exports.EventEmitter = exports.Dispatcher = exports.Controller = exports.Component = exports.CollectionView = exports.Collection = exports.Application = undefined;
 
 require('../lib/polyfills/element.remove');
 
@@ -48,6 +48,10 @@ var _dispatcher2 = _interopRequireDefault(_dispatcher);
 var _events = require('./dragon/events');
 
 var _events2 = _interopRequireDefault(_events);
+
+var _eventSource = require('./dragon/event-source');
+
+var _eventSource2 = _interopRequireDefault(_eventSource);
 
 var _mediator = require('./dragon/mediator');
 
@@ -88,6 +92,7 @@ var Dragon = {
   Controller: _controllers2.default,
   Dispatcher: _dispatcher2.default,
   EventEmitter: _events2.default,
+  EventSource: _eventSource2.default,
   Mediator: _mediator2.default,
   Model: _models2.default,
   Router: _router2.default,
@@ -103,6 +108,7 @@ exports.Component = _components2.default;
 exports.Controller = _controllers2.default;
 exports.Dispatcher = _dispatcher2.default;
 exports.EventEmitter = _events2.default;
+exports.EventSourceMediator = _eventSource2.default;
 exports.Mediator = _mediator2.default;
 exports.Model = _models2.default;
 exports.Router = _router2.default;
