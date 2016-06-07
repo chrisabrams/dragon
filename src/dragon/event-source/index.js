@@ -49,15 +49,15 @@ class EventSourceMediator {
   }
 
   onClose(e) {
-    this.emit('close')
+    this.emit('close', e)
   }
 
   onMessage(e) {
-    this.emit('message')
+    this.emit('message', e)
   }
 
   onOpen(e) {
-    this.emit('open')
+    this.emit('open', e)
   }
 
 }

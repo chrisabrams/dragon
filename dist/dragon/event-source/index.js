@@ -83,17 +83,17 @@ var EventSourceMediator = function () {
   }, {
     key: 'onClose',
     value: function onClose(e) {
-      this.emit('close');
+      this.emit('close', e);
     }
   }, {
     key: 'onMessage',
     value: function onMessage(e) {
-      this.emit('message');
+      this.emit('message', e);
     }
   }, {
     key: 'onOpen',
     value: function onOpen(e) {
-      this.emit('open');
+      this.emit('open', e);
     }
   }]);
   return EventSourceMediator;
