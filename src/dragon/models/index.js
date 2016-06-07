@@ -207,16 +207,18 @@ class Model {
     return this.keys(value).length === 0;
   }
 
-  set(o) {
+  set(obj, options = {}) {
 
     var keysChanged = []
-    Object.keys(o).forEach((key) => {
+    Object.keys(obj).forEach((key) => {
 
-      this.attr[key] = o[key]
+      this.attr[key] = obj[key]
       keysChanged.push(key)
 
     })
 
+    // Don't emit a change event if silence is requested
+    if(options.silent) return
     this.emit('change', keysChanged)
   }
 

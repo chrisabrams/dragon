@@ -297,16 +297,21 @@ var Model = function () {
     }
   }, {
     key: 'set',
-    value: function set(o) {
+    value: function set(obj) {
       var _this = this;
 
-      var keysChanged = [];
-      (0, _keys2.default)(o).forEach(function (key) {
+      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-        _this.attr[key] = o[key];
+
+      var keysChanged = [];
+      (0, _keys2.default)(obj).forEach(function (key) {
+
+        _this.attr[key] = obj[key];
         keysChanged.push(key);
       });
 
+      // Don't emit a change event if silence is requested
+      if (options.silent) return;
       this.emit('change', keysChanged);
     }
   }, {
