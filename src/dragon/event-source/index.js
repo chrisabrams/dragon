@@ -30,9 +30,9 @@ class EventSourceMediator {
     this.once  = eventEmitter.addOnceListener.bind(eventEmitter)
     this.off   = eventEmitter.removeListener.bind(eventEmitter)
 
-    this.source.addEventListener('message', this.onMessage, false)
-    this.source.addEventListener('open', this.onOpen, false)
-    this.source.addEventListener('error', this.onClose, false)
+    this.source.addEventListener('message', this.onMessage.bind(this), false)
+    this.source.addEventListener('open', this.onOpen.bind(this), false)
+    this.source.addEventListener('error', this.onClose.bind(this), false)
   }
 
   dispose() {
