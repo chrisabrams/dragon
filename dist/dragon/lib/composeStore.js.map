@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../src/dragon/lib/composeStore.js"],"names":[],"mappings":"AAAA;;AAEA,OAAO,OAAP,GAAiB,EAAjB","file":"composeStore.js","sourcesContent":["'use strict'\n\nmodule.exports = {}\n"]}
