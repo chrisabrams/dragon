@@ -33,3 +33,4 @@ node_modules
 
 test/helpers/browser/js/spec.js
 test/helpers/browser/js/vendor.js
+dist
