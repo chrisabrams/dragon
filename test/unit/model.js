@@ -269,5 +269,16 @@ describe('Unit: Model', function() {
     expect(keys).to.eql(['foo','foobar'])
     done()
   })
-
+  it('should execute lodash function of arity 0',function(done){
+    class Model      extends Dragon.Model {}
+    var model = new Model({foo:'bar'})
+    expect(model.keys()).to.eql(['foo'])
+    done()
+  })
+  it('should execute lodash function of arity n',function(done){
+    class Model      extends Dragon.Model {}
+    var model = new Model({foo:'bar', bar:'baz', foobar:'barbaz'})
+    expect(model.pick('foo','foobar')).to.eql({foo:'bar',foobar:'barbaz'})
+    done()
+  })
 })
