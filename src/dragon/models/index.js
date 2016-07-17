@@ -33,7 +33,6 @@ class Model {
     this.disposed = false
 
     this.url = ''
-
     this.options = options
 
     Object.defineProperty(this, 'attr', {
@@ -113,100 +112,10 @@ class Model {
     return JSON.stringify(this.attr)
 
   }
-
-  pairs(object = this.attr) {
-    var index = -1,
-    props = this.keys(object),
-    length = props.length,
-    result = Array(length);
-    while (++index < length) {
-      let key = props[index];
-      result[index] = [key, object[key]];
-    }
-    return result;
-  }
-
-  // Internal pick helper function to determine if `obj` has key `key`.
-  keyInObj(value, key, obj) {
-    return key in obj;
-  }
-
-  // Return a copy of the object only containing the whitelisted properties.
-  pick(...keys) {
-    var obj=this.attr,result = {}, iteratee = keys[0];
-    if (obj == null) return result;
-    if (typeof iteratee === 'function') {
-      if (keys.length > 1) iteratee = iteratee; //TODO optimized callback for enable context
-      keys = this.keys(obj); //not working in inherited properties keys
-    } else {
-      iteratee = this.keyInObj;
-      obj = Object(obj);
-    }
-    for (var i = 0, length = keys.length; i < length; i++) {
-      var key = keys[i];
-      var value = obj[key];
-      if (iteratee(value, key, obj)) result[key] = value;
-    }
-    return result;
-  }
-
-  // Return a copy of the object without the blacklisted properties.
-  omit(...keys) {
-    var obj=this.attr,iteratee = keys[0], context;
-    if (typeof iteratee === 'function') {
-      iteratee = iteratee;
-      if (keys.length > 1) context = keys[1];
-    } else {
-      iteratee = function(value, key, obj) {
-        return keys.indexOf(key) == -1;
-      };
-    }
-    return this.pick(iteratee, context);
-  }
-
-  baseValues(object , props) {
-    var index = -1,
-    length = props.length,
-    result = Array(length);
-
-    while (++index < length) {
-      result[index] = object[props[index]];
-    }
-    return result;
-  }
-
-  values(object = this.attr) {
-    return this.baseValues(object, this.keys(object));
-  }
-
-  keys(object = this.attr){
-    return Object.keys(object);
-  }
-
-  // Invert the keys and values of an object. The values must be serializable.
-  invert(obj = this.attr) {
-    var result = {},
-    index = -1,
-    props = this.keys(obj),
-    length = props.length;
-
-    while (++index < length) {
-      result[obj[props[index]]] = props[index];
-    }
-    return result;
-  }
-
   isArrayLike(collection) {
     var length = collection[length];
     return typeof length == 'number' && length >= 0 && length <= (Math.pow(2, 53) - 1);
   };
-
-  isEmpty(value = this.attr) {
-    if (value == null) return true;
-    if (isArrayLike(value) && (_.isArray(value) || _.isString(value) || _.isArguments(value))) return value.length === 0;
-    return this.keys(value).length === 0;
-  }
-
   set(obj, options = {}) {
 
     var keysChanged = []
@@ -229,6 +138,11 @@ class Model {
   }
 
 }
+var modelMethods = {keys: 1, values: 1, pairs: 1, invert: 1, pick: 0,
+  omit: 0, chain: 1, isEmpty: 1};
+
+// Mix in each Lodash method as a proxy to `Model#attributes`.
+utils.addLodashMethods(Model, modelMethods, 'attr');
 
 Object.assign(Model.prototype, {mixin})
 
