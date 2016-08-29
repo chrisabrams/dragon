@@ -1,6 +1,6 @@
 {
   "name": "dragon.js",
-  "version": "0.2.2-alpha-13",
+  "version": "0.2.2-alpha-14",
   "description": "Single Page Apps with ES6/7",
   "main": "dist/dragon.js",
   "bin": {
@@ -41,12 +41,11 @@
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
     "babel-runtime": "^6.6.1",
-    "f12-stardux": "0.0.3-b",
-    "f12-starplate": "0.0.25-b",
     "grapnel": "^0.5.9",
-    "lodash": "^4.15.0",
     "minimist": "^1.1.1",
-    "paradigm-server-express": "0.0.13"
+    "paradigm-server-express": "0.0.13",
+    "f12-stardux": "0.0.3-b",
+    "f12-starplate": "0.0.25-b"
   },
   "devDependencies": {
     "babel-cli": "^6.7.7",
@@ -69,6 +68,7 @@
     "gulp-size": "^1.2.1",
     "gulp-util": "^3.0.4",
     "json-loader": "^0.5.3",
+    "lodash": "^3.10.1",
     "mkdirp": "^0.5.1",
     "nodemon": "^1.4.1",
     "paradigm-minimist-watching": "0.0.1",
