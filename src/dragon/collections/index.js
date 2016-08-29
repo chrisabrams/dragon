@@ -96,6 +96,7 @@ class Collection {
       */
       if(entry instanceof this.Model) {
         model = entry
+        model.collection = this
         this.models.push(model)
       }
 
@@ -132,6 +133,7 @@ class Collection {
           }
 
           else {
+            model.collection = this
             this.models.push(model)
           }
 
