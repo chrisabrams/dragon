@@ -1,9 +1,5 @@
 'use strict';
 
-var _symbol = require('babel-runtime/core-js/symbol');
-
-var _symbol2 = _interopRequireDefault(_symbol);
-
 var _freeze = require('babel-runtime/core-js/object/freeze');
 
 var _freeze2 = _interopRequireDefault(_freeze);
@@ -76,11 +72,12 @@ Utils.log = function () {
 /*
 Dragon.Utils.uniqueId
 what if we use the new primitive type symbols as a uid
+Thanks: http://stackoverflow.com/questions/6248666/how-to-generate-short-uid-like-ax4j9z-in-js
 */
 
 Utils.uniqueId = function (_this) {
 
-  return (0, _symbol2.default)('uid');
+  return 'uid-' + ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
 };
 
 module.exports = Utils;

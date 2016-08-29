@@ -258,6 +258,12 @@ var Collection = function () {
       }
     }
   }, {
+    key: 'set',
+    value: function set(entries, options) {
+      this.clear();
+      this.ensureEntries(entries, options);
+    }
+  }, {
     key: 'toJSON',
     value: function toJSON() {
       return this.models.map(function (model) {

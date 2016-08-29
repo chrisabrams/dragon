@@ -106,13 +106,17 @@ var View = function () {
      * @type {Function}
      * @extend {EventEmitter}
      */
-    this.on = eventEmitter.addListener.bind(eventEmitter);
+    this.on = function (evt, listener) {
+      eventEmitter.addListener.call(eventEmitter, evt, listener.bind(_this2));
+    };
     /**
      * Event Emitter's once method.
      * @type {Function}
      * @extend {EventEmitter}
      */
-    this.once = eventEmitter.addOnceListener.bind(eventEmitter);
+    this.once = function (evt, listener) {
+      eventEmitter.addOnceListener.call(eventEmitter, evt, listener.bind(_this2));
+    };
     /**
      * Event Emitter's off method.
      * @type {Function}
