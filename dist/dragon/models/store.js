@@ -40,7 +40,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @public
  * @class Store
  */
-
 var Store = function () {
   function Store() {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];

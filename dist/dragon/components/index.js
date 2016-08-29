@@ -46,7 +46,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @public
  * @class Component
  */
-
 var Component = function () {
 
   /**
@@ -56,7 +55,6 @@ var Component = function () {
    * @constructor
    * @param {Object} options
    */
-
   function Component() {
     var _this = this;
 

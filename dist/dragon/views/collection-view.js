@@ -52,10 +52,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @public
  * @class CollectionView
  */
-
 var CollectionView = function (_View) {
   (0, _inherits3.default)(CollectionView, _View);
-
 
   /**
    * CollectionView constructor
@@ -64,11 +62,10 @@ var CollectionView = function (_View) {
    * @constructor
    * @param {Object} options
    */
-
   function CollectionView() {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     (0, _classCallCheck3.default)(this, CollectionView);
-    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(CollectionView).call(this, (0, _assign2.default)({}, {
+    return (0, _possibleConstructorReturn3.default)(this, (CollectionView.__proto__ || (0, _getPrototypeOf2.default)(CollectionView)).call(this, (0, _assign2.default)({}, {
       View: options.View || _index2.default
     }, options)));
   }

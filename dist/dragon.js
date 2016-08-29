@@ -99,9 +99,7 @@ var Dragon = {
   Store: _store2.default,
   Utils: _utils2.default,
   View: _views2.default
-};
-
-exports.Application = _application2.default;
+};exports.Application = _application2.default;
 exports.Collection = _collections2.default;
 exports.CollectionView = _collectionView2.default;
 exports.Component = _components2.default;

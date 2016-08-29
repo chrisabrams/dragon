@@ -58,7 +58,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @public
  * @class Collection
  */
-
 var Collection = function () {
 
   /**
@@ -69,7 +68,6 @@ var Collection = function () {
    * @param {Array} entries
    * @param {Object} options
    */
-
   function Collection() {
     var entries = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
     var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
@@ -158,6 +156,7 @@ var Collection = function () {
 
           if (entry instanceof _this.Model) {
             model = entry;
+            model.collection = _this;
             _this.models.push(model);
           } else {
 
@@ -190,8 +189,9 @@ var Collection = function () {
                 _this.models.splice(options.at, 0, entry);
                 //this.models.splice.apply(this.models, [optoins.at, 0].concat([model]))
               } else {
-                  _this.models.push(model);
-                }
+                model.collection = _this;
+                _this.models.push(model);
+              }
             }
           }
 

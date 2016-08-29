@@ -77,7 +77,6 @@ var View = function () {
    * @constructor
    * @param {Object} options
    */
-
   function View() {
     var _this2 = this;
 
@@ -613,7 +612,7 @@ var View = function () {
 
           action = 'keydown';
 
-          handler = function (e) {
+          handler = function handler(e) {
 
             if (e.keyCode == 13) {
               e.preventDefault();

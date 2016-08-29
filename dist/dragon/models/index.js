@@ -50,7 +50,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @public
  * @class Model
  */
-
 var Model = function () {
   function Model() {
     var attr = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -203,9 +202,9 @@ var Model = function () {
         if (keys.length > 1) iteratee = iteratee; //TODO optimized callback for enable context
         keys = this.keys(obj); //not working in inherited properties keys
       } else {
-          iteratee = this.keyInObj;
-          obj = Object(obj);
-        }
+        iteratee = this.keyInObj;
+        obj = Object(obj);
+      }
       for (var i = 0, length = keys.length; i < length; i++) {
         var key = keys[i];
         var value = obj[key];
@@ -230,7 +229,7 @@ var Model = function () {
         iteratee = iteratee;
         if (keys.length > 1) context = keys[1];
       } else {
-        iteratee = function (value, key, obj) {
+        iteratee = function iteratee(value, key, obj) {
           return keys.indexOf(key) == -1;
         };
       }

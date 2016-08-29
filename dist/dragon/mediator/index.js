@@ -26,7 +26,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @public
  * @class Mediator
  */
-
 var Mediator =
 
 /**

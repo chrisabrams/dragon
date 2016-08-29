@@ -36,7 +36,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @public
  * @class EventSourceMediator
  */
-
 var EventSourceMediator = function () {
 
   /**
@@ -46,7 +45,6 @@ var EventSourceMediator = function () {
    * @constructor
    * @param {Object} options
    */
-
   function EventSourceMediator() {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     (0, _classCallCheck3.default)(this, EventSourceMediator);

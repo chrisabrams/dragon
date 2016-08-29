@@ -47,7 +47,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @public
  * @class Router
  */
-
 var Router = function () {
   function Router() {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
