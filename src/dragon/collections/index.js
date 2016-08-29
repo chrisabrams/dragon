@@ -174,6 +174,11 @@ class Collection {
     }
   }
 
+  set(entries, options) {
+    this.clear()
+    this.ensureEntries(entries, options)
+  }
+
   toJSON() {
     return this.models.map( (model) => model.toJSON())
   }
