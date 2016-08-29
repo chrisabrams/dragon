@@ -69,7 +69,6 @@
     "gulp-size": "^1.2.1",
     "gulp-util": "^3.0.4",
     "json-loader": "^0.5.3",
-    "lodash": "^3.10.1",
     "mkdirp": "^0.5.1",
     "nodemon": "^1.4.1",
     "paradigm-minimist-watching": "0.0.1",
